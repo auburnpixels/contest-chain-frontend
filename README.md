@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CaaS Platform - Next.js Frontend
+
+Modern dashboard for the CaaS (Compliance-as-a-Service) platform built with Next.js 16, TypeScript, and shadcn/ui.
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
 ```bash
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.local.example .env.local
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+next.js/
+├── app/                    # Next.js App Router
+│   ├── (public)/          # Public pages (marketing, docs)
+│   ├── operator/          # Operator dashboard
+│   ├── regulator/         # Regulator dashboard
+│   └── audit/[uuid]/      # Public audit viewer
+├── components/
+│   ├── ui/                # shadcn/ui components
+│   └── ...                # Custom components
+├── lib/
+│   ├── api/               # API client utilities
+│   ├── config.ts          # Configuration
+│   └── utils.ts           # Utility functions
+└── public/                # Static assets
+```
+
+## Features
+
+### Public Site
+- **Homepage**: Platform overview and features
+- **Documentation**: API reference and integration guide
+- **Audit Viewer**: Public audit verification pages
+
+### Operator Dashboard
+- **Dashboard**: Compliance summary and metrics
+- **Competitions**: List and manage competitions
+- **API Keys**: Generate and manage API keys
+- **Webhooks**: Configure webhook subscriptions
+
+### Regulator Dashboard
+- **Overview**: Platform-wide compliance metrics
+- **Operators**: View all operators and their compliance
+- **Integrity**: Chain verification tools
+- **Competitions**: Deep inspection of audits and events
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 4
+- **UI Components**: shadcn/ui (Radix UI primitives)
+- **Icons**: Lucide React
+- **API Client**: Custom fetch-based client with JWT support
+
+## API Configuration
+
+Configure the Laravel backend URL in `.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+## Development
+
+### Available Scripts
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+```
+
+### Adding shadcn/ui Components
+
+```bash
+npx shadcn@latest add [component-name]
+```
+
+## Authentication
+
+The dashboard uses JWT tokens for authentication:
+
+1. Login via `/operator/login` or `/regulator/login`
+2. Token stored in localStorage
+3. Automatically attached to API requests
+4. Refresh token on expiry
+
+## Environment Variables
+
+- `NEXT_PUBLIC_API_URL`: Laravel backend API URL
+
+## Building for Production
+
+```bash
+npm run build
+npm run start
+```
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [shadcn/ui Documentation](https://ui.shadcn.com)
+- [Tailwind CSS](https://tailwindcss.com)
+- [CaaS Platform API](../laravel/README-CAAS.md)

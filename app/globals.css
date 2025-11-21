@@ -1,26 +1,214 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    /* Fonts */
+    --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+
+    /* Colors - CAAS Brand Palette */
+    /* Using HSL values to support opacity modifiers */
+    
+    /* Brand Navy - Deepest Background #0A0E17 */
+    --color-brand-navy: hsl(222 41% 6%);
+    
+    /* Brand Slate - Card Background #161B28 */
+    --color-brand-slate: hsl(222 29% 12%);
+    
+    /* Brand Blue - Primary Action #2563EB */
+    --color-brand-blue: hsl(221 83% 53%);
+
+    /* Accents */
+    --color-accent-mint: hsl(160 84% 39%);    /* #10B981 */
+    --color-accent-purple: hsl(258 90% 66%);  /* #8B5CF6 */
+    --color-accent-amber: hsl(38 92% 50%);    /* #F59E0B */
+
+    /* Standard Shadcn Mappings to Brand Colors */
+    --color-border: hsl(215 19% 35%);      /* Lighter slate for borders */
+    --color-input: hsl(215 19% 35%);
+    --color-ring: hsl(221 83% 53%);        /* Brand Blue */
+    
+    --color-background: hsl(222 41% 6%);   /* Brand Navy */
+    --color-foreground: hsl(0 0% 98%);     /* White */
+
+    --color-primary: hsl(221 83% 53%);     /* Brand Blue */
+    --color-primary-foreground: hsl(0 0% 98%);
+
+    --color-secondary: hsl(222 29% 12%);   /* Brand Slate */
+    --color-secondary-foreground: hsl(0 0% 98%);
+
+    --color-destructive: hsl(0 62% 30%);
+    --color-destructive-foreground: hsl(0 0% 98%);
+
+    --color-muted: hsl(222 29% 16%);       /* Slightly lighter slate */
+    --color-muted-foreground: hsl(215 20% 65%);
+
+    --color-accent: hsl(222 29% 16%);
+    --color-accent-foreground: hsl(0 0% 98%);
+
+    --color-popover: hsl(222 41% 6%);
+    --color-popover-foreground: hsl(0 0% 98%);
+
+    --color-card: hsl(222 29% 12%);        /* Brand Slate */
+    --color-card-foreground: hsl(0 0% 98%);
+
+    /* Chart Colors */
+    --color-chart-1: hsl(221 83% 53%);    /* Blue */
+    --color-chart-2: hsl(160 84% 39%);    /* Mint */
+    --color-chart-3: hsl(258 90% 66%);    /* Purple */
+    --color-chart-4: hsl(38 92% 50%);     /* Amber */
+    --color-chart-5: hsl(222 29% 12%);    /* Slate */
+
+    /* Border Radius */
+    --radius-lg: 0.5rem;
+    --radius-md: calc(0.5rem - 2px);
+    --radius-sm: calc(0.5rem - 4px);
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-pill: 9999px;
+
+    /* Animations */
+    --animate-accordion-down: accordion-down 0.2s ease-out;
+    --animate-accordion-up: accordion-up 0.2s ease-out;
+    --animate-shimmer: shimmer 2s linear infinite;
+
+    --sidebar: hsl(222 29% 12%);
+    --sidebar-foreground: hsl(0 0% 98%);
+    --sidebar-primary: hsl(221 83% 53%);
+    --sidebar-primary-foreground: hsl(0 0% 98%);
+    --sidebar-accent: hsl(222 29% 16%);
+    --sidebar-accent-foreground: hsl(0 0% 98%);
+    --sidebar-border: hsl(215 19% 35%);
+    --sidebar-ring: hsl(221 83% 53%);
+    
+    /* Shadows */
+    --shadow-glow-blue: 0 0 40px -10px rgba(37, 99, 235, 0.3);
+    --shadow-glow-mint: 0 0 40px -10px rgba(16, 185, 129, 0.3);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+    :root {
+        --background: 222 41% 6%;
+        --foreground: 0 0% 98%;
+        --card: 222 29% 12%;
+        --card-foreground: 0 0% 98%;
+        --popover: 222 41% 6%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 221 83% 53%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 222 29% 12%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 222 29% 16%;
+        --muted-foreground: 215 20% 65%;
+        --accent: 222 29% 16%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 215 19% 25%;
+        --input: 215 19% 25%;
+        --ring: 221 83% 53%;
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 222 41% 6%;
+        --foreground: 0 0% 98%;
+        --card: 222 29% 12%;
+        --card-foreground: 0 0% 98%;
+        --popover: 222 41% 6%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 221 83% 53%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 222 29% 12%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 222 29% 16%;
+        --muted-foreground: 215 20% 65%;
+        --accent: 222 29% 16%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 215 19% 25%;
+        --input: 215 19% 25%;
+        --ring: 221 83% 53%;
+    }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@layer base {
+    * {
+        border-color: hsl(var(--border));
+    }
+
+    body {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-display);
+        letter-spacing: -0.02em;
+    }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes accordion-down {
+    from {
+        height: 0;
+    }
+    to {
+        height: var(--radix-accordion-content-height);
+    }
+}
+
+@keyframes accordion-up {
+    from {
+        height: var(--radix-accordion-content-height);
+    }
+    to {
+        height: 0;
+    }
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+    
+    /* Glass Effect */
+    .glass-panel {
+        background: rgba(22, 27, 40, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    /* Gradient Text */
+    .gradient-text {
+        background-clip: text;
+        color: transparent;
+        background-image: linear-gradient(to right, #ffffff, #94a3b8);
+    }
+    
+    .gradient-text-primary {
+        background-clip: text;
+        color: transparent;
+        background-image: linear-gradient(to right, #3b82f6, #2563eb);
+    }
+
+    /* Shimmer Effect */
+    .shimmer {
+        background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite;
+    }
 }
