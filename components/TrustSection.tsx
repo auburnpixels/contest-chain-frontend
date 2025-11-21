@@ -1,6 +1,6 @@
 import { SectionHeading } from "@/components/section-heading";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, ThumbsUp, ArrowRight } from "lucide-react";
+import { ShieldCheck, Users, Clock, ArrowRight, Quote } from "lucide-react";
 
 type Testimonial = {
   quote: string;
@@ -9,89 +9,84 @@ type Testimonial = {
 };
 
 type TrustSectionProps = {
-  testimonials: Testimonial[];
+  testimonials?: Testimonial[];
 };
 
-const columns = [
-  { label: "Disputes handled", manual: "Hours of back-and-forth", caas: "Self-serve proof" },
-  { label: "Winner proof", manual: "Screenshots", caas: "Cryptographic audit" },
-  { label: "Customer trust", manual: "Hope for the best", caas: "+12% conversion avg." },
+const defaultTestimonials = [
+  {
+    quote: "CAAS stopped accusations overnight. We send the audit link and the ticket holder instantly believes us.",
+    author: "James Morton",
+    role: "Founder, PrizeDraw UK",
+  },
+  {
+    quote: "Multi-prize draws used to take a day of admin. Now CAAS publishes the entire audit chain in minutes.",
+    author: "Sarah Lennon",
+    role: "Head of Ops, Elite Competitions",
+  }
 ];
 
-export const TrustSection = ({ testimonials }: TrustSectionProps) => (
-  <section className="bg-black/50 py-24">
-    <div className="mx-auto max-w-content px-6 space-y-12">
+export const TrustSection = ({ testimonials = defaultTestimonials }: TrustSectionProps) => (
+  <section className="bg-brand-navy py-32 relative max-w-7xl mx-auto">
+    <div className="mx-auto max-w-content px-6 space-y-20">
       <SectionHeading
-        eyebrow="Trust & Legitimacy"
-        title="Proof beats promises."
-        description="Operators that ship audit links instead of explanations experience fewer disputes and more recurring buyers."
+        eyebrow="Trust & Results"
+        title="Proof is your best marketing asset."
+        description="Operators that switch to verifiable audits see fewer disputes and higher ticket values."
+        align="left"
       />
 
-      <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-        <div className="rounded-3xl border border-white/5 bg-white/5 p-8">
-          <div className="grid gap-4 lg:grid-cols-3">
-            {columns.map((col) => (
-              <div key={col.label} className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                  {col.label}
-                </p>
-                <p className="mt-3 text-sm text-slate-400">
-                  Manual: <span className="text-white/80">{col.manual}</span>
-                </p>
-                <p className="mt-1 text-base font-semibold text-accentMint">
-                  CAAS: {col.caas}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-slate-400">
-            <Shield className="h-4 w-4 text-accentMint" />
-            CAAS proves integrity without making you explain anything.
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-6">
-          {testimonials.map((item) => (
+      <div className="grid lg:grid-cols-2 gap-16 items-start">
+        {/* Left: Testimonials */}
+        <div className="space-y-8">
+          {testimonials.map((item, idx) => (
             <Card
-              key={item.quote}
-              className="border-white/5 bg-gradient-to-br from-white/10 to-transparent text-white"
+              key={idx}
+              className="border-none bg-transparent relative"
             >
-              <CardContent className="space-y-4 p-6">
-                <p className="opacity-80">{item.quote}</p>
-                <p className="text-sm text-slate-300">
-                  {item.author} • {item.role}
+              <div className="absolute -top-4 -left-4 text-brand-blue/20">
+                <Quote size={48} strokeWidth={1} />
+              </div>
+              <CardContent className="space-y-6 p-0 relative z-10">
+                <p className="text-2xl font-display font-medium text-white leading-relaxed">
+                  "{item.quote}"
                 </p>
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-brand-slate border border-white/10" />
+                    <div>
+                        <p className="font-semibold text-white">{item.author}</p>
+                        <p className="text-sm text-slate-400">{item.role}</p>
+                    </div>
+                </div>
               </CardContent>
             </Card>
           ))}
-          <a
-            href="/case-studies"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-accentMint"
-          >
-            Explore case studies
-            <ArrowRight className="h-4 w-4" />
-          </a>
+          
+          <div className="pt-8">
+             <a href="/case-studies" className="inline-flex items-center text-brand-blue font-medium hover:text-brand-blue/80 transition-colors">
+                 Read more success stories <ArrowRight className="ml-2 w-4 h-4" />
+             </a>
+          </div>
         </div>
-      </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-white/5 bg-white/5 p-5">
-          <Users className="h-5 w-5 text-accentMint" />
-          <p className="mt-3 text-2xl font-semibold text-white">+18%</p>
-          <p className="text-sm text-slate-400">Average uplift in ticket conversion.</p>
-        </div>
-        <div className="rounded-2xl border border-white/5 bg-white/5 p-5">
-          <Shield className="h-5 w-5 text-accentMint" />
-          <p className="mt-3 text-2xl font-semibold text-white">Zero</p>
-          <p className="text-sm text-slate-400">Draw disputes escalated after audit links.</p>
-        </div>
-        <div className="rounded-2xl border border-white/5 bg-white/5 p-5">
-          <ThumbsUp className="h-5 w-5 text-accentMint" />
-          <p className="mt-3 text-2xl font-semibold text-white">3.2s</p>
-          <p className="text-sm text-slate-400">Average time to publish a public audit.</p>
+        {/* Right: Stats Grid */}
+        <div className="grid gap-6 sm:grid-cols-2">
+            <div className="p-8 rounded-2xl bg-brand-slate border border-white/5 hover:border-brand-blue/30 transition-colors">
+                <Users className="w-8 h-8 text-brand-blue mb-4" />
+                <p className="text-4xl font-bold text-white mb-2">+18%</p>
+                <p className="text-slate-400 text-sm">Average uplift in ticket conversion rates.</p>
+            </div>
+            <div className="p-8 rounded-2xl bg-brand-slate border border-white/5 hover:border-brand-blue/30 transition-colors">
+                <ShieldCheck className="w-8 h-8 text-accent-mint mb-4" />
+                <p className="text-4xl font-bold text-white mb-2">0</p>
+                <p className="text-slate-400 text-sm">Disputes escalated after implementing audit links.</p>
+            </div>
+             <div className="p-8 rounded-2xl bg-brand-slate border border-white/5 hover:border-brand-blue/30 transition-colors sm:col-span-2">
+                <Clock className="w-8 h-8 text-accent-purple mb-4" />
+                <p className="text-4xl font-bold text-white mb-2">3.2s</p>
+                <p className="text-slate-400 text-sm">Average time to publish a fully verified public audit page.</p>
+            </div>
         </div>
       </div>
     </div>
   </section>
 );
-

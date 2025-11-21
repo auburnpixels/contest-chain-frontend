@@ -4,17 +4,17 @@ import {
   BadgeCheck,
   Layers,
   Network,
-  ShieldCheck,
+  LayoutDashboard,
   Terminal,
-  Activity,
-  FileText,
-  Sparkles,
+  Scale,
+  ShieldAlert,
+  FileJson,
 } from "lucide-react";
 
 type Feature = {
   title: string;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ElementType;
   bullets: string[];
 };
 
@@ -26,48 +26,52 @@ const iconMap = {
   audit: BadgeCheck,
   multi: Layers,
   public: Network,
-  dashboard: ShieldCheck,
+  dashboard: LayoutDashboard,
   api: Terminal,
-  fairness: Activity,
-  integrity: FileText,
-  evidence: Sparkles,
+  fairness: Scale,
+  integrity: ShieldAlert,
+  evidence: FileJson,
 };
 
 export const Features = ({ features }: FeaturesProps) => (
-  <section className="py-24">
-    <div className="mx-auto max-w-content px-6 space-y-12">
+  <section className="py-32 bg-brand-navy relative overflow-hidden max-w-7xl mx-auto">
+    {/* Grid Pattern Background */}
+    <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:40px_40px]" />
+
+    <div className="mx-auto max-w-content px-6 relative z-10 space-y-20">
       <SectionHeading
-        eyebrow="Platform Features"
-        title="Everything transparency-focused operators need."
-        description="Each module reinforces legitimacy, consistency, and effortless compliance."
+        eyebrow="Capabilities"
+        title="Complete toolkit for verified games."
+        description="Everything you need to run compliant, transparent, and automated competitions at scale."
+        align="center"
       />
-      <div className="grid gap-6 lg:grid-cols-2">
+      
+      <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
         {features.map((feature) => {
           const Icon = feature.icon;
           return (
             <div
               key={feature.title}
-              className="h-full rounded-3xl border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-8 shadow-subtle"
+              className="group h-full rounded-2xl border border-white/5 bg-brand-slate/40 p-6 transition-all duration-300 hover:border-brand-blue/30 hover:bg-brand-slate hover:shadow-xl hover:shadow-brand-blue/5"
             >
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-accentMint">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-semibold text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-slate-400">{feature.description}</p>
-                </div>
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-brand-navy text-brand-blue transition-colors group-hover:bg-brand-blue group-hover:text-white">
+                <Icon className="h-6 w-6" />
               </div>
-              <div className="mt-6 space-y-3 text-muted-foreground">
+              
+              <h3 className="mb-3 text-xl font-display font-semibold text-white">
+                {feature.title}
+              </h3>
+              
+              <p className="mb-6 text-sm leading-relaxed text-slate-400">
+                {feature.description}
+              </p>
+              
+              <div className="space-y-3 border-t border-white/5 pt-6">
                 {feature.bullets.map((bullet) => (
-                  <Fragment key={bullet}>
-                    <div className="flex items-start gap-3 text-base">
-                      <span className="mt-1 h-2 w-2 rounded-full bg-accentMint shadow-[0_0_10px_rgba(48,224,181,0.6)]" />
-                      <span>{bullet}</span>
-                    </div>
-                  </Fragment>
+                  <div key={bullet} className="flex items-start gap-3 text-sm text-slate-300">
+                    <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue" />
+                    <span>{bullet}</span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -80,4 +84,3 @@ export const Features = ({ features }: FeaturesProps) => (
 
 export const resolveFeatureIcon = (key: keyof typeof iconMap) =>
   iconMap[key];
-

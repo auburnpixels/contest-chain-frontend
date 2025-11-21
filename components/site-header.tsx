@@ -15,128 +15,79 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, Shield } from "lucide-react"
-
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Features",
-    href: "/features",
-    description: "Explore the core capabilities of the CaaS platform.",
-  },
-  {
-    title: "Operators",
-    href: "/operators",
-    description: "Solutions designed for prize competition operators.",
-  },
-  {
-    title: "Regulators",
-    href: "/regulators",
-    description: "Oversight and compliance tools for regulatory bodies.",
-  },
-  {
-    title: "Public",
-    href: "/public",
-    description: "Transparency and verification for the general public.",
-  },
-]
+import { Menu, ShieldCheck } from "lucide-react"
 
 export function SiteHeader() {
-  const pathname = usePathname()
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-black/80 backdrop-blur-xl supports-[backdrop-filter]:bg-black/80">
-      <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4">
-        <div className="flex items-center gap-2 md:gap-6">
+    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-brand-navy/80 backdrop-blur-xl">
+      <div className="container flex h-16 max-w-7xl items-center justify-between px-6 mx-auto">
+        <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold shadow-lg shadow-blue-900/20">
-              C
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-blue text-white">
+              <ShieldCheck className="h-5 w-5" />
             </div>
-            <span className="hidden font-bold sm:inline-block text-white">CaaS Platform</span>
+            <span className="font-display font-bold text-xl text-white tracking-tight">CAAS</span>
           </Link>
 
           <div className="hidden md:flex">
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Product</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent text-slate-300 hover:text-white hover:bg-white/5 focus:bg-white/5 focus:text-white">Product</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] bg-brand-slate border-white/10">
                       <li className="row-span-3">
                         <NavigationMenuLink asChild>
                           <Link
-                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-zinc-900 p-6 no-underline outline-none focus:shadow-md border border-zinc-800 hover:bg-zinc-800/50 transition-colors"
+                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-brand-navy p-6 no-underline outline-none focus:shadow-md border border-white/5 hover:bg-brand-navy/50"
                             href="/"
                           >
-                            <Shield className="h-6 w-6 text-white" />
+                            <ShieldCheck className="h-6 w-6 text-brand-blue" />
                             <div className="mb-2 mt-4 text-lg font-medium text-white">
-                              CaaS Platform
+                              Core Protocol
                             </div>
-                            <p className="text-sm leading-tight text-zinc-400">
-                              Fairness & Compliance Engine for UK Prize Competitions.
+                            <p className="text-sm leading-tight text-slate-400">
+                              The standard for provably fair competitions.
                             </p>
                           </Link>
                         </NavigationMenuLink>
                       </li>
-                      {components.map((component) => (
-                        <ListItem
-                          key={component.title}
-                          title={component.title}
-                          href={component.href}
-                        >
-                          {component.description}
-                        </ListItem>
-                      ))}
+                      <ListItem href="/features" title="Features">
+                        Full capability breakdown.
+                      </ListItem>
+                      <ListItem href="/integrations" title="Integrations">
+                         Connect with your stack.
+                      </ListItem>
+                      <ListItem href="/security" title="Security">
+                        How we protect integrity.
+                      </ListItem>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Developers</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent text-slate-300 hover:text-white hover:bg-white/5 focus:bg-white/5 focus:text-white">Developers</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-brand-slate border-white/10">
                       <ListItem title="Documentation" href="/docs">
-                        Comprehensive guides for integration.
+                        Start building today.
                       </ListItem>
                       <ListItem title="API Reference" href="/api-reference">
-                        Detailed endpoint documentation.
+                        Endpoints and schemas.
                       </ListItem>
                       <ListItem title="Status" href="/status">
-                        Real-time system status and uptime.
+                        System uptime.
                       </ListItem>
                       <ListItem title="Changelog" href="/changelog">
-                        Latest updates and releases.
+                        Latest releases.
                       </ListItem>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>Company</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      <ListItem title="About" href="/about">
-                        Our mission and vision.
-                      </ListItem>
-                      <ListItem title="Security" href="/security">
-                        How we protect your data.
-                      </ListItem>
-                      <ListItem title="Compliance" href="/compliance">
-                        UK regulatory alignment.
-                      </ListItem>
-                      <ListItem title="Pricing" href="/pricing">
-                         Plans for every stage.
-                      </ListItem>
-                      <ListItem title="Testimonials" href="/testimonials">
-                        What operators are saying.
-                      </ListItem>
-                      <ListItem title="Contact" href="/contact">
-                        Get in touch with us.
-                      </ListItem>
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
+                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="/pricing" className={navigationMenuTriggerStyle()}>
+                    <Link href="/pricing" className={cn(navigationMenuTriggerStyle(), "bg-transparent text-slate-300 hover:text-white hover:bg-white/5 focus:bg-white/5 focus:text-white")}>
                       Pricing
                     </Link>
                   </NavigationMenuLink>
@@ -146,57 +97,49 @@ export function SiteHeader() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-2">
-            <Link href="/operator/login">
-              <Button variant="ghost" size="sm">
-                Sign In
-              </Button>
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/operator/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+               Sign In
             </Link>
             <Link href="/operator/register">
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25 border-0">
-                Get Started
+              <Button size="sm" className="bg-white text-brand-navy hover:bg-slate-200 font-medium rounded-full px-5">
+                Start Building
               </Button>
             </Link>
           </div>
           
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background/95 backdrop-blur-xl">
-              <nav className="flex flex-col gap-4 mt-6">
-                <div className="flex flex-col gap-2">
-                    <h4 className="font-medium text-muted-foreground px-2 text-xs uppercase tracking-wider">Product</h4>
-                    <Link href="/features" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Features</Link>
-                    <Link href="/operators" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Operators</Link>
-                    <Link href="/regulators" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Regulators</Link>
-                    <Link href="/public" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Public Verification</Link>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-slate border-l border-white/10 p-0">
+                <div className="p-6 border-b border-white/10">
+                    <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-blue text-white">
+                        <ShieldCheck className="h-5 w-5" />
+                        </div>
+                        <span className="font-display font-bold text-xl text-white tracking-tight">CAAS</span>
+                    </Link>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <h4 className="font-medium text-muted-foreground px-2 text-xs uppercase tracking-wider">Developers</h4>
-                    <Link href="/docs" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Documentation</Link>
-                    <Link href="/api-reference" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">API Reference</Link>
-                    <Link href="/status" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Status</Link>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <h4 className="font-medium text-muted-foreground px-2 text-xs uppercase tracking-wider">Company</h4>
-                    <Link href="/pricing" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Pricing</Link>
-                    <Link href="/testimonials" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Testimonials</Link>
-                    <Link href="/about" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">About</Link>
-                    <Link href="/contact" onClick={() => setIsOpen(false)} className="px-2 py-1 hover:bg-accent rounded-md">Contact</Link>
-                </div>
-                 <div className="flex flex-col gap-2 mt-4 border-t pt-4 border-border/50">
-                    <Link href="/operator/login" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full justify-center">Sign In</Button>
+              <nav className="flex flex-col p-6 gap-6">
+                 <div className="space-y-3">
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Platform</p>
+                    <Link href="/features" onClick={() => setIsOpen(false)} className="block text-slate-300 hover:text-white transition-colors">Features</Link>
+                    <Link href="/pricing" onClick={() => setIsOpen(false)} className="block text-slate-300 hover:text-white transition-colors">Pricing</Link>
+                    <Link href="/docs" onClick={() => setIsOpen(false)} className="block text-slate-300 hover:text-white transition-colors">Documentation</Link>
+                 </div>
+                 <div className="pt-6 border-t border-white/5 space-y-4">
+                     <Link href="/operator/login" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full justify-center border-white/10 text-white hover:bg-white/5 bg-transparent">Sign In</Button>
                     </Link>
                     <Link href="/operator/register" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full justify-center bg-blue-600 hover:bg-blue-500">Get Started</Button>
+                      <Button className="w-full justify-center bg-brand-blue hover:bg-brand-blue/90 text-white">Get Started</Button>
                     </Link>
-                </div>
+                 </div>
               </nav>
             </SheetContent>
           </Sheet>
@@ -216,13 +159,13 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-white/5 hover:text-accent-foreground focus:bg-white/5 focus:text-accent-foreground",
             className
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+          <div className="text-sm font-medium leading-none text-white">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-slate-400 mt-1">
             {children}
           </p>
         </a>
@@ -231,4 +174,3 @@ const ListItem = React.forwardRef<
   )
 })
 ListItem.displayName = "ListItem"
-
