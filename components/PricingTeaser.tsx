@@ -71,7 +71,7 @@ export const PricingTeaser = ({ tiers }: PricingTeaserProps) => {
                  {!tier.price.includes("Custom") && tier.price !== "Free" && <span className="text-slate-500 text-sm">/ draw</span>}
               </div>
               
-              <p className="text-sm text-slate-400 mb-8 min-h-[40px]">
+              <p className="text-sm text-muted-foreground mb-8 min-h-[40px]">
                 {tier.description}
               </p>
               

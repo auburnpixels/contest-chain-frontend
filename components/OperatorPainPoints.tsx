@@ -81,7 +81,7 @@ export const OperatorPainPoints = ({ items }: OperatorPainPointsProps) => {
                 <CardTitle className="text-xl font-display text-white">{item.title}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <p className="text-slate-400 leading-relaxed">{item.description}</p>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </CardContent>
             </Card>
           ))}

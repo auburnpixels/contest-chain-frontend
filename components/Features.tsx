@@ -62,7 +62,7 @@ export const Features = ({ features }: FeaturesProps) => (
                 {feature.title}
               </h3>
               
-              <p className="mb-6 text-sm leading-relaxed text-slate-400">
+              <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
                 {feature.description}
               </p>
               

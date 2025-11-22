@@ -54,7 +54,7 @@ export const TrustSection = ({ testimonials = defaultTestimonials }: TrustSectio
                     <div className="w-10 h-10 rounded-full bg-brand-slate border border-white/10" />
                     <div>
                         <p className="font-semibold text-white">{item.author}</p>
-                        <p className="text-sm text-slate-400">{item.role}</p>
+                        <p className="text-sm text-muted-foreground">{item.role}</p>
                     </div>
                 </div>
               </CardContent>
@@ -73,17 +73,17 @@ export const TrustSection = ({ testimonials = defaultTestimonials }: TrustSectio
             <div className="p-8 rounded-2xl bg-brand-slate border border-white/5 hover:border-brand-blue/30 transition-colors">
                 <Users className="w-8 h-8 text-brand-blue mb-4" />
                 <p className="text-4xl font-bold text-white mb-2">+18%</p>
-                <p className="text-slate-400 text-sm">Average uplift in ticket conversion rates.</p>
+                <p className="text-muted-foreground text-sm">Average uplift in ticket conversion rates.</p>
             </div>
             <div className="p-8 rounded-2xl bg-brand-slate border border-white/5 hover:border-brand-blue/30 transition-colors">
                 <ShieldCheck className="w-8 h-8 text-accent-mint mb-4" />
                 <p className="text-4xl font-bold text-white mb-2">0</p>
-                <p className="text-slate-400 text-sm">Disputes escalated after implementing audit links.</p>
+                <p className="text-muted-foreground text-sm">Disputes escalated after implementing audit links.</p>
             </div>
              <div className="p-8 rounded-2xl bg-brand-slate border border-white/5 hover:border-brand-blue/30 transition-colors sm:col-span-2">
                 <Clock className="w-8 h-8 text-accent-purple mb-4" />
                 <p className="text-4xl font-bold text-white mb-2">3.2s</p>
-                <p className="text-slate-400 text-sm">Average time to publish a fully verified public audit page.</p>
+                <p className="text-muted-foreground text-sm">Average time to publish a fully verified public audit page.</p>
             </div>
         </div>
       </div>

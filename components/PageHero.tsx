@@ -22,7 +22,7 @@ export const PageHero = ({
   primaryCta,
   secondaryCta,
 }: PageHeroProps) => (
-  <section className="relative overflow-hidden border-b border-white/5 bg-gradient-to-br from-brand-navy via-brand-slate/80 to-black py-20 text-white">
+<section className="bg-brand-navy py-24 relative overflow-hidden max-w-7xl mx-auto">
     <div className="absolute inset-0 bg-brand-grid bg-[length:28px_28px] opacity-10" />
     <div className="relative mx-auto max-w-content px-6">
       <p className="text-xs uppercase tracking-[0.4em] text-accentMint/90">

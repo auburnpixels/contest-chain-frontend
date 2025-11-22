@@ -8,7 +8,7 @@ export default function TermsPage() {
 
       <section className="container mx-auto px-4 py-24 max-w-3xl">
          <h1 className="text-4xl font-bold mb-8 text-white">Terms of Service</h1>
-         <div className="space-y-6 text-slate-400">
+         <div className="space-y-6 text-muted-foreground">
             <p>Last updated: October 24, 2025</p>
             
             <h2 className="text-2xl font-bold text-white mt-8">1. Acceptance of Terms</h2>

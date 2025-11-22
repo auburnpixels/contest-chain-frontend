@@ -69,7 +69,7 @@ export const HowItWorks = ({ steps }: HowItWorksProps) => {
                             <Icon className="w-6 h-6" />
                        </div>
                        <h3 className="text-2xl font-display font-semibold text-white">{step.title}</h3>
-                       <p className="text-lg text-slate-400">{step.description}</p>
+                       <p className="text-lg text-muted-foreground">{step.description}</p>
                        <p className="text-sm text-slate-500 font-mono bg-white/5 px-3 py-1 rounded-lg inline-block border border-white/5">
                          {step.detail}
                        </p>

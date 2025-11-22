@@ -62,7 +62,7 @@ export default function OperatorLoginPage() {
             <h1 className="text-4xl font-bold tracking-tight">
               Operator Portal
             </h1>
-            <p className="text-lg text-slate-400">
+            <p className="text-lg text-muted-foreground">
               Manage your competitions with confidence. Ensure fairness, transparency, and compliance with our automated tools.
             </p>
             

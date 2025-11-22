@@ -15,7 +15,7 @@ export default function GuidesPage() {
          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
             Integration Guides
          </h1>
-         <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8">
+         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Step-by-step tutorials to help you build compliant competition platforms.
          </p>
       </section>
@@ -28,7 +28,7 @@ export default function GuidesPage() {
                      <Code2 className="h-6 w-6 text-blue-500" />
                   </div>
                   <CardTitle className="text-white mb-2">Quickstart: 5 Minute Integration</CardTitle>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-muted-foreground text-sm">
                      Learn how to create your first competition and accept entries using the Node.js SDK.
                   </p>
                </CardHeader>
@@ -43,7 +43,7 @@ export default function GuidesPage() {
                      <FileText className="h-6 w-6 text-purple-500" />
                   </div>
                   <CardTitle className="text-white mb-2">Postal Entry Workflows</CardTitle>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-muted-foreground text-sm">
                      Best practices for scanning, verifying, and uploading free postal entries to remain compliant.
                   </p>
                </CardHeader>
@@ -58,7 +58,7 @@ export default function GuidesPage() {
                      <Book className="h-6 w-6 text-green-500" />
                   </div>
                   <CardTitle className="text-white mb-2">Handling Webhooks</CardTitle>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-muted-foreground text-sm">
                      How to securely receive and verify draw events and audit publications in your backend.
                   </p>
                </CardHeader>
@@ -73,7 +73,7 @@ export default function GuidesPage() {
                      <Code2 className="h-6 w-6 text-amber-500" />
                   </div>
                   <CardTitle className="text-white mb-2">Customizing the Audit Explorer</CardTitle>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-muted-foreground text-sm">
                      How to white-label the public verification page to match your brand identity.
                   </p>
                </CardHeader>
@@ -84,7 +84,7 @@ export default function GuidesPage() {
          </div>
          
          <div className="mt-12 text-center">
-            <p className="text-slate-400 mb-4">Looking for something else?</p>
+            <p className="text-muted-foreground mb-4">Looking for something else?</p>
             <Link href="/docs">
                <Button className="bg-slate-800 hover:bg-slate-700 text-white">Browse Full Documentation</Button>
             </Link>

@@ -11,6 +11,8 @@ import { apiClient, operatorApi, authApi } from '@/lib/api/client';
 import { Activity, ShieldCheck, AlertTriangle, Eye, MessageSquare, LayoutDashboard, Trophy, Key, FileText, Settings } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
+import {OperatorActionsMenu} from "@/components/operator-actions-menu";
+import { PaginationControls } from '@/components/pagination-controls';
 
 export default function OperatorComplaintsPage() {
   const router = useRouter();
@@ -19,6 +21,8 @@ export default function OperatorComplaintsPage() {
   const [operatorName, setOperatorName] = useState('');
   const [selectedComplaint, setSelectedComplaint] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     loadComplaints();
@@ -26,25 +30,13 @@ export default function OperatorComplaintsPage() {
 
   const loadComplaints = async () => {
     try {
-      const dashboardData = await operatorApi.getDashboard();
-      setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
-
-      // Mock data for now
-      setComplaints([
-        // Empty for now or add sample if you want to show how it looks
-        /*
-        {
-          id: 1,
-          competition: 'Christmas Hamper Raffle',
-          competition_id: '81c57f36-e1a',
-          reporter_name: 'John Doe',
-          category: 'Entry Issue',
-          status: 'pending',
-          description: 'I cannot find my ticket number in the email.',
-          created_at: new Date().toISOString(),
-        }
-        */
+      const [dashboardData, complaintsData] = await Promise.all([
+        operatorApi.getDashboard(),
+        operatorApi.getComplaints(),
       ]);
+      
+      setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
+      setComplaints(complaintsData.data || []);
       
       setLoading(false);
     } catch (error: any) {
@@ -91,12 +83,38 @@ export default function OperatorComplaintsPage() {
     { href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard },
     { href: '/operator/competitions', title: 'Competitions', icon: Trophy },
     { href: '/operator/draw-events', title: 'Events', icon: Activity },
+    { href: '/operator/draws', title: 'Draws', icon: ShieldCheck },
     { href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck },
     { href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle },
     { href: '/operator/api-keys', title: 'API Keys', icon: Key },
     { href: '/operator/details', title: 'Settings', icon: Settings },
     { href: '/docs', title: 'Documentation', icon: FileText },
   ];
+
+  // Calculate pagination
+  const totalComplaints = complaints.length;
+  const totalPages = Math.ceil(totalComplaints / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedComplaints = complaints.slice(startIndex, endIndex);
+
+  const paginationData = {
+    current_page: currentPage,
+    per_page: pageSize,
+    total: totalComplaints,
+    last_page: totalPages,
+    from: totalComplaints > 0 ? startIndex + 1 : 0,
+    to: Math.min(endIndex, totalComplaints),
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+  };
 
   if (loading) {
     return (
@@ -137,39 +155,33 @@ export default function OperatorComplaintsPage() {
                     </CardHeader>
                     <CardContent>
                         {complaints.length > 0 ? (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow className="hover:bg-slate-900/50 border-slate-800">
-                                        <TableHead>ID</TableHead>
-                                        <TableHead>Competition</TableHead>
-                                        <TableHead>Reporter</TableHead>
-                                        <TableHead>Category</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Created</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {complaints.map((complaint) => (
-                                        <TableRow key={complaint.id} className="hover:bg-slate-900/50 border-slate-800">
-                                            <TableCell className="font-medium">
-                                                #{complaint.id}
+                            <>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>ID</TableHead>
+                                            <TableHead>Competition</TableHead>
+                                            <TableHead>Reporter</TableHead>
+                                            <TableHead>Category</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Created</TableHead>
+                                            <TableHead></TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {paginatedComplaints.map((complaint) => (
+                                        <TableRow key={complaint.id}>
+                                            <TableCell className="font-mono text-xs text-muted-foreground">
+                                                {complaint.id?.substring(0, 8)}...
                                             </TableCell>
                                             <TableCell>
-                                                <div>
-                                                    <div className="font-medium text-foreground">{complaint.competition}</div>
-                                                    <div className="text-xs text-muted-foreground font-mono">
-                                                        {complaint.competition_id}
-                                                    </div>
-                                                </div>
+                                                {complaint.competition}
                                             </TableCell>
                                             <TableCell>
-                                                <div>
-                                                    <div className="font-medium text-foreground">{complaint.reporter_name}</div>
-                                                </div>
+                                                {complaint.reporter_name}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="secondary" className="text-xs">
+                                                <Badge variant="outline">
                                                     {complaint.category}
                                                 </Badge>
                                             </TableCell>
@@ -186,20 +198,29 @@ export default function OperatorComplaintsPage() {
                                                 })}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleViewComplaint(complaint)}
-                                                    className="gap-1 hover:bg-slate-800"
-                                                >
-                                                    <Eye className="h-4 w-4" />
-                                                    View
-                                                </Button>
+                                                <OperatorActionsMenu
+                                                    actions={[
+                                                        {
+                                                            label: 'View',
+                                                            icon: Eye,
+                                                            onSelect: () => handleViewComplaint(complaint),
+                                                        },
+                                                    ]}
+                                                />
                                             </TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                                <PaginationControls
+                                    pagination={paginationData}
+                                    page={currentPage}
+                                    pageSize={pageSize}
+                                    loading={loading}
+                                    onPageChange={handlePageChange}
+                                    onPageSizeChange={handlePageSizeChange}
+                                />
+                            </>
                         ) : (
                             <div className="text-center py-12">
                                 <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
@@ -254,7 +275,7 @@ export default function OperatorComplaintsPage() {
 
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-1">Description:</p>
-                <div className="text-sm bg-muted p-3 rounded">{selectedComplaint.description}</div>
+                <div className="text-sm bg-muted p-3 rounded">{selectedComplaint.message}</div>
               </div>
 
               <div>

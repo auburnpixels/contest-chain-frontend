@@ -51,7 +51,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
                   <Zap className="w-6 h-6" />
                 </div>
                 <h3 className="text-3xl font-display font-semibold text-white">Real-time public ledgers for every draw.</h3>
-                <p className="text-slate-400 text-lg leading-relaxed">
+                <p className="text-muted-foreground text-lg leading-relaxed">
                   Stop taking screenshots. CAAS automatically generates a hosted audit page for every competition you run. Entrants can verify their own ticket inclusion and the randomness of the result.
                 </p>
                 <ul className="space-y-3">
@@ -85,7 +85,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
                   <Lock className="w-6 h-6" />
                 </div>
                 <h3 className="text-3xl font-display font-semibold text-white">Math that cannot be bribed or edited.</h3>
-                <p className="text-slate-400 text-lg leading-relaxed">
+                <p className="text-muted-foreground text-lg leading-relaxed">
                   We use SHA-256 hashing and chained block architecture. Once an entry is accepted, it cannot be deleted or modified without breaking the chain and alerting everyone.
                 </p>
                  <ul className="space-y-3">
@@ -113,7 +113,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <h3 className="text-3xl font-display font-semibold text-white">Badge up and boost conversion.</h3>
-                <p className="text-slate-400 text-lg leading-relaxed">
+                <p className="text-muted-foreground text-lg leading-relaxed">
                   Display the "Verified by CAAS" badge on your checkout and product pages. Operators see an average 15-20% increase in ticket sales when players know the game is fair.
                 </p>
                  <ul className="space-y-3">
@@ -132,7 +132,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
                             <ShieldCheck className="w-8 h-8" />
                         </div>
                         <div>
-                            <p className="text-sm text-slate-400 uppercase tracking-wider font-bold">Fairness Verified</p>
+                            <p className="text-sm text-muted-foreground uppercase tracking-wider font-bold">Fairness Verified</p>
                             <p className="text-white font-display text-xl">CAAS Protocol</p>
                         </div>
                     </div>

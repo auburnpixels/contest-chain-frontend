@@ -20,6 +20,7 @@ import {
     OperatorCompetition
 } from "@/components/operator/competition-details-dialog";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
+import {CompetitionsTable} from "@/components/operator/competitions-table";
 
 interface DashboardData {
     user: any;
@@ -29,6 +30,8 @@ interface DashboardData {
         active_competitions: number;
         total_competitions: number;
         total_entries: number;
+        total_complaints?: number;
+        pending_complaints?: number;
     }
 }
 
@@ -103,6 +106,7 @@ export default function OperatorDashboardPage() {
         {href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard},
         {href: '/operator/competitions', title: 'Competitions', icon: Trophy},
         {href: '/operator/draw-events', title: 'Events', icon: Activity},
+        {href: '/operator/draws', title: 'Draws', icon: ShieldCheck},
         {href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck},
         {href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle},
         {href: '/operator/api-keys', title: 'API Keys', icon: Key},
@@ -164,6 +168,20 @@ export default function OperatorDashboardPage() {
                             </p>
                         </CardFooter>
                     </Card>
+
+                    <Link href="/operator/complaints?status=pending">
+                        <Card className="cursor-pointer hover:bg-accent/50 transition-colors">
+                            <CardHeader>
+                                <CardDescription>Pending Complaints</CardDescription>
+                                <CardTitle>{dashboardData?.stats?.pending_complaints || 0}</CardTitle>
+                            </CardHeader>
+                            <CardFooter>
+                                <p>
+                                    Requires attention
+                                </p>
+                            </CardFooter>
+                        </Card>
+                    </Link>
                 </div>
 
                 <div className="px-4 lg:px-6">
@@ -195,67 +213,11 @@ export default function OperatorDashboardPage() {
                                     </p>
                                 </div>
                             ) : (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>ID</TableHead>
-                                            <TableHead>External ID</TableHead>
-                                            <TableHead>Competition</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Entries</TableHead>
-                                            <TableHead>Draw Date</TableHead>
-                                            <TableHead>Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {competitions.map((competition) => (
-                                            <TableRow key={competition.id}>
-                                                <TableCell className="font-mono text-xs text-muted-foreground">
-                                                    {competition.id?.substring(0, 8)}...
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline">
-                                                        {competition.external_id}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="font-medium text-foreground">
-                                                    {competition.title}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {getStatusBadge(competition)}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {formatEntries(competition)}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {formatDrawDate(competition)}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <OperatorActionsMenu
-                                                        actions={[
-                                                            {
-                                                                label: 'Details',
-                                                                icon: Eye,
-                                                                onSelect: () => handleOpenCompetition(competition),
-                                                            },
-                                                            {
-                                                                label: 'Events',
-                                                                icon: Activity,
-                                                                href: `/operator/draw-events?competition=${competition.id}`,
-                                                            },
-                                                            {
-                                                                label: 'Audits',
-                                                                icon: ShieldCheck,
-                                                                href: `/operator/competitions/${competition.id}`,
-                                                                disabled: (competition.draw_audits_count || 0) === 0,
-                                                            },
-                                                        ]}
-                                                    />
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                <CompetitionsTable 
+                                    competitions={competitions}
+                                    showActions={true}
+                                    onViewDetails={handleOpenCompetition}
+                                />
                             )}
                         </CardContent>
                     </Card>

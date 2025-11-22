@@ -43,7 +43,7 @@ export const ComplianceIntegrity = ({ items }: ComplianceIntegrityProps) => {
                     <ShieldAlert className="w-6 h-6 text-brand-blue shrink-0 mt-1" />
                     <div>
                         <h4 className="text-white font-medium mb-2">Not Legal Advice</h4>
-                        <p className="text-sm text-slate-400 leading-relaxed">
+                        <p className="text-sm text-muted-foreground leading-relaxed">
                             CAAS provides technical proof of fairness. While this solves 99% of player disputes, operators are still responsible for their own legal compliance with local gambling laws.
                         </p>
                     </div>
@@ -64,7 +64,7 @@ export const ComplianceIntegrity = ({ items }: ComplianceIntegrityProps) => {
                    </div>
                    <h3 className="font-medium text-white group-hover:text-brand-blue transition-colors">{item.title}</h3>
                 </div>
-                <p className="text-sm text-slate-400 pl-9 leading-relaxed">
+                <p className="text-sm text-muted-foreground pl-9 leading-relaxed">
                   {item.description}
                 </p>
               </div>

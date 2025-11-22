@@ -3,7 +3,7 @@ import { ShieldCheck, Github, Twitter, Linkedin } from "lucide-react"
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-white/5 bg-brand-navy pt-20 pb-10">
+    <footer className="border-t border-white/5 bg-brand-navy pt-20 pb-10 max-w-7xl mx-auto">
       <div className="mx-auto max-w-content px-6">
         <div className="grid grid-cols-2 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
           <div className="col-span-2 lg:col-span-2 space-y-6">
@@ -13,7 +13,7 @@ export function SiteFooter() {
               </div>
               <span className="font-display font-bold text-xl text-white tracking-tight">CAAS</span>
             </Link>
-            <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
               The infrastructure for provably fair competitions.
               Automate compliance, eliminate disputes, and verified integrity.
             </p>
@@ -32,7 +32,7 @@ export function SiteFooter() {
           
           <div>
             <h4 className="font-medium mb-6 text-white">Product</h4>
-            <ul className="space-y-3 text-sm text-slate-400">
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li><Link href="/features" className="hover:text-brand-blue transition-colors">Features</Link></li>
               <li><Link href="/operators" className="hover:text-brand-blue transition-colors">For Operators</Link></li>
               <li><Link href="/regulators" className="hover:text-brand-blue transition-colors">For Regulators</Link></li>
@@ -43,7 +43,7 @@ export function SiteFooter() {
 
           <div>
             <h4 className="font-medium mb-6 text-white">Developers</h4>
-            <ul className="space-y-3 text-sm text-slate-400">
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li><Link href="/docs" className="hover:text-brand-blue transition-colors">Documentation</Link></li>
               <li><Link href="/api-reference" className="hover:text-brand-blue transition-colors">API Reference</Link></li>
               <li><Link href="/sdks" className="hover:text-brand-blue transition-colors">SDKs</Link></li>
@@ -53,7 +53,7 @@ export function SiteFooter() {
 
           <div>
             <h4 className="font-medium mb-6 text-white">Company</h4>
-            <ul className="space-y-3 text-sm text-slate-400">
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li><Link href="/about" className="hover:text-brand-blue transition-colors">About</Link></li>
               <li><Link href="/blog" className="hover:text-brand-blue transition-colors">Blog</Link></li>
               <li><Link href="/careers" className="hover:text-brand-blue transition-colors">Careers</Link></li>

@@ -63,11 +63,19 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      ...(options.headers || {}),
     };
+
+    // Add any additional headers from options
+    if (options.headers) {
+      Object.entries(options.headers).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          headers[key] = value;
+        }
+      });
+    }
 
     // Always get the latest token from localStorage
     const currentToken = this.getToken();
@@ -199,7 +207,21 @@ export const operatorApi = {
   updateDetails: (name: string, url?: string) =>
     apiClient.put<any>('/internal/operator/details', { name, url }),
 
-  getCompetitions: () => apiClient.get<any>('/internal/operator/competitions'),
+  getCompetitions: (params?: {
+    page?: number;
+    per_page?: number;
+    external_id?: string;
+    name?: string;
+    status?: string;
+  }) => {
+    const queryString = params ? new URLSearchParams(Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== '') {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {} as Record<string, string>)).toString() : '';
+    return apiClient.get<any>(`/internal/operator/competitions${queryString ? `?${queryString}` : ''}`);
+  },
 
   getCompetition: (uuid: string) =>
     apiClient.get<any>(`/internal/operator/competitions/${uuid}`),
@@ -227,6 +249,27 @@ export const operatorApi = {
     apiClient.get<any>('/internal/operator/draw-events/filters'),
 
   getComplianceSummary: () => apiClient.get<any>('/internal/operator/compliance-summary'),
+
+  getComplaints: (params?: {
+    page?: number;
+    per_page?: number;
+    status?: string;
+    competition?: string;
+  }) => {
+    const queryString = params ? new URLSearchParams(params as any).toString() : '';
+    return apiClient.get<any>(`/internal/operator/complaints${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getDrawAudits: (params?: {
+    page?: number;
+    per_page?: number;
+    competition?: string;
+    from_date?: string;
+    to_date?: string;
+  }) => {
+    const queryString = params ? new URLSearchParams(params as any).toString() : '';
+    return apiClient.get<any>(`/internal/operator/draw-audits${queryString ? `?${queryString}` : ''}`);
+  },
 
   getApiKeys: () => apiClient.get<any>('/internal/operator/api-keys'),
 

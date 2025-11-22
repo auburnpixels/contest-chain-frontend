@@ -69,7 +69,7 @@ export default function OperatorRegisterPage() {
             <h1 className="text-4xl font-bold tracking-tight">
               Join the Network
             </h1>
-            <p className="text-lg text-slate-400">
+            <p className="text-lg text-muted-foreground">
               Create an operator account to start running fair, compliant, and audited competitions.
             </p>
             

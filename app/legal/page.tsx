@@ -8,7 +8,7 @@ export default function LegalPage() {
 
       <section className="container mx-auto px-4 py-24 max-w-3xl">
          <h1 className="text-4xl font-bold mb-8 text-white">Legal Information</h1>
-         <div className="space-y-6 text-slate-400">
+         <div className="space-y-6 text-muted-foreground">
             <p>
                CaaS Platform is a trading name of CaaS Technology Ltd, a company registered in England and Wales.
             </p>

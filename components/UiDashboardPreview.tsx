@@ -28,10 +28,10 @@ export const UiDashboardPreview = ({ screenshots }: UiDashboardPreviewProps) => 
                     <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
                     <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-brand-slate border border-white/5 text-xs text-slate-400 w-96 justify-center font-mono">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-brand-slate border border-white/5 text-xs text-muted-foreground w-96 justify-center font-mono">
                     <span className="text-slate-600">https://</span>app.caas.com/dashboard/overview
                 </div>
-                <div className="flex gap-3 text-slate-400">
+                <div className="flex gap-3 text-muted-foreground">
                     <Bell className="w-4 h-4" />
                     <div className="w-5 h-5 rounded-full bg-brand-blue/20 border border-brand-blue/50" />
                 </div>
@@ -43,9 +43,9 @@ export const UiDashboardPreview = ({ screenshots }: UiDashboardPreviewProps) => 
                 <div className="col-span-2 space-y-6 hidden md:block">
                     <div className="space-y-1">
                         <div className="h-8 w-full bg-brand-blue/10 text-brand-blue rounded-md flex items-center px-3 text-sm font-medium">Overview</div>
-                        <div className="h-8 w-full text-slate-400 rounded-md flex items-center px-3 text-sm hover:bg-white/5 cursor-pointer">Competitions</div>
-                        <div className="h-8 w-full text-slate-400 rounded-md flex items-center px-3 text-sm hover:bg-white/5 cursor-pointer">Audits</div>
-                        <div className="h-8 w-full text-slate-400 rounded-md flex items-center px-3 text-sm hover:bg-white/5 cursor-pointer">Settings</div>
+                        <div className="h-8 w-full text-muted-foreground rounded-md flex items-center px-3 text-sm hover:bg-white/5 cursor-pointer">Competitions</div>
+                        <div className="h-8 w-full text-muted-foreground rounded-md flex items-center px-3 text-sm hover:bg-white/5 cursor-pointer">Audits</div>
+                        <div className="h-8 w-full text-muted-foreground rounded-md flex items-center px-3 text-sm hover:bg-white/5 cursor-pointer">Settings</div>
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@ export const UiDashboardPreview = ({ screenshots }: UiDashboardPreviewProps) => 
                     <div className="flex justify-between items-end">
                         <div>
                             <h3 className="text-2xl font-display font-semibold text-white">Draw Overview</h3>
-                            <p className="text-slate-400 text-sm">Manage your active and past competitions.</p>
+                            <p className="text-muted-foreground text-sm">Manage your active and past competitions.</p>
                         </div>
                         <div className="flex gap-2">
                             <Button variant="outline" size="sm" className="border-white/10 bg-white/5 text-white hover:bg-white/10">
@@ -100,13 +100,13 @@ export const UiDashboardPreview = ({ screenshots }: UiDashboardPreviewProps) => 
                                         <div className="w-8 h-8 rounded bg-brand-slate border border-white/10" />
                                         <span className="font-medium text-white">{row.name}</span>
                                     </div>
-                                    <div className="text-slate-400">{row.entries} entries</div>
+                                    <div className="text-muted-foreground">{row.entries} entries</div>
                                     <div>
-                                        <span className={`px-2 py-1 rounded-full text-xs ${row.status === 'Live' ? 'bg-brand-blue/10 text-brand-blue' : 'bg-white/5 text-slate-400'}`}>
+                                        <span className={`px-2 py-1 rounded-full text-xs ${row.status === 'Live' ? 'bg-brand-blue/10 text-brand-blue' : 'bg-white/5 text-muted-foreground'}`}>
                                             {row.status}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-slate-400">
+                                    <div className="flex items-center gap-2 text-muted-foreground">
                                         {row.audit === "Verified" ? (
                                             <span className="flex items-center text-accent-mint text-xs">
                                                 <CheckCircle2 className="w-3 h-3 mr-1" /> Verified

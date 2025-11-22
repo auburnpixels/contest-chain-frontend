@@ -48,7 +48,7 @@ export function SiteHeader() {
                             <div className="mb-2 mt-4 text-lg font-medium text-white">
                               Core Protocol
                             </div>
-                            <p className="text-sm leading-tight text-slate-400">
+                            <p className="text-sm leading-tight text-muted-foreground">
                               The standard for provably fair competitions.
                             </p>
                           </Link>
@@ -165,7 +165,7 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none text-white">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-slate-400 mt-1">
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
             {children}
           </p>
         </a>

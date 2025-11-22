@@ -62,7 +62,7 @@ export default function RegulatorLoginPage() {
             <h1 className="text-4xl font-bold tracking-tight">
               Regulator Portal
             </h1>
-            <p className="text-lg text-slate-400">
+            <p className="text-lg text-muted-foreground">
               Oversee the ecosystem with complete transparency. Verify compliance, audit chains, and manage the regulator framework.
             </p>
             

@@ -24,6 +24,7 @@ import {
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
+import { PaginationControls } from '@/components/pagination-controls';
 
 interface RaffleDetail {
   raffle_id: string;
@@ -63,6 +64,8 @@ export default function OperatorCompliancePage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<ComplianceData | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     loadComplianceData();
@@ -226,6 +229,31 @@ export default function OperatorCompliancePage() {
   const stats = data?.summary;
   const raffles = data?.raffles || [];
 
+  // Calculate pagination
+  const totalRaffles = raffles.length;
+  const totalPages = Math.ceil(totalRaffles / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedRaffles = raffles.slice(startIndex, endIndex);
+
+  const paginationData = {
+    current_page: currentPage,
+    per_page: pageSize,
+    total: totalRaffles,
+    last_page: totalPages,
+    from: totalRaffles > 0 ? startIndex + 1 : 0,
+    to: Math.min(endIndex, totalRaffles),
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+  };
+
   return (
     <DashboardShell
       navItems={navItems}
@@ -325,24 +353,25 @@ export default function OperatorCompliancePage() {
                               <p className="text-sm">No competitions found</p>
                           </div>
                       ) : (
-                          <div className="overflow-x-auto">
-                              <Table>
-                                  <TableHeader>
-                                      <TableRow>
-                                          <TableHead>ID</TableHead>
-                                          <TableHead>External ID</TableHead>
-                                          <TableHead>Title</TableHead>
-                                          <TableHead>Status</TableHead>
-                                          <TableHead>Total Entries</TableHead>
-                                          <TableHead>Postal Entries</TableHead>
-                                          <TableHead>Free Entry %</TableHead>
-                                          <TableHead>Complaints</TableHead>
-                                          <TableHead>Compliance Score</TableHead>
-                                          <TableHead></TableHead>
-                                      </TableRow>
-                                  </TableHeader>
-                                  <TableBody>
-                                      {raffles.map((raffle) => (
+                          <>
+                              <div className="overflow-x-auto">
+                                  <Table>
+                                      <TableHeader>
+                                          <TableRow>
+                                              <TableHead>ID</TableHead>
+                                              <TableHead>External ID</TableHead>
+                                              <TableHead>Title</TableHead>
+                                              <TableHead>Status</TableHead>
+                                              <TableHead>Total Entries</TableHead>
+                                              <TableHead>Postal Entries</TableHead>
+                                              <TableHead>Free Entry %</TableHead>
+                                              <TableHead>Complaints</TableHead>
+                                              <TableHead>Compliance Score</TableHead>
+                                              <TableHead></TableHead>
+                                          </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                          {paginatedRaffles.map((raffle) => (
                                           <TableRow key={raffle.raffle_id}>
                                               <TableCell>
                                                   <code className="text-xs text-muted-foreground font-mono">
@@ -400,7 +429,16 @@ export default function OperatorCompliancePage() {
                                       ))}
                                   </TableBody>
                               </Table>
-                          </div>
+                              </div>
+                              <PaginationControls
+                                  pagination={paginationData}
+                                  page={currentPage}
+                                  pageSize={pageSize}
+                                  loading={loading}
+                                  onPageChange={handlePageChange}
+                                  onPageSizeChange={handlePageSizeChange}
+                              />
+                          </>
                       )}
                   </CardContent>
               </Card>

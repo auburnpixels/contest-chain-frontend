@@ -21,7 +21,7 @@ export default function NotFound() {
             404
           </h1>
           <h2 className="text-2xl font-medium text-blue-400">Coordinates Not Found</h2>
-          <p className="text-slate-400 max-w-[500px] mx-auto leading-relaxed">
+          <p className="text-muted-foreground max-w-[500px] mx-auto leading-relaxed">
             We've scanned the sector but couldn't locate the page you're looking for. 
             It may have been moved to another quadrant or never existed.
           </p>
@@ -39,6 +39,7 @@ export default function NotFound() {
     </div>
   )
 }
+
 
 
 

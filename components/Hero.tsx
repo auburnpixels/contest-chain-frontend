@@ -55,7 +55,7 @@ export const Hero = ({
             {title}
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed text-balance">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed text-balance">
             {subtitle}
           </p>
           
@@ -122,7 +122,7 @@ export const Hero = ({
                 </div>
                 
                 {/* Code/Audit Block */}
-                <div className="rounded-lg bg-black/50 border border-white/10 p-4 font-mono text-xs text-slate-400 space-y-2">
+                <div className="rounded-lg bg-black/50 border border-white/10 p-4 font-mono text-xs text-muted-foreground space-y-2">
                   <div className="flex justify-between">
                     <span>DRAW_ID</span>
                     <span className="text-slate-600">#8291-A</span>
@@ -168,7 +168,7 @@ export const Hero = ({
              <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
                <div className="h-full bg-green-500 w-full" />
              </div>
-             <p className="text-[10px] text-slate-400 mt-2">Cryptographically secured chain.</p>
+             <p className="text-[10px] text-muted-foreground mt-2">Cryptographically secured chain.</p>
           </div>
         </div>
       </div>

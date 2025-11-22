@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
+import { PaginationControls } from "@/components/pagination-controls";
 
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
@@ -224,6 +225,11 @@ export default function EventsPage() {
   };
 
   const hasActiveFilters = Object.values(filters).some(v => v !== '');
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setPage(1);
+  };
 
   const getCompetitionName = (competitionIdentifier: string) => {
     // Try to match by ID
@@ -507,65 +513,15 @@ export default function EventsPage() {
                                   </Table>
                               </div>
 
-                              {/* Pagination */}
-                              <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
-                                  <div className="text-sm text-muted-foreground">
-                                      Showing {pagination.from || 0} to {pagination.to || 0} of {pagination.total} events
-                                  </div>
-
-                                  <div className="flex items-center gap-2">
-                                      <Button
-                                          variant="outline"
-                                          size="sm"
-                                          disabled={page === 1}
-                                          onClick={() => setPage(page - 1)}
-                                      >
-                                          <ChevronLeft className="h-4 w-4" />
-                                          Previous
-                                      </Button>
-
-                                      {getPageNumbers().map((pageNum, idx) => (
-                                          typeof pageNum === 'string' ? (
-                                              <span key={pageNum} className="px-2 text-muted-foreground">...</span>
-                                          ) : (
-                                              <Button
-                                                  key={pageNum}
-                                                  variant={page === pageNum ? 'default' : 'outline'}
-                                                  size="sm"
-                                                  onClick={() => setPage(pageNum as number)}
-                                                  className="min-w-[2.5rem]"
-                                              >
-                                                  {pageNum}
-                                              </Button>
-                                          )
-                                      ))}
-
-                                      <Button
-                                          variant="outline"
-                                          size="sm"
-                                          disabled={page === pagination.last_page}
-                                          onClick={() => setPage(page + 1)}
-                                      >
-                                          Next
-                                          <ChevronRight className="h-4 w-4" />
-                                      </Button>
-                                  </div>
-
-                                  <div className="flex items-center gap-2">
-                                      <Label htmlFor="page-size" className="text-sm whitespace-nowrap">Per page:</Label>
-                                      <Select value={pageSize.toString()} onValueChange={(value) => { setPageSize(parseInt(value)); setPage(1); }}>
-                                          <SelectTrigger id="page-size" className="w-[100px]">
-                                              <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                              <SelectItem value="10">10</SelectItem>
-                                              <SelectItem value="25">25</SelectItem>
-                                              <SelectItem value="100">100</SelectItem>
-                                              <SelectItem value="250">250</SelectItem>
-                                          </SelectContent>
-                                      </Select>
-                                  </div>
-                              </div>
+                              <PaginationControls
+                                pagination={pagination}
+                                page={page}
+                                pageSize={pageSize}
+                                loading={loading}
+                                onPageChange={setPage}
+                                onPageSizeChange={handlePageSizeChange}
+                                pageSizeOptions={[10, 25, 100, 250]}
+                              />
                           </>
                       ) : (
                           <div className="text-center py-12">
@@ -594,7 +550,7 @@ export default function EventsPage() {
                     {getEventDisplayName(selectedEvent.event_type)}
                   </h2>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-slate-400">
+                    <span className="text-sm text-muted-foreground">
                       Event {formatChainPosition(selectedEvent.sequence)}
                     </span>
                     <div className="flex items-center gap-1.5 text-green-500">
@@ -605,7 +561,7 @@ export default function EventsPage() {
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="text-slate-400 hover:text-white text-2xl leading-none"
+                  className="text-muted-foreground hover:text-white text-2xl leading-none"
                 >
                   ×
                 </button>
@@ -622,14 +578,14 @@ export default function EventsPage() {
                 
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">Event Hash</label>
+                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event Hash</label>
                     <div className="flex items-center gap-2">
                       <code className="flex-1 text-green-400 font-mono text-xs break-all bg-green-950/20 p-3 rounded border border-green-900/30">
                         {selectedEvent.event_hash}
                       </code>
                       <button
                         onClick={() => copyToClipboard(selectedEvent.event_hash, 'Event Hash')}
-                        className="p-2 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition-colors"
+                        className="p-2 hover:bg-slate-800 rounded text-muted-foreground hover:text-white transition-colors"
                         title="Copy hash"
                       >
                         <Copy className="h-4 w-4" />
@@ -638,7 +594,7 @@ export default function EventsPage() {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">Previous Event Hash</label>
+                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Previous Event Hash</label>
                     {selectedEvent.previous_event_hash ? (
                       <div className="flex items-center gap-2">
                         <code className="flex-1 text-blue-400 font-mono text-xs break-all bg-blue-950/20 p-3 rounded border border-blue-900/30">
@@ -646,7 +602,7 @@ export default function EventsPage() {
                         </code>
                         <button
                           onClick={() => copyToClipboard(selectedEvent.previous_event_hash, 'Previous Hash')}
-                          className="p-2 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition-colors"
+                          className="p-2 hover:bg-slate-800 rounded text-muted-foreground hover:text-white transition-colors"
                           title="Copy hash"
                         >
                           <Copy className="h-4 w-4" />
@@ -661,13 +617,13 @@ export default function EventsPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium text-slate-400 mb-1.5 block">Chain Position</label>
+                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Chain Position</label>
                       <p className="text-white font-mono text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
                         {formatChainPosition(selectedEvent.sequence)}
                       </p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-slate-400 mb-1.5 block">Event ID</label>
+                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event ID</label>
                       <p className="text-white font-mono text-xs bg-slate-950/50 p-2 rounded border border-slate-800 break-all">
                         {selectedEvent.id}
                       </p>
@@ -684,33 +640,33 @@ export default function EventsPage() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">Event Type</label>
+                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event Type</label>
                     <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
                       <code className="text-xs">{selectedEvent.event_type}</code>
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">Actor</label>
+                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Actor</label>
                     <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
                       {selectedEvent.actor_type || 'system'}
                       {selectedEvent.actor_id && ` (ID: ${selectedEvent.actor_id})`}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">Competition</label>
+                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Competition</label>
                     <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
                       {selectedEvent.competition_title}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">Timestamp</label>
+                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Timestamp</label>
                     <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
                       {new Date(selectedEvent.created_at).toLocaleString()}
                     </p>
                   </div>
                   {selectedEvent.ip_address && (
                     <div className="col-span-2">
-                      <label className="text-sm font-medium text-slate-400 mb-1.5 block">IP Address</label>
+                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">IP Address</label>
                       <p className="text-white text-sm font-mono bg-slate-950/50 p-2 rounded border border-slate-800">
                         {selectedEvent.ip_address}
                       </p>
@@ -731,7 +687,7 @@ export default function EventsPage() {
                   </pre>
                   <button
                     onClick={() => copyToClipboard(JSON.stringify(selectedEvent.event_payload, null, 2), 'Payload')}
-                    className="absolute top-2 right-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-slate-400 hover:text-white transition-colors"
+                    className="absolute top-2 right-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-muted-foreground hover:text-white transition-colors"
                     title="Copy payload"
                   >
                     <Copy className="h-4 w-4" />

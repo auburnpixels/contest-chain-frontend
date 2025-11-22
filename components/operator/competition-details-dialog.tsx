@@ -28,6 +28,7 @@ export interface OperatorCompetition {
     max_tickets?: number;
     draw_at?: string | null;
     entries_count?: number;
+    complaints_count?: number;
     compliance_status?: string;
     compliance_percentage?: number;
     compliance_checks?: {
@@ -137,7 +138,7 @@ export const formatEntries = (competition: OperatorCompetition): string => {
         return `${entries_count.toLocaleString()} / ${ticket_quantity.toLocaleString()}`;
     }
 
-    return `${entries_count.toLocaleString()} entries`;
+    return `${entries_count.toLocaleString()}`;
 };
 
 export const getComplianceIndicator = (competition: OperatorCompetition) => {

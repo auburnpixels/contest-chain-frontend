@@ -101,7 +101,7 @@ export default function FeaturesPage() {
           secondaryCta={{ label: "Browse docs", href: "/docs" }}
         />
 
-        <section className="py-24">
+      <section className="py-24 relative overflow-hidden max-w-7xl mx-auto">
           <div className="mx-auto max-w-content px-6 space-y-12">
             <SectionHeading
               eyebrow="Platform pillars"
@@ -120,7 +120,7 @@ export default function FeaturesPage() {
           </div>
         </section>
 
-        <section className="bg-black/60 py-24">
+      <section className="py-24 relative overflow-hidden max-w-7xl mx-auto">
           <div className="mx-auto max-w-content px-6 space-y-10">
             <SectionHeading
               eyebrow="Feature deep dives"
@@ -142,7 +142,7 @@ export default function FeaturesPage() {
           </div>
         </section>
 
-        <section className="py-24">
+      <section className="py-24 relative overflow-hidden max-w-7xl mx-auto">
           <div className="mx-auto max-w-content px-6 space-y-12">
             <SectionHeading
               eyebrow="SDK gallery"
@@ -164,7 +164,7 @@ export default function FeaturesPage() {
           </div>
         </section>
 
-        <section className="bg-black/50 py-24">
+      <section className="py-24 relative overflow-hidden max-w-7xl mx-auto">
           <div className="mx-auto max-w-content px-6 space-y-10">
             <SectionHeading
               eyebrow="Automation recipes"
@@ -181,7 +181,7 @@ export default function FeaturesPage() {
           </div>
         </section>
 
-        <section className="py-24">
+      <section className="py-24 relative overflow-hidden max-w-7xl mx-auto">
           <div className="mx-auto max-w-content px-6">
             <Card className="border-accentMint/30 bg-gradient-to-r from-brand-navy/80 to-brand-slate/80 p-10 text-white">
               <CardHeader className="p-0">
