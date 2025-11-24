@@ -5,9 +5,9 @@ import {Badge} from '@/components/ui/badge';
 import {Card, CardContent} from '@/components/ui/card';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
-import {Activity, Gift, ShieldCheck} from 'lucide-react';
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from '@/components/ui/tooltip';
-import {CheckCircle, AlertCircle, XCircle} from 'lucide-react';
+import {CheckCircle, AlertCircle, XCircle, Gift, Activity,ShieldCheck} from 'lucide-react';
+import {getStatusIndicatorBadge} from '@/lib/competition-status';
 
 export interface OperatorCompetitionPrize {
     id: string;
@@ -48,88 +48,6 @@ export interface CompetitionDetailsDialogProps {
     open: boolean;
     onOpenChange: (state: boolean) => void;
 }
-
-export const getDerivedStatus = (competition: OperatorCompetition): string => {
-    const {status, entries_count = 0, ticket_quantity, draw_audits_count = 0} = competition;
-
-    if (ticket_quantity && entries_count >= ticket_quantity && status === 'active') {
-        return 'sold_out';
-    }
-
-    if (status === 'ended' && draw_audits_count === 0) {
-        return 'awaiting_draw';
-    }
-
-    if (draw_audits_count > 0 && status !== 'completed') {
-        return 'drawn';
-    }
-
-    if (status === 'completed') {
-        return 'finalised';
-    }
-
-    return status;
-};
-
-export const getStatusBadge = (competition: OperatorCompetition) => {
-    const derivedStatus = getDerivedStatus(competition);
-
-    const statusConfig: Record<string, { variant: 'default' | 'secondary' | 'outline' | 'destructive'; className: string; label: string }> = {
-        pending: {
-            variant: 'outline',
-            className: 'border-gray-500 text-gray-400',
-            label: 'Pending',
-        },
-        active: {
-            variant: 'default',
-            className: 'bg-green-600 text-white hover:bg-green-700',
-            label: 'Active',
-        },
-        paused: {
-            variant: 'secondary',
-            className: 'bg-yellow-600 text-white',
-            label: 'Paused',
-        },
-        sold_out: {
-            variant: 'secondary',
-            className: 'bg-orange-600 text-white',
-            label: 'Sold Out',
-        },
-        awaiting_draw: {
-            variant: 'default',
-            className: 'bg-purple-600 text-white hover:bg-purple-700',
-            label: 'Awaiting Draw',
-        },
-        drawn: {
-            variant: 'default',
-            className: 'bg-blue-600 text-white hover:bg-blue-700',
-            label: 'Drawn',
-        },
-        finalised: {
-            variant: 'default',
-            className: 'bg-emerald-600 text-white hover:bg-emerald-700',
-            label: 'Finalised',
-        },
-        cancelled: {
-            variant: 'destructive',
-            className: 'bg-red-600 text-white',
-            label: 'Cancelled',
-        },
-        ended: {
-            variant: 'secondary',
-            className: 'bg-slate-700 text-white',
-            label: 'Ended',
-        },
-    };
-
-    const config = statusConfig[derivedStatus] || statusConfig['pending'];
-
-    return (
-        <Badge variant={config.variant} className={config.className}>
-            {config.label}
-        </Badge>
-    );
-};
 
 export const formatEntries = (competition: OperatorCompetition): string => {
     const {entries_count = 0, ticket_quantity} = competition;
@@ -260,7 +178,7 @@ export function CompetitionDetailsDialog({competition, open, onOpenChange}: Comp
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Status</label>
                                 <div className="mt-1">
-                                    {getStatusBadge(competition)}
+                                    {getStatusIndicatorBadge(competition)}
                                 </div>
                             </div>
                             <div>

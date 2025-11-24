@@ -278,6 +278,12 @@ export const operatorApi = {
 
   revokeApiKey: (keyId: number) =>
     apiClient.delete<any>(`/internal/operator/api-keys/${keyId}`),
+
+  verifyChain: () =>
+    apiClient.get<any>('/internal/operator/chain/verify'),
+
+  verifyCompetitionChain: (uuid: string) =>
+    apiClient.get<any>(`/internal/operator/competitions/${uuid}/chain/verify`),
 };
 
 /**

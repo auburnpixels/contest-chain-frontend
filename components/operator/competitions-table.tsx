@@ -6,9 +6,9 @@ import Link from 'next/link';
 import {
   formatDrawDate,
   formatEntries,
-  getStatusBadge,
   OperatorCompetition
 } from './competition-details-dialog';
+import { getStatusIndicatorBadge } from '@/lib/competition-status';
 
 interface CompetitionsTableProps {
   competitions: OperatorCompetition[];
@@ -51,7 +51,7 @@ export function CompetitionsTable({
               {competition.title}
             </TableCell>
             <TableCell>
-              {getStatusBadge(competition)}
+              {getStatusIndicatorBadge(competition)}
             </TableCell>
             <TableCell>
               {competition.prizes?.length || 0}
@@ -61,17 +61,11 @@ export function CompetitionsTable({
             </TableCell>
             <TableCell>
               {(competition.complaints_count || 0) > 0 ? (
-                <Link href={`/operator/complaints?competition=${competition.id}`}>
-                  <Badge 
-                    variant="outline" 
-                    className="gap-1 cursor-pointer hover:bg-yellow-500/10 border-yellow-500/50 text-yellow-600"
-                  >
-                    <AlertTriangle className="h-3 w-3" />
+                <span className="text-red-500">
                     {competition.complaints_count}
-                  </Badge>
-                </Link>
+                </span>
               ) : (
-                <span className="text-muted-foreground text-sm">0</span>
+                0
               )}
             </TableCell>
             <TableCell>
@@ -97,6 +91,12 @@ export function CompetitionsTable({
                       href: `/operator/competitions/${competition.id}`,
                       disabled: (competition.draw_audits_count || 0) === 0,
                     },
+                      {
+                          label: 'Complaints',
+                          icon: AlertTriangle,
+                          href: `/operator/complaints/${competition.id}`,
+                          disabled: (competition.complaints_count || 0) === 0,
+                      },
                   ]}
                 />
               </TableCell>

@@ -226,12 +226,12 @@ export default function CompetitionsPage() {
         <div className="px-4 lg:px-6">
           {/* Filters */}
           <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="text-base">Filters</CardTitle>
-            </CardHeader>
+              <CardHeader>
+                  <CardTitle className="leading-none font-semibold !text-base">Filters</CardTitle>
+              </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
+              <div className="flex flex-col gap-1.5">
                   <Label htmlFor="external_id" className="text-sm font-medium">
                     External ID
                   </Label>
@@ -244,7 +244,7 @@ export default function CompetitionsPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
+              <div className="flex flex-col gap-1.5">
                   <Label htmlFor="name" className="text-sm font-medium">
                     Name
                   </Label>
@@ -257,7 +257,7 @@ export default function CompetitionsPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
+              <div className="flex flex-col gap-1.5">
                   <Label htmlFor="status" className="text-sm font-medium">
                     Status
                   </Label>

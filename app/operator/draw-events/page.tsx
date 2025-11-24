@@ -8,13 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { operatorApi, authApi, apiClient } from '@/lib/api/client';
-import { Activity, LayoutDashboard, Trophy, Key, ShieldCheck, AlertTriangle, FileText, CheckCircle, Copy, X, ChevronLeft, ChevronRight, Settings, Eye } from 'lucide-react';
+import { Activity, LayoutDashboard, Trophy, Key, ShieldCheck, AlertTriangle, FileText, CheckCircle, Copy, X, ChevronLeft, ChevronRight, Settings, Eye, Download, FileJson, FileSpreadsheet } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 import { PaginationControls } from "@/components/pagination-controls";
+import {IndicatorBadge} from "@/components/ui/indicator-badge";
 
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
@@ -52,6 +53,11 @@ export default function EventsPage() {
   const [showModal, setShowModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState('');
   const [initialized, setInitialized] = useState(false);
+  const [verifyingChain, setVerifyingChain] = useState(false);
+  const [chainStatus, setChainStatus] = useState<any>(null);
+  const [showChainModal, setShowChainModal] = useState(false);
+  const [exportingCsv, setExportingCsv] = useState(false);
+  const [exportingJson, setExportingJson] = useState(false);
 
   // Filter options
   const [filterOptions, setFilterOptions] = useState<any>({
@@ -195,6 +201,104 @@ export default function EventsPage() {
     router.push('/operator/login');
   };
 
+  const handleVerifyChain = async () => {
+    try {
+      setVerifyingChain(true);
+      const result = await operatorApi.verifyChain();
+      setChainStatus(result);
+      setShowChainModal(true);
+    } catch (error: any) {
+      console.error('Chain verification failed:', error);
+      alert('Failed to verify chain: ' + error.message);
+    } finally {
+      setVerifyingChain(false);
+    }
+  };
+
+  const handleExportCsv = async () => {
+    try {
+      setExportingCsv(true);
+      
+      // Fetch all events with current filters
+      const params: any = {
+        page: 1,
+        per_page: 10000, // Get all events
+      };
+      
+      if (filters.event_type) params.event_type = filters.event_type;
+      if (filters.competition_id) params.competition_id = filters.competition_id;
+      if (filters.actor_type) params.actor_type = filters.actor_type;
+      if (filters.from_date) params.from_date = filters.from_date;
+      if (filters.to_date) params.to_date = filters.to_date;
+
+      const eventsData = await operatorApi.getDrawEvents(params);
+      const allEvents = eventsData.data || [];
+
+      // Convert to CSV
+      const csvHeaders = ['ID', 'Event Type', 'Competition', 'Actor', 'Chain Position', 'Timestamp', 'Event Hash'];
+      const csvRows = allEvents.map((event: any) => [
+        event.id,
+        event.event_type,
+        event.competition?.title || 'N/A',
+        event.actor_type || 'system',
+        event.sequence,
+        new Date(event.created_at).toISOString(),
+        event.event_hash,
+      ]);
+
+      const csvContent = [
+        csvHeaders.join(','),
+        ...csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      ].join('\n');
+
+      // Download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `draw-events-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    } catch (error: any) {
+      console.error('CSV export failed:', error);
+      alert('Failed to export CSV: ' + error.message);
+    } finally {
+      setExportingCsv(false);
+    }
+  };
+
+  const handleExportJson = async () => {
+    try {
+      setExportingJson(true);
+      
+      // Fetch all events with current filters
+      const params: any = {
+        page: 1,
+        per_page: 10000, // Get all events
+      };
+      
+      if (filters.event_type) params.event_type = filters.event_type;
+      if (filters.competition_id) params.competition_id = filters.competition_id;
+      if (filters.actor_type) params.actor_type = filters.actor_type;
+      if (filters.from_date) params.from_date = filters.from_date;
+      if (filters.to_date) params.to_date = filters.to_date;
+
+      const eventsData = await operatorApi.getDrawEvents(params);
+      const allEvents = eventsData.data || [];
+
+      // Download JSON file
+      const jsonContent = JSON.stringify(allEvents, null, 2);
+      const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `draw-events-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+    } catch (error: any) {
+      console.error('JSON export failed:', error);
+      alert('Failed to export JSON: ' + error.message);
+    } finally {
+      setExportingJson(false);
+    }
+  };
+
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     setCopySuccess(label);
@@ -297,7 +401,58 @@ export default function EventsPage() {
       onLogout={handleLogout}
     >
       <div className="space-y-6">
-          <DashboardHeader title="Events" />
+          <DashboardHeader title="Events">
+              <div className="flex gap-2">
+                  <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleVerifyChain}
+                      disabled={verifyingChain}
+                  >
+                      {verifyingChain ? (
+                          <>
+                              Verifying...
+                          </>
+                      ) : (
+                          <>
+                              Verify Integrity
+                          </>
+                      )}
+                  </Button>
+                  <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleExportCsv}
+                      disabled={exportingCsv || loading}
+                  >
+                      {exportingCsv ? (
+                          <>
+                              Exporting...
+                          </>
+                      ) : (
+                          <>
+                              Export CSV
+                          </>
+                      )}
+                  </Button>
+                  <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleExportJson}
+                      disabled={exportingJson || loading}
+                  >
+                      {exportingJson ? (
+                          <>
+                              Exporting...
+                          </>
+                      ) : (
+                          <>
+                              Export JSON
+                          </>
+                      )}
+                  </Button>
+              </div>
+          </DashboardHeader>
 
           <div className="px-4 lg:px-6">
               <Card className="bg-card border-border">
@@ -306,8 +461,7 @@ export default function EventsPage() {
                   </CardHeader>
                   <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                          {/* Event Type Filter */}
-                          <div className="space-y-2">
+                          <div className="flex flex-col gap-1.5">
                               <Label htmlFor="event-filter" className="text-sm font-medium">Event Type</Label>
                               <Select value={filters.event_type || 'all'} onValueChange={(value) => { setFilters({ ...filters, event_type: value === 'all' ? '' : value }); setPage(1); }}>
                                   <SelectTrigger id="event-filter">
@@ -322,8 +476,7 @@ export default function EventsPage() {
                               </Select>
                           </div>
 
-                          {/* Competition Filter */}
-                          <div className="space-y-2">
+                          <div className="flex flex-col gap-1.5">
                               <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
                               <Select value={filters.competition_id || 'all'} onValueChange={(value) => { setFilters({ ...filters, competition_id: value === 'all' ? '' : value }); setPage(1); }}>
                                   <SelectTrigger id="competition-filter">
@@ -338,8 +491,7 @@ export default function EventsPage() {
                               </Select>
                           </div>
 
-                          {/* Actor Filter */}
-                          <div className="space-y-2">
+                          <div className="flex flex-col gap-1.5">
                               <Label htmlFor="actor-filter" className="text-sm font-medium">Actor</Label>
                               <Select value={filters.actor_type || 'all'} onValueChange={(value) => { setFilters({ ...filters, actor_type: value === 'all' ? '' : value }); setPage(1); }}>
                                   <SelectTrigger id="actor-filter">
@@ -355,8 +507,7 @@ export default function EventsPage() {
                               </Select>
                           </div>
 
-                          {/* From Date */}
-                          <div className="space-y-2">
+                          <div className="flex flex-col gap-1.5">
                               <Label htmlFor="from-date" className="text-sm font-medium">From Date</Label>
                               <Input
                                   id="from-date"
@@ -366,8 +517,7 @@ export default function EventsPage() {
                               />
                           </div>
 
-                          {/* To Date */}
-                          <div className="space-y-2">
+                          <div className="flex flex-col gap-1.5">
                               <Label htmlFor="to-date" className="text-sm font-medium">To Date</Label>
                               <Input
                                   id="to-date"
@@ -489,9 +639,11 @@ export default function EventsPage() {
                                                       {new Date(event.created_at).toLocaleString()}
                                                   </TableCell>
                                                   <TableCell>
-                                                      <div className="flex items-center gap-1.5 text-green-500">
-                                                          <span className="text-xs font-medium">Valid</span>
-                                                      </div>
+                                                      <IndicatorBadge
+                                                          icon=""
+                                                          color={event.is_valid ? 'green': 'yellow'}
+                                                          text={event.is_valid ? 'Valid' : 'Pending'}
+                                                      />
                                                   </TableCell>
                                                   <TableCell>
                                                       <OperatorActionsMenu
@@ -723,6 +875,153 @@ export default function EventsPage() {
                   Close
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chain Verification Modal */}
+      {showChainModal && chainStatus && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={() => setShowChainModal(false)}>
+          <div className="bg-slate-900 border border-slate-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="p-6 border-b border-slate-800 bg-slate-900/50">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold text-white mb-2">
+                    Chain Integrity Verification
+                  </h2>
+                  <div className="flex items-center gap-3">
+                    {chainStatus.chain_status === 'valid' ? (
+                      <div className="flex items-center gap-2 text-green-500">
+                        <CheckCircle className="h-5 w-5" />
+                        <span className="text-lg font-semibold">Chain Valid</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-red-500">
+                        <AlertTriangle className="h-5 w-5" />
+                        <span className="text-lg font-semibold">Chain Invalid</span>
+                      </div>
+                    )}
+                    <span className="text-sm text-muted-foreground">
+                      Verified at {new Date(chainStatus.verified_at).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowChainModal(false)}
+                  className="text-muted-foreground hover:text-white text-2xl leading-none"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* Summary Statistics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                  <label className="text-sm font-medium text-muted-foreground block mb-1">Total Events</label>
+                  <p className="text-2xl font-bold text-white">
+                    {chainStatus.summary?.total_events || chainStatus.total_events || 0}
+                  </p>
+                </div>
+                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                  <label className="text-sm font-medium text-muted-foreground block mb-1">Verified</label>
+                  <p className="text-2xl font-bold text-green-500">
+                    {chainStatus.summary?.verified_events || chainStatus.verified_events || 0}
+                  </p>
+                </div>
+                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                  <label className="text-sm font-medium text-muted-foreground block mb-1">Pending</label>
+                  <p className="text-2xl font-bold text-yellow-500">
+                    {chainStatus.summary?.unchained_events || chainStatus.unchained_events || 0}
+                  </p>
+                </div>
+                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                  <label className="text-sm font-medium text-muted-foreground block mb-1">Failed</label>
+                  <p className="text-2xl font-bold text-red-500">
+                    {chainStatus.summary?.failed_events || chainStatus.failed_events || 0}
+                  </p>
+                </div>
+              </div>
+
+              {/* Issues */}
+              {chainStatus.chain_status !== 'valid' && (
+                <div className="space-y-4">
+                  {(chainStatus.broken_links && chainStatus.broken_links.length > 0) && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2 mb-3">
+                        Broken Links ({chainStatus.broken_links.length})
+                      </h3>
+                      <div className="space-y-2">
+                        {chainStatus.broken_links.map((link: any, idx: number) => (
+                          <div key={idx} className="bg-red-950/20 border border-red-900/30 rounded p-3">
+                            <p className="text-sm text-white mb-2">
+                              Event <code className="font-mono">#{link.sequence}</code> - {link.event_type}
+                            </p>
+                            <p className="text-xs text-red-400 font-mono break-all">
+                              Expected: {link.expected_previous_hash || 'null'}
+                            </p>
+                            <p className="text-xs text-red-400 font-mono break-all">
+                              Actual: {link.actual_previous_hash || 'null'}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(chainStatus.invalid_hashes && chainStatus.invalid_hashes.length > 0) && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2 mb-3">
+                        Invalid Hashes ({chainStatus.invalid_hashes.length})
+                      </h3>
+                      <div className="space-y-2">
+                        {chainStatus.invalid_hashes.map((hash: any, idx: number) => (
+                          <div key={idx} className="bg-red-950/20 border border-red-900/30 rounded p-3">
+                            <p className="text-sm text-white mb-2">
+                              Event <code className="font-mono">#{hash.sequence}</code> - {hash.event_type}
+                            </p>
+                            <p className="text-xs text-red-400 font-mono break-all">
+                              Expected: {hash.expected_hash}
+                            </p>
+                            <p className="text-xs text-red-400 font-mono break-all">
+                              Actual: {hash.actual_hash}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Success Message */}
+              {chainStatus.chain_status === 'valid' && (
+                <div className="bg-green-950/20 border border-green-900/30 rounded p-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                    <div>
+                      <p className="text-white font-medium mb-1">Chain Integrity Verified</p>
+                      <p className="text-sm text-muted-foreground">
+                        All events have been verified and the chain is intact. No tampering detected.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-slate-800 bg-slate-900/50 flex justify-end">
+              <button
+                onClick={() => setShowChainModal(false)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-medium transition-colors"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

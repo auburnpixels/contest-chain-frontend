@@ -13,13 +13,14 @@ import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 import { PaginationControls } from '@/components/pagination-controls';
+import { getComplaintStatusBadge, getComplaintCountByStatus, formatComplaintCategory, type Complaint } from '@/lib/complaint-status';
 
 export default function OperatorComplaintsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [complaints, setComplaints] = useState<any[]>([]);
+  const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [operatorName, setOperatorName] = useState('');
-  const [selectedComplaint, setSelectedComplaint] = useState<any>(null);
+  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -59,24 +60,9 @@ export default function OperatorComplaintsPage() {
     router.push('/operator/login');
   };
 
-  const handleViewComplaint = (complaint: any) => {
+  const handleViewComplaint = (complaint: Complaint) => {
     setSelectedComplaint(complaint);
     setIsDialogOpen(true);
-  };
-
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'outline';
-      case 'investigating':
-        return 'secondary';
-      case 'resolved':
-        return 'default';
-      case 'dismissed':
-        return 'destructive';
-      default:
-        return 'outline';
-    }
   };
 
   const navItems = [
@@ -135,7 +121,7 @@ export default function OperatorComplaintsPage() {
         <div className="space-y-8">
             <DashboardHeader title="Complaints">
                 <Badge variant="outline" className="px-3 py-1">
-                    {complaints.filter(c => c.status === 'pending').length} Pending
+                    {getComplaintCountByStatus(complaints, 'pending')} Pending
                 </Badge>
             </DashboardHeader>
 
@@ -182,13 +168,11 @@ export default function OperatorComplaintsPage() {
                                             </TableCell>
                                             <TableCell>
                                                 <Badge variant="outline">
-                                                    {complaint.category}
+                                                    {formatComplaintCategory(complaint.category || '')}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant={getStatusVariant(complaint.status) as any}>
-                                                    {complaint.status}
-                                                </Badge>
+                                                {getComplaintStatusBadge(complaint)}
                                             </TableCell>
                                             <TableCell className="text-sm text-muted-foreground">
                                                 {new Date(complaint.created_at).toLocaleDateString('en-GB', {
@@ -256,9 +240,7 @@ export default function OperatorComplaintsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-1">Status:</p>
-                  <Badge variant={getStatusVariant(selectedComplaint.status) as any}>
-                    {selectedComplaint.status}
-                  </Badge>
+                  {getComplaintStatusBadge(selectedComplaint)}
                 </div>
               </div>
 
@@ -270,7 +252,7 @@ export default function OperatorComplaintsPage() {
 
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-1">Category:</p>
-                <Badge variant="secondary">{selectedComplaint.category}</Badge>
+                <Badge variant="secondary">{formatComplaintCategory(selectedComplaint.category || '')}</Badge>
               </div>
 
               <div>

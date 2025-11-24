@@ -55,14 +55,14 @@ export function OperatorActionsMenu({
                                 asChild
                                 key={action.label}
                                 disabled={action.disabled}
-                                className="cursor-pointer"
+                                className="cursor-pointer text-xs"
                             >
                                 <Link
                                     href={action.href}
                                     onClick={action.onSelect}
                                     className={cn('flex items-center gap-2', action.className)}
                                 >
-                                    <action.icon className="h-4 w-4 text-muted-foreground"/>
+                                    <action.icon className="h-3 w-3 text-muted-foreground"/>
                                     <span>{action.label}</span>
                                 </Link>
                             </DropdownMenuItem>
@@ -77,9 +77,9 @@ export function OperatorActionsMenu({
                                 event.preventDefault();
                                 action.onSelect?.();
                             }}
-                            className={cn('flex items-center gap-2', action.className)}
+                            className={cn('flex items-center gap-2 text-xs cursor-pointer', action.className)}
                         >
-                            <action.icon className="h-4 w-4 text-muted-foreground"/>
+                            <action.icon className="h-3 w-3 text-muted-foreground"/>
                             <span>{action.label}</span>
                         </DropdownMenuItem>
                     );
