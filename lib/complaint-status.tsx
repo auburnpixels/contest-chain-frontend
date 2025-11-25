@@ -1,11 +1,3 @@
-import { 
-  Clock, 
-  Search, 
-  CheckCircle, 
-  XCircle,
-  AlertTriangle,
-  FileWarning
-} from 'lucide-react';
 import { IndicatorBadge } from '@/components/ui/indicator-badge';
 
 /**
@@ -26,22 +18,21 @@ export interface Complaint {
 
 /**
  * Status configuration map for IndicatorBadge components.
- * Maps complaint status strings to their icon, color, and display text.
+ * Maps complaint status strings to their color and display text.
  */
 export const COMPLAINT_STATUS_CONFIG: Record<
   string, 
   { 
-    icon: any; 
     color: "green" | "yellow" | "blue" | "red" | "white" | "gray" | "purple" | "orange"; 
     text: string;
   }
 > = {
-  pending: { icon: Clock, color: "yellow", text: "Pending" },
-  investigating: { icon: Search, color: "blue", text: "Investigating" },
-  resolved: { icon: CheckCircle, color: "green", text: "Resolved" },
-  dismissed: { icon: XCircle, color: "red", text: "Dismissed" },
-  escalated: { icon: AlertTriangle, color: "orange", text: "Escalated" },
-  on_hold: { icon: FileWarning, color: "gray", text: "On Hold" },
+  pending: { color: "yellow", text: "Pending" },
+  investigating: { color: "blue", text: "Investigating" },
+  resolved: { color: "green", text: "Resolved" },
+  dismissed: { color: "red", text: "Dismissed" },
+  escalated: { color: "orange", text: "Escalated" },
+  on_hold: { color: "gray", text: "On Hold" },
 };
 
 /**
@@ -55,7 +46,6 @@ export const getComplaintStatusBadge = (complaint: Complaint) => {
   
   return (
     <IndicatorBadge 
-      icon={config.icon} 
       color={config.color} 
       text={config.text} 
     />

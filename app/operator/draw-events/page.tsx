@@ -251,7 +251,7 @@ export default function EventsPage() {
 
       const csvContent = [
         csvHeaders.join(','),
-        ...csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        ...csvRows.map((row: any[]) => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
       ].join('\n');
 
       // Download file
@@ -645,7 +645,6 @@ export default function EventsPage() {
                                                   </TableCell>
                                                   <TableCell>
                                                       <IndicatorBadge
-                                                          icon=""
                                                           color={event.is_chained ? 'green': 'yellow'}
                                                           text={event.is_chained ? 'Valid' : 'Pending'}
                                                       />

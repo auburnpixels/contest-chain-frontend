@@ -4,22 +4,16 @@ import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
-import {Badge} from '@/components/ui/badge';
 import {apiClient, operatorApi, authApi} from '@/lib/api/client';
-import {Eye, FileText, LayoutDashboard, Trophy, Key, Activity, ShieldCheck, AlertTriangle, Settings} from 'lucide-react';
+import {FileText, LayoutDashboard, Trophy, Key, Activity, ShieldCheck, AlertTriangle, Settings} from 'lucide-react';
 import {DashboardShell} from '@/components/dashboard-shell';
 import {Operator} from '@/lib/api';
 import Link from 'next/link';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {
     CompetitionDetailsDialog,
-    formatDrawDate,
-    formatEntries,
-    getStatusBadge,
     OperatorCompetition
 } from "@/components/operator/competition-details-dialog";
-import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 import {CompetitionsTable} from "@/components/operator/competitions-table";
 
 interface DashboardData {
