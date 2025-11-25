@@ -78,11 +78,10 @@ export default function OperatorDrawsPage() {
       setLoading(false);
     } catch (error: any) {
       console.error('Failed to load draw audits:', error);
-      if (error.message?.includes('TOKEN') || error.status === 401) {
-        router.push('/operator/login');
-      } else {
-        setLoading(false);
-      }
+      
+      // For authentication errors, the API client will handle token refresh automatically
+      // Only show error state, don't redirect - let AuthContext handle authentication
+      setLoading(false);
     }
   };
 
@@ -198,7 +197,7 @@ export default function OperatorDrawsPage() {
                         <TableCell>
                           {audit.competition ? (
                             <div>
-                              <div className="font-medium text-foreground">{audit.competition.title}</div>
+                              <div className="font-medium text-foreground">{audit.competition.name}</div>
                               <div className="text-xs text-muted-foreground">
                                 ID: {audit.competition.external_id}
                               </div>
@@ -209,7 +208,7 @@ export default function OperatorDrawsPage() {
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {audit.prize?.title || 'N/A'}
+                            {audit.prize?.name || 'N/A'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm">

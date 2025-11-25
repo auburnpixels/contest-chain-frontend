@@ -78,11 +78,10 @@ export default function OperatorCompliancePage() {
       setLoading(false);
     } catch (error: any) {
       console.error('Failed to load compliance data:', error);
-      if (error.message?.includes('TOKEN') || error.status === 401) {
-        router.push('/operator/login');
-      } else {
-        setLoading(false);
-      }
+      
+      // For authentication errors, the API client will handle token refresh automatically
+      // Only show error state, don't redirect - let AuthContext handle authentication
+      setLoading(false);
     }
   };
 
@@ -119,7 +118,7 @@ export default function OperatorCompliancePage() {
     const rows = data.raffles.map((raffle) => [
       raffle.raffle_id,
       raffle.external_id || '',
-      raffle.title,
+      raffle.name,
       raffle.status,
       raffle.total_entries,
       raffle.postal_entries,
@@ -383,8 +382,8 @@ export default function OperatorCompliancePage() {
                                                       {raffle.external_id}
                                                   </Badge>
                                               </TableCell>
-                                              <TableCell className="max-w-xs truncate" title={raffle.title}>
-                                                  {raffle.title}
+                                              <TableCell className="max-w-xs truncate" title={raffle.name}>
+                                                  {raffle.name}
                                               </TableCell>
                                               <TableCell>
                                                   {getStatusBadge(raffle.status)}

@@ -43,13 +43,9 @@ export default function ApiKeysPage() {
     } catch (error: any) {
       console.error('Failed to load API keys:', error);
       
-      // Only redirect to login if it's an authentication error
-      if (error.message?.includes('TOKEN') || error.status === 401 || error.message?.includes('Unauthorized')) {
-        router.push('/operator/login');
-      } else {
-        // For other errors, just stop loading and show empty state
-        setLoading(false);
-      }
+      // For authentication errors, the API client will handle token refresh automatically
+      // Only show error state, don't redirect - let AuthContext handle authentication
+      setLoading(false);
     }
   };
 

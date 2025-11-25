@@ -162,7 +162,7 @@ export default function EventsPage() {
       // Enrich events with competition info if available
       const enrichedEvents = events.map((event: any) => ({
         ...event,
-        competition_title: event.competition?.title || 'N/A',
+        competition_title: event.competition?.name || 'N/A',
         competition_id: event.competition?.id,
       }));
 
@@ -172,11 +172,9 @@ export default function EventsPage() {
     } catch (error: any) {
       console.error('Failed to load events:', error);
       
-      if (error.message?.includes('TOKEN') || error.status === 401 || error.message?.includes('Unauthorized')) {
-        router.push('/operator/login');
-      } else {
-        setLoading(false);
-      }
+      // For authentication errors, the API client will handle token refresh automatically
+      // Only show error state, don't redirect - let AuthContext handle authentication
+      setLoading(false);
     }
   };
 
@@ -242,7 +240,7 @@ export default function EventsPage() {
       const csvRows = allEvents.map((event: any) => [
         event.id,
         event.event_type,
-        event.competition?.title || 'N/A',
+        event.competition?.name || 'N/A',
         event.actor_type || 'system',
         event.sequence,
         new Date(event.created_at).toISOString(),
@@ -343,7 +341,7 @@ export default function EventsPage() {
     const comp = filterOptions.competitions.find((c: any) => 
       c.id === competitionIdentifier || c.id.toString() === competitionIdentifier
     );
-    return comp?.title || 'Unknown';
+    return comp?.name || 'Unknown';
   };
 
   // Generate page numbers for pagination
@@ -488,7 +486,7 @@ export default function EventsPage() {
                                   <SelectContent>
                                       <SelectItem value="all">All Competitions</SelectItem>
                                       {filterOptions.competitions.map((comp: any) => (
-                                          <SelectItem key={comp.id} value={comp.id}>{comp.title}</SelectItem>
+                                          <SelectItem key={comp.id} value={comp.id}>{comp.name}</SelectItem>
                                       ))}
                                   </SelectContent>
                               </Select>

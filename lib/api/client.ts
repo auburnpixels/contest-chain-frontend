@@ -16,6 +16,8 @@ export interface ApiResponse<T> {
 class ApiClient {
   private baseUrl: string;
   private token: string | null = null;
+  private isRefreshing: boolean = false;
+  private refreshPromise: Promise<string> | null = null;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
@@ -57,11 +59,53 @@ class ApiClient {
   }
 
   /**
+   * Refresh JWT token
+   */
+  private async refreshToken(): Promise<string> {
+    // If already refreshing, return the existing promise
+    if (this.isRefreshing && this.refreshPromise) {
+      return this.refreshPromise;
+    }
+
+    this.isRefreshing = true;
+    this.refreshPromise = (async () => {
+      try {
+        const response = await fetch(`${this.baseUrl}/internal/auth/refresh`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${this.getToken()}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Token refresh failed');
+        }
+
+        const data = await response.json();
+        if (!data.access_token) {
+          throw new Error('No access token in refresh response');
+        }
+
+        this.setToken(data.access_token);
+        return data.access_token;
+      } finally {
+        this.isRefreshing = false;
+        this.refreshPromise = null;
+      }
+    })();
+
+    return this.refreshPromise;
+  }
+
+  /**
    * Make authenticated request with JWT
    */
   private async fetchWithAuth<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    isRetry: boolean = false
   ): Promise<T> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -107,11 +151,33 @@ class ApiClient {
           throw error;
         }
         
-        // Authentication errors
+        // Authentication errors - attempt token refresh
         if (response.status === 401) {
+          const errorCode = errorData.error?.code;
+          
+          // Don't try to refresh on these endpoints or if already retried
+          const isAuthEndpoint = endpoint.includes('/auth/login') || 
+                                 endpoint.includes('/auth/register') ||
+                                 endpoint.includes('/auth/refresh');
+          
+          if (!isAuthEndpoint && !isRetry && (errorCode === 'TOKEN_EXPIRED' || errorCode === 'TOKEN_INVALID')) {
+            try {
+              console.log('[API Client] Attempting automatic token refresh...');
+              await this.refreshToken();
+              console.log('[API Client] Token refreshed, retrying request...');
+              
+              // Retry the original request with new token
+              return this.fetchWithAuth<T>(endpoint, options, true);
+            } catch (refreshError) {
+              console.error('[API Client] Token refresh failed:', refreshError);
+              // Clear token and let the error propagate
+              this.clearToken();
+            }
+          }
+          
           const error: any = new Error(errorData.error?.message || errorData.message || 'Unauthorized');
           error.status = 401;
-          error.code = errorData.error?.code;
+          error.code = errorCode;
           throw error;
         }
         

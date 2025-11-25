@@ -72,11 +72,10 @@ export default function CompliancePage() {
       setLoading(false);
     } catch (error: any) {
       console.error('Failed to load compliance data:', error);
-      if (error.status === 401) {
-        router.push('/regulator/login');
-      } else {
-        setLoading(false);
-      }
+      
+      // For authentication errors, the API client will handle token refresh automatically
+      // Only show error state, don't redirect - let AuthContext handle authentication
+      setLoading(false);
     }
   };
 

@@ -137,11 +137,9 @@ export default function CompetitionsPage() {
     } catch (error: any) {
       console.error('Failed to load competitions:', error);
       
-      if (error.message?.includes('TOKEN') || error.status === 401 || error.message?.includes('Unauthorized')) {
-        router.push('/operator/login');
-      } else {
-        setLoading(false);
-      }
+      // For authentication errors, the API client will handle token refresh automatically
+      // Only show error state, don't redirect - let AuthContext handle authentication
+      setLoading(false);
     }
   };
 
