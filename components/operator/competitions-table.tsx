@@ -4,10 +4,10 @@ import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { Eye, Activity, ShieldCheck, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import {
-  formatDrawDate,
   formatEntries,
   OperatorCompetition
 } from './competition-details-dialog';
+import { formatDrawDate } from '@/lib/date-utils';
 import { getStatusIndicatorBadge } from '@/lib/competition-status';
 
 interface CompetitionsTableProps {

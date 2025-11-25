@@ -268,12 +268,9 @@ export default function CompetitionsPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All statuses</SelectItem>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="published">Published</SelectItem>
                       <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="closed">Closed</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                      <SelectItem value="awaiting_draw">Awaiting draw</SelectItem>
+                      <SelectItem value="drawn">Drawn</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
