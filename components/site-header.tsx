@@ -21,7 +21,7 @@ export function SiteHeader() {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-brand-navy/80 backdrop-blur-xl">
+    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-brand-obsidian/80 backdrop-blur-xl">
       <div className="container flex h-16 max-w-7xl items-center justify-between px-6 mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">

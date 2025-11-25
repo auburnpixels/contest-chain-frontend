@@ -26,11 +26,11 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
   const pathname = usePathname();
 
   return (
-    <div className={cn("pb-12 min-h-screen bg-black border-r border-zinc-800 flex flex-col", className)}>
+    <div className={cn("pb-12 min-h-screen flex flex-col bg-sidebar text-sidebar-foreground border-r", className)}>
       <div className="">
         <div className="">
           <div className="flex items-center p-4 h-12 border-b">
-            <h2 className=" text-white">
+            <h2>
               CaaS Platform
             </h2>
           </div>
@@ -41,13 +41,13 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
                 <Button
                   variant="ghost"
                   className={cn(
-                    "w-full justify-start gap-3 mb-1 transition-all duration-200 font-medium",
+                    "w-full justify-start gap-3 mb-1 transition-all duration-200 font-normal hover:text-sidebar-accent-foreground hover:bg-sidebar-accent-foreground",
                     pathname === item.href 
-                      ? "bg-blue-600/10 text-blue-500 hover:bg-blue-600/20 hover:text-blue-400"
-                      : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                      ? "bg-sidebar-accent-foreground"
+                      : ""
                   )}
                 >
-                  <item.icon className={cn("h-4 w-4", pathname === item.href ? "text-blue-500" : "text-zinc-400")} />
+                  <item.icon className={cn("h-4 w-4")} />
                   {item.title}
                 </Button>
               </Link>
@@ -56,19 +56,19 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
         </div>
       </div>
       
-      <div className="mt-auto p-4 border-t border-zinc-800 bg-zinc-900/20">
+      <div className="mt-auto p-4 border-t">
          <div className="flex items-center gap-3 mb-4 px-2">
             <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
                 <User className="h-4 w-4 text-zinc-400" />
             </div>
             <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-medium text-white truncate">{userName || 'User'}</span>
-                <span className="text-xs text-zinc-500 capitalize">{userRole}</span>
+                <span className="text-sm font-medium truncate">{userName || 'User'}</span>
+                <span className="text-xs capitalize">{userRole}</span>
             </div>
          </div>
          <Button 
             variant="ghost" 
-            className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800"
+            className="w-full justify-start gap-3 "
             onClick={onLogout}
         >
             <LogOut className="h-4 w-4" />

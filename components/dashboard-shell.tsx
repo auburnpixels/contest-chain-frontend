@@ -25,7 +25,7 @@ export function DashboardShell({ children, navItems, userRole, userName, onLogou
         userRole={userRole} 
         userName={userName}
         onLogout={onLogout}
-        className="hidden md:flex w-64 fixed inset-y-0 z-50 bg-sidebar"
+        className="hidden md:flex w-64 fixed inset-y-0 z-50"
       />
 
       {/* Mobile Header */}

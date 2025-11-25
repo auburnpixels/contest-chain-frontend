@@ -1,33 +1,92 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { apiClient, regulatorApi, authApi } from '@/lib/api/client';
-import { Activity, Building2, Home, ShieldCheck, AlertTriangle, Eye, MessageSquare } from 'lucide-react';
+import { Activity, Building2, Home, ShieldCheck, AlertTriangle, Eye, MessageSquare, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { DashboardShell } from '@/components/dashboard-shell';
 
 export default function ComplaintsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [complaints, setComplaints] = useState<any[]>([]);
+  const [allComplaints, setAllComplaints] = useState<any[]>([]);
   const [regulator, setRegulator] = useState<any>(null);
   const [selectedComplaint, setSelectedComplaint] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+
+  // Filter state
+  const [filters, setFilters] = useState({
+    status: '',
+    competition: '',
+  });
+
+  // Initialize from URL parameters
+  useEffect(() => {
+    if (searchParams) {
+      const urlFilters = {
+        status: searchParams.get('status') || '',
+        competition: searchParams.get('competition') || '',
+      };
+
+      setFilters(urlFilters);
+      setInitialized(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     loadComplaints();
   }, []);
 
+  useEffect(() => {
+    if (initialized) {
+      applyFilters();
+      updateURL();
+    }
+  }, [initialized, filters.status, filters.competition, allComplaints]);
+
+  const updateURL = () => {
+    const params = new URLSearchParams();
+    
+    if (filters.status && filters.status !== 'all') {
+      params.set('status', filters.status);
+    }
+    if (filters.competition && filters.competition !== 'all') {
+      params.set('competition', filters.competition);
+    }
+
+    const queryString = params.toString();
+    router.push(`/regulator/complaints${queryString ? `?${queryString}` : ''}`, { scroll: false });
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allComplaints];
+
+    if (filters.status && filters.status !== 'all') {
+      filtered = filtered.filter(c => c.status === filters.status);
+    }
+
+    if (filters.competition && filters.competition !== 'all') {
+      filtered = filtered.filter(c => c.competition_uuid === filters.competition);
+    }
+
+    setComplaints(filtered);
+  };
+
   const loadComplaints = async () => {
     try {
       // Mock data for now
-      setComplaints([
+      const mockData = [
         {
           id: 1,
           competition: 'TWGSB PTA Christmas Cash Raffle',
@@ -52,8 +111,10 @@ export default function ComplaintsPage() {
           resolved_at: new Date('2024-01-12').toISOString(),
           resolution: 'Issue was resolved by providing alternative entry method.',
         },
-      ]);
-      
+      ];
+
+      setAllComplaints(mockData);
+      setComplaints(mockData);
       setRegulator({ name: 'Regulator' });
       setLoading(false);
     } catch (error: any) {
@@ -65,6 +126,27 @@ export default function ComplaintsPage() {
       }
     }
   };
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value === 'all' ? '' : value,
+    }));
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      status: '',
+      competition: '',
+    });
+  };
+
+  const hasActiveFilters = filters.status || filters.competition;
+
+  // Get unique competitions for filter dropdown
+  const uniqueCompetitions = Array.from(
+    new Map(allComplaints.map(c => [c.competition_uuid, c])).values()
+  );
 
   const handleLogout = async () => {
     try {
@@ -131,10 +213,79 @@ export default function ComplaintsPage() {
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="text-sm px-3 py-1 h-9">
-                {complaints.filter(c => c.status === 'pending').length} Pending
+                {allComplaints.filter(c => c.status === 'pending').length} Pending
               </Badge>
             </div>
           </div>
+
+          {/* Filters Card */}
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>Filters</CardTitle>
+              <CardDescription className="mt-1">
+                Filter complaints by status or competition
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="status" className="text-sm font-medium">
+                    Status
+                  </Label>
+                  <Select
+                    value={filters.status || 'all'}
+                    onValueChange={(value) => handleFilterChange('status', value)}
+                  >
+                    <SelectTrigger id="status" className="w-full">
+                      <SelectValue placeholder="All statuses" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All statuses</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="investigating">Investigating</SelectItem>
+                      <SelectItem value="resolved">Resolved</SelectItem>
+                      <SelectItem value="dismissed">Dismissed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="competition" className="text-sm font-medium">
+                    Competition
+                  </Label>
+                  <Select
+                    value={filters.competition || 'all'}
+                    onValueChange={(value) => handleFilterChange('competition', value)}
+                  >
+                    <SelectTrigger id="competition" className="w-full">
+                      <SelectValue placeholder="All competitions" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All competitions</SelectItem>
+                      {uniqueCompetitions.map((complaint) => (
+                        <SelectItem key={complaint.competition_uuid} value={complaint.competition_uuid}>
+                          {complaint.competition}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2 flex items-end">
+                  {hasActiveFilters && (
+                    <Button
+                      variant="outline"
+                      onClick={handleClearFilters}
+                      className="w-full"
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Complaints Table */}
           <Card className="bg-card border-border">
@@ -219,7 +370,9 @@ export default function ComplaintsPage() {
                   <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                   <h3 className="text-lg font-medium mb-2 text-foreground">No complaints</h3>
                   <p className="text-sm text-muted-foreground">
-                    All operators are maintaining excellent compliance
+                    {hasActiveFilters 
+                      ? 'No complaints match the selected filters.'
+                      : 'All operators are maintaining excellent compliance'}
                   </p>
                 </div>
               )}

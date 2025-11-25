@@ -3,7 +3,7 @@ import { ShieldCheck, Github, Twitter, Linkedin } from "lucide-react"
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-white/5 bg-brand-navy pt-20 pb-10 max-w-7xl mx-auto">
+    <footer className="border-t border-white/5 bg-brand-obsidian pt-20 pb-10 max-w-7xl mx-auto">
       <div className="mx-auto max-w-content px-6">
         <div className="grid grid-cols-2 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
           <div className="col-span-2 lg:col-span-2 space-y-6">

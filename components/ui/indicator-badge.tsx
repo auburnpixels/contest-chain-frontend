@@ -12,21 +12,21 @@ const indicatorBadgeVariants = cva(
     variants: {
       color: {
         green:
-          "bg-emerald-950/50 border-emerald-900/50",
+          "bg-emerald-500 border-emerald-500",
         yellow:
-          "bg-yellow-950/50 border-yellow-900/50",
+          "bg-yellow-500 border-yellow-500",
         blue:
-            "bg-blue-950/50 border-blue-900/50",
+            "bg-blue-500 border-blue-500",
         red:
-          "bg-red-950/50 border-red-900/50",
+          "bg-red-500 border-red-500",
         white:
-          "bg-slate-900/50 border-slate-800",
+          "bg-slate-500 border-slate-800",
         gray:
-          "bg-slate-900/50 border-slate-800",
+          "bg-slate-500 border-slate-800",
         purple:
-          "bg-purple-950/50 border-purple-900/50",
+          "bg-purple-500 border-purple-500",
         orange:
-          "bg-orange-950/50 border-orange-900/50",
+          "bg-orange-500 border-orange-500",
       },
     },
     defaultVariants: {
@@ -61,4 +61,6 @@ function IndicatorBadge({
 }
 
 export { IndicatorBadge, indicatorBadgeVariants }
+
+
 

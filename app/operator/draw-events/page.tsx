@@ -23,6 +23,7 @@ const getEventDisplayName = (eventType: string): string => {
     'operator.competition_created': 'Competition Created',
     'operator.draw_requested': 'Draw Triggered',
     'operator.api_request': 'API Request',
+    'operator.entry_created': 'Entry Created',
     'raffle.published': 'Competition Published',
     'raffle.closed': 'Competition Closed',
     'raffle.updated': 'Competition Updated',
@@ -34,6 +35,8 @@ const getEventDisplayName = (eventType: string): string => {
     'draw.randomization_run': 'Randomization Run',
     'draw.audit_created': 'Draw Audit Created',
     'complaint.submitted': 'Complaint Submitted',
+    'prize.created': 'Prize Created',
+    'prize.deleted': 'Prize Deleted',
   };
   return mapping[eventType] || eventType;
 };
@@ -628,7 +631,9 @@ export default function EventsPage() {
                                                       {event.competition_title}
                                                   </TableCell>
                                                   <TableCell>
-                                                      {(event.actor_type || 'system')}
+                                                      <Badge variant="outline">
+                                                          {(event.actor_type || 'system')}
+                                                      </Badge>
                                                   </TableCell>
                                                   <TableCell>
                                                     <span>
@@ -641,8 +646,8 @@ export default function EventsPage() {
                                                   <TableCell>
                                                       <IndicatorBadge
                                                           icon=""
-                                                          color={event.is_valid ? 'green': 'yellow'}
-                                                          text={event.is_valid ? 'Valid' : 'Pending'}
+                                                          color={event.is_chained ? 'green': 'yellow'}
+                                                          text={event.is_chained ? 'Valid' : 'Pending'}
                                                       />
                                                   </TableCell>
                                                   <TableCell>

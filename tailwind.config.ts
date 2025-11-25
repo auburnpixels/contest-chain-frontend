@@ -37,10 +37,17 @@ const config: Config = {
         ring: "hsl(var(--ring))",
         brand: {
           navy: "#0D1733",
-          slate: "#172447",
+          slate: "#475569", // Slate 600
           cobalt: "#1B4EDB",
-          graphite: "#2A2F44",
-          steel: "#6575A5",
+          graphite: "#1F2937", // Gray 800
+          steel: "#9CA3AF", // Gray 400
+          dark: "#111827", // Gray 900
+          light: "#F9FAFB", // Gray 50
+        },
+        trust: {
+            teal: "#0F766E", // Teal 700 - Trustworthy
+            emerald: "#10B981", // Emerald 500 - Success/Verification
+            cyan: "#06B6D4", // Cyan 500 - Tech
         },
         accentMint: "#30E0B5",
         accentPurple: "#8E6BFF",
@@ -61,11 +68,13 @@ const config: Config = {
       boxShadow: {
         brand: "0 20px 60px rgba(13, 23, 51, 0.45)",
         card: "0 24px 50px rgba(5, 9, 21, 0.55)",
-        subtle: "0 8px 25px rgba(10, 19, 40, 0.35)",
+        subtle: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
+        glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
       },
       backgroundImage: {
         "brand-grid":
-          "linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)",
+          "linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)",
+        "subtle-gradient": "linear-gradient(to bottom right, #FFFFFF 0%, #F9FAFB 100%)",
       },
       maxWidth: {
         content: "1200px",

@@ -14,6 +14,7 @@ import { Key, Copy, Trash2, Plus, Eye, EyeOff, Calendar, AlertCircle, LayoutDash
 import { toast } from 'sonner';
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
+import {IndicatorBadge} from "@/components/ui/indicator-badge";
 
 export default function ApiKeysPage() {
   const router = useRouter();
@@ -242,7 +243,7 @@ export default function ApiKeysPage() {
                                   <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                                       Cancel
                                   </Button>
-                                  <Button onClick={handleCreateKey} disabled={creatingKey || !newKeyName.trim()}>
+                                  <Button onClick={handleCreateKey} variant="outline" disabled={creatingKey || !newKeyName.trim()}>
                                       {creatingKey ? 'Creating...' : 'Create Key'}
                                   </Button>
                               </div>
@@ -269,7 +270,7 @@ export default function ApiKeysPage() {
                       {apiKeys.length > 0 ? (
                           <Table>
                               <TableHeader>
-                                  <TableRow className="hover:bg-slate-900/50 border-slate-800">
+                                  <TableRow>
                                       <TableHead>Name</TableHead>
                                       <TableHead>API Key</TableHead>
                                       <TableHead>Status</TableHead>
@@ -297,7 +298,7 @@ export default function ApiKeysPage() {
                                                           <Button
                                                               variant="ghost"
                                                               size="icon"
-                                                              className="h-8 w-8 hover:bg-slate-800"
+                                                              className="h-8 w-8"
                                                               onClick={() => toggleKeyVisibility(apiKey.id)}
                                                           >
                                                               {isVisible ? (
@@ -310,11 +311,7 @@ export default function ApiKeysPage() {
                                                   </div>
                                               </TableCell>
                                               <TableCell>
-                                                  {isRevoked ? (
-                                                      <Badge variant="destructive">Revoked</Badge>
-                                                  ) : (
-                                                      <Badge className="bg-blue-500/20 text-blue-500 hover:bg-blue-500/30 border-0">Active</Badge>
-                                                  )}
+                                                  <IndicatorBadge text={isRevoked ? 'Revoked' : 'Active'} color={isRevoked ? 'red' : 'green'} />
                                               </TableCell>
                                               <TableCell>
                                                   {apiKey.last_used_at ? (
@@ -373,15 +370,10 @@ export default function ApiKeysPage() {
                           </Table>
                       ) : (
                           <div className="text-center py-12">
-                              <Key className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                               <h3 className="text-lg font-medium mb-2 text-foreground">No API keys yet</h3>
                               <p className="text-sm text-muted-foreground mb-4">
                                   Create your first API key to start integrating with the CaaS platform
                               </p>
-                              <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2 bg-blue-600 hover:bg-blue-500">
-                                  <Plus className="h-4 w-4" />
-                                  Create API Key
-                              </Button>
                           </div>
                       )}
                   </CardContent>
