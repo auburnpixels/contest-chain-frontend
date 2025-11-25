@@ -32,12 +32,12 @@ interface DrawAudit {
   sequence: number;
   competition: {
     id: string;
-    title: string;
+    name: string;
     external_id: string;
   } | null;
   prize: {
     id: string;
-    title: string;
+    name: string;
   } | null;
   draw_id: string;
   drawn_at_utc: string;

@@ -30,7 +30,7 @@ interface RaffleDetail {
   raffle_id: string;
   raffle_id_short: string;
   external_id: string;
-  title: string;
+  name: string;
   status: string;
   total_entries: number;
   postal_entries: number;

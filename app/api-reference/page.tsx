@@ -110,7 +110,7 @@ export default function ApiReferencePage() {
                             <Row name="status" type="string" description="Initial status (default: 'pending'). Options: pending, active." />
                             <Row name="prizes" type="array" required description="Array of prizes for this competition (minimum 1 prize required)." />
                             <Row name="prizes[].external_id" type="string" required description="Your unique identifier for this prize within the competition." />
-                            <Row name="prizes[].title" type="string" required description="Name/title of the prize." />
+                            <Row name="prizes[].name" type="string" required description="Name/title of the prize." />
                          </Table>
                          <div className="mt-6">
                             <p className="text-sm text-zinc-400 mb-3 font-semibold">Example Request:</p>
@@ -303,7 +303,7 @@ export default function ApiReferencePage() {
                                 <Row name="status" type="string" description="Update the status (pending, active, ended, closed, awaiting_draw, completed)." />
                                 <Row name="prizes" type="array" description="Update prizes array. You can add new prizes, update existing ones, or remove undrawn prizes." />
                                 <Row name="prizes[].external_prize_id" type="string" description="Prize identifier (required when prizes array is provided)." />
-                                <Row name="prizes[].title" type="string" description="Prize title (required when prizes array is provided)." />
+                                <Row name="prizes[].name" type="string" description="Prize title (required when prizes array is provided)." />
                             </Table>
                             <div className="mt-6">
                                 <p className="text-sm text-zinc-400 mb-3 font-semibold">Example Request:</p>

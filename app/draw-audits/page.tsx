@@ -40,7 +40,7 @@ interface DrawAudit {
   } | null;
   competition: {
     id: string;
-    title: string;
+    name: string;
     slug: string;
   } | null;
   prize_name: string | null;
@@ -369,7 +369,7 @@ export default function DrawAuditsPage() {
                               <span className="text-zinc-600">N/A</span>
                             )}
                           </TableCell>
-                          <TableCell>{audit.competition?.title || 'N/A'}</TableCell>
+                          <TableCell>{audit.competition?.name || 'N/A'}</TableCell>
                           <TableCell>{audit.prize_name || 'N/A'}</TableCell>
                           <TableCell className="font-mono text-xs">{audit.draw_id}</TableCell>
                           <TableCell className="text-sm">

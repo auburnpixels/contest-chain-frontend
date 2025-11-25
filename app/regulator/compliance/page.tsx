@@ -27,7 +27,7 @@ interface RaffleDetail {
   raffle_id: string;
   raffle_id_short: string;
   external_id: string;
-  title: string;
+  name: string;
   status: string;
   total_entries: number;
   postal_entries: number;
@@ -112,7 +112,7 @@ export default function CompliancePage() {
     const rows = data.raffles.map((raffle) => [
       raffle.raffle_id,
       raffle.external_id || '',
-      raffle.title,
+      raffle.name,
       raffle.status,
       raffle.total_entries,
       raffle.postal_entries,
@@ -400,8 +400,8 @@ export default function CompliancePage() {
                             </button>
                           </div>
                         </td>
-                        <td className="py-3 px-2 max-w-xs truncate" title={raffle.title}>
-                          {raffle.title}
+                        <td className="py-3 px-2 max-w-xs truncate" title={raffle.name}>
+                          {raffle.name}
                         </td>
                         <td className="py-3 px-2">
                           {getStatusBadge(raffle.status)}

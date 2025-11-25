@@ -10,7 +10,7 @@ export interface Competition {
   id: number;
   external_id: string;
   uuid: string;
-  title: string;
+  name: string;
   description?: string;
   ticket_quantity: number;
   ticket_price: number;

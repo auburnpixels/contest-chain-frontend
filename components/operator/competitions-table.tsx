@@ -48,7 +48,7 @@ export function CompetitionsTable({
               </Badge>
             </TableCell>
             <TableCell className="font-medium text-foreground">
-              {competition.title}
+              {competition.name}
             </TableCell>
             <TableCell>
               {getStatusIndicatorBadge(competition)}

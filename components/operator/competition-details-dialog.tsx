@@ -11,7 +11,7 @@ import {getStatusIndicatorBadge} from '@/lib/competition-status';
 
 export interface OperatorCompetitionPrize {
     id: string;
-    title: string;
+    name: string;
     draw_order: number;
     has_been_drawn: boolean;
     winner_entry_id?: string | null;
@@ -20,8 +20,7 @@ export interface OperatorCompetitionPrize {
 
 export interface OperatorCompetition {
     id: string;
-    title: string;
-    name?: string;
+    name: string;
     external_id?: string;
     status: string;
     ticket_quantity?: number;
@@ -153,7 +152,7 @@ export function CompetitionDetailsDialog({competition, open, onOpenChange}: Comp
             <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold">
-                        {competition?.title || competition?.name}
+                        {competition?.name || competition?.name}
                     </DialogTitle>
                     <DialogDescription>
                         Competition details and prizes
@@ -230,7 +229,7 @@ export function CompetitionDetailsDialog({competition, open, onOpenChange}: Comp
                                                                 <Badge variant="outline" className="text-xs">
                                                                     #{prize.draw_order}
                                                                 </Badge>
-                                                                <h4 className="font-semibold">{prize.title}</h4>
+                                                                <h4 className="font-semibold">{prize.name}</h4>
                                                                 {prize.has_been_drawn && (
                                                                     <Badge className="bg-blue-600 text-white">
                                                                         Drawn
