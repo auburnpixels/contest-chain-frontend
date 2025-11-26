@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -9,15 +8,18 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { operatorApi, authApi, apiClient } from '@/lib/api/client';
-import { Key, Copy, Trash2, Plus, Eye, EyeOff, Calendar, AlertCircle, LayoutDashboard, Trophy, FileText, Activity, ShieldCheck, AlertTriangle, Settings } from 'lucide-react';
+import { operatorApi } from '@/lib/api/client';
+import { Key, Copy, Trash2, Plus, Eye, EyeOff, Calendar, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {IndicatorBadge} from "@/components/ui/indicator-badge";
+import { useOperatorAuth } from '@/hooks/useOperatorAuth';
+import { operatorNavItems } from '@/lib/navigation/operator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 export default function ApiKeysPage() {
-  const router = useRouter();
+  const { isReady, handleLogout } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [apiKeys, setApiKeys] = useState<any[]>([]);
   const [operatorName, setOperatorName] = useState('');
@@ -28,11 +30,14 @@ export default function ApiKeysPage() {
   const [newCreatedKey, setNewCreatedKey] = useState<string | null>(null);
 
   useEffect(() => {
-    loadApiKeys();
-  }, []);
+    if (isReady) {
+      loadApiKeys();
+    }
+  }, [isReady]);
 
   const loadApiKeys = async () => {
     try {
+      setLoading(true);
       const [keysData, dashboardData] = await Promise.all([
         operatorApi.getApiKeys(),
         operatorApi.getDashboard(),
@@ -41,22 +46,12 @@ export default function ApiKeysPage() {
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
       setLoading(false);
     } catch (error: any) {
-      console.error('Failed to load API keys:', error);
-      
-      // For authentication errors, the API client will handle token refresh automatically
-      // Only show error state, don't redirect - let AuthContext handle authentication
+      console.error('[API Keys] Failed to load API keys:', error);
+      if (error.status === 401) {
+        await handleLogout();
+      }
       setLoading(false);
     }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/operator/login');
   };
 
   const handleCreateKey = async () => {
@@ -142,28 +137,13 @@ export default function ApiKeysPage() {
     return '•'.repeat(key.length - 4) + key.substring(key.length - 4);
   };
 
-  const navItems = [
-    { href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { href: '/operator/competitions', title: 'Competitions', icon: Trophy },
-    { href: '/operator/draw-events', title: 'Events', icon: Activity },
-    { href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck },
-    { href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/operator/api-keys', title: 'API Keys', icon: Key },
-    { href: '/operator/details', title: 'Settings', icon: Settings },
-    { href: '/docs', title: 'Documentation', icon: FileText },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading API keys...</p>
-      </div>
-    );
+  if (!isReady || loading) {
+    return <DashboardLoading message="Loading API keys..." />;
   }
 
   return (
     <DashboardShell
-      navItems={navItems}
+      navItems={operatorNavItems}
       userRole="operator"
       userName={operatorName}
       onLogout={handleLogout}

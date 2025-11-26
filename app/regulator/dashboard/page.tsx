@@ -1,29 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { apiClient, regulatorApi, authApi } from '@/lib/api/client';
-import { Shield, Building2, AlertTriangle, CheckCircle2, Search, Home, ShieldCheck, Activity } from 'lucide-react';
+import { regulatorApi } from '@/lib/api/client';
+import { Shield, Building2, AlertTriangle, CheckCircle2, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { DashboardShell } from '@/components/dashboard-shell';
+import { useRegulatorAuth } from '@/hooks/useRegulatorAuth';
+import { regulatorNavItems } from '@/lib/navigation/regulator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 export default function RegulatorDashboardPage() {
-  const router = useRouter();
+  const { isReady, handleLogout } = useRegulatorAuth();
   const [loading, setLoading] = useState(true);
   const [regulator, setRegulator] = useState<any>(null);
   const [operators, setOperators] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
-    loadDashboardData();
-  }, []);
+    if (isReady) {
+      loadDashboardData();
+    }
+  }, [isReady]);
 
   const loadDashboardData = async () => {
     try {
+      setLoading(true);
       const [regulatorData, operatorsData] = await Promise.all([
         regulatorApi.getDashboard(),
         regulatorApi.getOperators(),
@@ -32,49 +37,29 @@ export default function RegulatorDashboardPage() {
       setRegulator(regulatorData.user);
       setStats(regulatorData.stats);
       setOperators(operatorsData.operators || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load dashboard:', error);
-      router.push('/regulator/login');
+      if (error.status === 401) {
+        await handleLogout();
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/regulator/login');
-  };
-
   const getRiskColor = (score: number) => {
-    if (score >= 90) return 'default'; // Green/Safe (mapped to default/primary for now, or custom)
-    if (score >= 70) return 'secondary'; // Warning
-    return 'destructive'; // High Risk
+    if (score >= 90) return 'default';
+    if (score >= 70) return 'secondary';
+    return 'destructive';
   };
 
-  const navItems = [
-    { href: '/regulator/dashboard', title: 'Dashboard', icon: Home },
-    { href: '/regulator/operators', title: 'Operators', icon: Building2 },
-    { href: '/regulator/draw-events', title: 'Events', icon: Activity },
-    { href: '/regulator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/regulator/compliance', title: 'Compliance', icon: ShieldCheck },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading oversight portal...</p>
-      </div>
-    );
+  if (!isReady || loading) {
+    return <DashboardLoading message="Loading oversight portal..." />;
   }
 
   return (
     <DashboardShell
-      navItems={navItems}
+      navItems={regulatorNavItems}
       userRole="regulator"
       userName={regulator?.name}
       onLogout={handleLogout}

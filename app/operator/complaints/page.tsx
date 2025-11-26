@@ -9,17 +9,21 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { apiClient, operatorApi, authApi } from '@/lib/api/client';
-import { Activity, ShieldCheck, AlertTriangle, Eye, MessageSquare, LayoutDashboard, Trophy, Key, FileText, Settings, X } from 'lucide-react';
+import { operatorApi } from '@/lib/api/client';
+import { Activity, Eye, MessageSquare, X } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 import { PaginationControls } from '@/components/pagination-controls';
 import { getComplaintStatusBadge, getComplaintCountByStatus, formatComplaintCategory, type Complaint } from '@/lib/complaint-status';
+import { useOperatorAuth } from '@/hooks/useOperatorAuth';
+import { operatorNavItems } from '@/lib/navigation/operator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 export default function OperatorComplaintsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isReady, handleLogout } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [operatorName, setOperatorName] = useState('');
@@ -64,10 +68,10 @@ export default function OperatorComplaintsPage() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (initialized) {
+    if (initialized && isReady) {
       loadComplaints();
     }
-  }, [initialized, page, pageSize, filters.status, filters.competition]);
+  }, [initialized, isReady, page, pageSize, filters.status, filters.competition]);
 
   useEffect(() => {
     if (initialized) {
@@ -76,8 +80,10 @@ export default function OperatorComplaintsPage() {
   }, [initialized, page, pageSize, filters.status, filters.competition]);
 
   useEffect(() => {
-    loadCompetitions();
-  }, []);
+    if (isReady) {
+      loadCompetitions();
+    }
+  }, [isReady]);
 
   const updateURL = () => {
     const params = new URLSearchParams();
@@ -134,10 +140,10 @@ export default function OperatorComplaintsPage() {
       
       setLoading(false);
     } catch (error: any) {
-      console.error('Failed to load complaints:', error);
-      
-      // For authentication errors, the API client will handle token refresh automatically
-      // Only show error state, don't redirect - let AuthContext handle authentication
+      console.error('[Complaints] Failed to load complaints:', error);
+      if (error.status === 401) {
+        await handleLogout();
+      }
       setLoading(false);
     }
   };
@@ -160,32 +166,10 @@ export default function OperatorComplaintsPage() {
 
   const hasActiveFilters = filters.status || filters.competition;
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/operator/login');
-  };
-
   const handleViewComplaint = (complaint: Complaint) => {
     setSelectedComplaint(complaint);
     setIsDialogOpen(true);
   };
-
-  const navItems = [
-    { href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { href: '/operator/competitions', title: 'Competitions', icon: Trophy },
-    { href: '/operator/draw-events', title: 'Events', icon: Activity },
-    { href: '/operator/draws', title: 'Draws', icon: ShieldCheck },
-    { href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck },
-    { href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/operator/api-keys', title: 'API Keys', icon: Key },
-    { href: '/operator/details', title: 'Settings', icon: Settings },
-    { href: '/docs', title: 'Documentation', icon: FileText },
-  ];
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -196,18 +180,14 @@ export default function OperatorComplaintsPage() {
     setPage(1);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading complaints...</p>
-      </div>
-    );
+  if (!isReady || (loading && !initialized)) {
+    return <DashboardLoading message="Loading complaints..." />;
   }
 
   return (
     <>
       <DashboardShell
-        navItems={navItems}
+        navItems={operatorNavItems}
         userRole="operator"
         userName={operatorName}
         onLogout={handleLogout}

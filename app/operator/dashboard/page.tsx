@@ -1,20 +1,22 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import {useRouter} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {apiClient, operatorApi, authApi} from '@/lib/api/client';
-import {FileText, LayoutDashboard, Trophy, Key, Activity, ShieldCheck, AlertTriangle, Settings} from 'lucide-react';
+import {operatorApi} from '@/lib/api/client';
 import {DashboardShell} from '@/components/dashboard-shell';
 import {Operator} from '@/lib/api';
 import Link from 'next/link';
 import {DashboardHeader} from "@/components/dashboard-header";
+import {DashboardLoading} from '@/components/dashboard-loading';
 import {
     CompetitionDetailsDialog,
     OperatorCompetition
 } from "@/components/operator/competition-details-dialog";
 import {CompetitionsTable} from "@/components/operator/competitions-table";
+import {useOperatorAuth} from '@/hooks/useOperatorAuth';
+import {operatorNavItems} from '@/lib/navigation/operator-nav';
+import {handleApiError} from '@/lib/error-handler';
 
 interface DashboardData {
     user: any;
@@ -32,7 +34,7 @@ interface DashboardData {
 type CompetitionData = OperatorCompetition;
 
 export default function OperatorDashboardPage() {
-    const router = useRouter();
+    const { isReady, handleLogout } = useOperatorAuth();
     const [loading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
     const [competitions, setCompetitions] = useState<CompetitionData[]>([]);
@@ -40,51 +42,37 @@ export default function OperatorDashboardPage() {
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
     useEffect(() => {
-        loadDashboardData();
-    }, []);
+        if (isReady) {
+            loadDashboardData();
+        }
+    }, [isReady]);
 
     const loadDashboardData = async () => {
         try {
-            // In a real app, these would be actual API calls
-            // For now, we simulate the structure returned by Laravel
+            setLoading(true);
+            
             const [operatorData, competitionsData] = await Promise.all([
                 operatorApi.getDashboard(),
                 operatorApi.getCompetitions(),
             ]);
-
-            // Transform or use data directly if it matches
+            
             const allCompetitions = competitionsData.data || competitionsData.competitions || [];
             setDashboardData({
                 user: operatorData.user,
                 operator: operatorData.operator,
                 compliance: operatorData.compliance,
-                stats: { // Derived or fetched stats
+                stats: {
                     active_competitions: allCompetitions.filter((c: any) => c.status === 'active').length,
                     total_competitions: allCompetitions.length,
                     total_entries: allCompetitions.reduce((sum: number, c: any) => sum + (c.entries_count || c.total_entries || 0), 0)
                 }
             });
-            // Show only the last 5 competitions on the dashboard
             setCompetitions(allCompetitions.slice(0, 5));
         } catch (error: any) {
-            console.error('Failed to load dashboard:', error);
-            
-            // For authentication errors, the API client will handle token refresh automatically
-            // Only show error state, don't redirect - let AuthContext handle authentication
-            setLoading(false);
+            handleApiError(error, handleLogout);
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleLogout = async () => {
-        try {
-            await authApi.logout();
-        } catch (error) {
-            console.error('Logout error:', error);
-        }
-        apiClient.clearToken();
-        router.push('/operator/login');
     };
 
     const handleOpenCompetition = (competition: CompetitionData) => {
@@ -92,29 +80,13 @@ export default function OperatorDashboardPage() {
         setViewDialogOpen(true);
     };
 
-    const navItems = [
-        {href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard},
-        {href: '/operator/competitions', title: 'Competitions', icon: Trophy},
-        {href: '/operator/draw-events', title: 'Events', icon: Activity},
-        {href: '/operator/draws', title: 'Draws', icon: ShieldCheck},
-        {href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck},
-        {href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle},
-        {href: '/operator/api-keys', title: 'API Keys', icon: Key},
-        {href: '/operator/details', title: 'Settings', icon: Settings},
-        {href: '/docs', title: 'Documentation', icon: FileText},
-    ];
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-                <p className="text-lg text-muted-foreground animate-pulse">Loading dashboard...</p>
-            </div>
-        );
+    if (!isReady || loading) {
+        return <DashboardLoading message="Loading dashboard..." />;
     }
 
     return (
         <DashboardShell
-            navItems={navItems}
+            navItems={operatorNavItems}
             userRole="operator"
             userName={dashboardData?.operator?.name || dashboardData?.user?.name}
             onLogout={handleLogout}

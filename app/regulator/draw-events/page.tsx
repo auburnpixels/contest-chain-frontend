@@ -11,9 +11,13 @@ import { apiClient, regulatorApi, authApi } from '@/lib/api/client';
 import { Activity, Building2, Home, ShieldCheck, AlertTriangle, Eye, Hash, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { DashboardShell } from '@/components/dashboard-shell';
+import { useRegulatorAuth } from '@/hooks/useRegulatorAuth';
+import { regulatorNavItems } from '@/lib/navigation/regulator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 export default function DrawEventsPage() {
   const router = useRouter();
+  const { isReady, handleLogout } = useRegulatorAuth();
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<any[]>([]);
   const [regulator, setRegulator] = useState<any>(null);
@@ -21,13 +25,15 @@ export default function DrawEventsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    loadDrawEvents();
-  }, []);
+    if (isReady) {
+      loadDrawEvents();
+    }
+  }, [isReady]);
 
   const loadDrawEvents = async () => {
     try {
       // Fetch draw events - you'll need to implement this endpoint
-      const response = await fetch(`${apiClient.getToken() ? '/internal/regulator/draw-events' : ''}`);
+      const response = await fetch(`${apiClient.getToken() ? '/internal/regulator/events' : ''}`);
       // For now, using mock data
       setEvents([
         {
@@ -66,35 +72,14 @@ export default function DrawEventsPage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/regulator/login');
-  };
 
   const handleViewEvent = (event: any) => {
     setSelectedEvent(event);
     setIsDialogOpen(true);
   };
 
-  const navItems = [
-    { href: '/regulator/dashboard', title: 'Dashboard', icon: Home },
-    { href: '/regulator/operators', title: 'Operators', icon: Building2 },
-    { href: '/regulator/draw-events', title: 'Events', icon: Activity },
-    { href: '/regulator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/regulator/compliance', title: 'Compliance', icon: ShieldCheck },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading draw events...</p>
-      </div>
-    );
+  if (!isReady || loading) {
+    return <DashboardLoading message="Loading draw events..." />;
   }
 
   return (

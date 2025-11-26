@@ -1,20 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { apiClient, regulatorApi, authApi } from '@/lib/api/client';
+import { regulatorApi } from '@/lib/api/client';
 import { 
-  Activity, 
   Building2, 
-  Home, 
-  ShieldCheck, 
-  AlertTriangle, 
   Trophy,
   CheckCircle2,
-  FileText,
   Mail,
   TrendingUp,
   Copy,
@@ -22,6 +16,9 @@ import {
   X
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
+import { useRegulatorAuth } from '@/hooks/useRegulatorAuth';
+import { regulatorNavItems } from '@/lib/navigation/regulator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 interface RaffleDetail {
   raffle_id: string;
@@ -56,25 +53,28 @@ interface ComplianceData {
 }
 
 export default function CompliancePage() {
-  const router = useRouter();
+  const { isReady, handleLogout } = useRegulatorAuth();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<ComplianceData | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    loadComplianceData();
-  }, []);
+    if (isReady) {
+      loadComplianceData();
+    }
+  }, [isReady]);
 
   const loadComplianceData = async () => {
     try {
+      setLoading(true);
       const response = await regulatorApi.getComplianceDashboard();
       setData(response);
       setLoading(false);
     } catch (error: any) {
       console.error('Failed to load compliance data:', error);
-      
-      // For authentication errors, the API client will handle token refresh automatically
-      // Only show error state, don't redirect - let AuthContext handle authentication
+      if (error.status === 401) {
+        await handleLogout();
+      }
       setLoading(false);
     }
   };
@@ -201,17 +201,13 @@ export default function CompliancePage() {
   const navItems = [
     { href: '/regulator/dashboard', title: 'Dashboard', icon: Home },
     { href: '/regulator/operators', title: 'Operators', icon: Building2 },
-    { href: '/regulator/draw-events', title: 'Events', icon: Activity },
+    { href: '/regulator/events', title: 'Events', icon: Activity },
     { href: '/regulator/complaints', title: 'Complaints', icon: AlertTriangle },
     { href: '/regulator/compliance', title: 'Compliance', icon: ShieldCheck },
   ];
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading compliance data...</p>
-      </div>
-    );
+    return <DashboardLoading message="Loading compliance data..." />;
   }
 
   const stats = data?.summary;
@@ -420,7 +416,7 @@ export default function CompliancePage() {
                             <div className="flex items-center justify-center gap-2">
                               <Check className="h-4 w-4 text-green-600" />
                               <button
-                                onClick={() => router.push(`/regulator/draw-events`)}
+                                onClick={() => router.push(`/regulator/events`)}
                                 className="text-xs text-blue-600 hover:text-blue-700 hover:underline"
                               >
                                 View

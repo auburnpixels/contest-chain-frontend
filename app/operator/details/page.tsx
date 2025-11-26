@@ -1,16 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { apiClient, operatorApi, authApi } from '@/lib/api/client';
+import { operatorApi } from '@/lib/api/client';
 import { DashboardShell } from '@/components/dashboard-shell';
-import { LayoutDashboard, Trophy, Activity, ShieldCheck, AlertTriangle, Key, FileText, Settings, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {DashboardHeader} from "@/components/dashboard-header";
+import { useOperatorAuth } from '@/hooks/useOperatorAuth';
+import { operatorNavItems } from '@/lib/navigation/operator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 interface OperatorData {
   id: number;
@@ -20,7 +22,7 @@ interface OperatorData {
 }
 
 export default function OperatorDetailsPage() {
-  const router = useRouter();
+  const { isReady, handleLogout } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [operatorData, setOperatorData] = useState<OperatorData | null>(null);
@@ -32,23 +34,15 @@ export default function OperatorDetailsPage() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const navItems = [
-    { href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { href: '/operator/competitions', title: 'Competitions', icon: Trophy },
-    { href: '/operator/draw-events', title: 'Events', icon: Activity },
-    { href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck },
-    { href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/operator/api-keys', title: 'API Keys', icon: Key },
-    { href: '/operator/details', title: 'Settings', icon: Settings },
-    { href: '/docs', title: 'Documentation', icon: FileText },
-  ];
-
   useEffect(() => {
-    loadOperatorData();
-  }, []);
+    if (isReady) {
+      loadOperatorData();
+    }
+  }, [isReady]);
 
   const loadOperatorData = async () => {
     try {
+      setLoading(true);
       const data = await operatorApi.getDashboard();
       const operator = data.operator;
       setOperatorData(operator);
@@ -57,24 +51,15 @@ export default function OperatorDetailsPage() {
         url: operator.url || '',
       });
     } catch (error: any) {
-      console.error('Failed to load operator data:', error);
-      
-      // For authentication errors, the API client will handle token refresh automatically
-      // Only show error state, don't redirect - let AuthContext handle authentication
-      setErrorMessage('Failed to load operator details. Please try again.');
+      console.error('[Details] Failed to load operator data:', error);
+      if (error.status === 401) {
+        await handleLogout();
+      } else {
+        setErrorMessage('Failed to load operator details. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/operator/login');
   };
 
   const validateForm = () => {
@@ -144,18 +129,14 @@ export default function OperatorDetailsPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading...</p>
-      </div>
-    );
+  if (!isReady || loading) {
+    return <DashboardLoading message="Loading settings..." />;
   }
 
   return (
-    <DashboardShell 
-      navItems={navItems} 
-      userRole="operator" 
+    <DashboardShell
+      navItems={operatorNavItems}
+      userRole="operator"
       userName={operatorData?.name}
       onLogout={handleLogout}
     >

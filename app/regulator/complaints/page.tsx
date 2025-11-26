@@ -13,10 +13,14 @@ import { apiClient, regulatorApi, authApi } from '@/lib/api/client';
 import { Activity, Building2, Home, ShieldCheck, AlertTriangle, Eye, MessageSquare, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { DashboardShell } from '@/components/dashboard-shell';
+import { useRegulatorAuth } from '@/hooks/useRegulatorAuth';
+import { regulatorNavItems } from '@/lib/navigation/regulator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 export default function ComplaintsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isReady, handleLogout } = useRegulatorAuth();
   const [loading, setLoading] = useState(true);
   const [complaints, setComplaints] = useState<any[]>([]);
   const [allComplaints, setAllComplaints] = useState<any[]>([]);
@@ -45,8 +49,10 @@ export default function ComplaintsPage() {
   }, [searchParams]);
 
   useEffect(() => {
-    loadComplaints();
-  }, []);
+    if (isReady) {
+      loadComplaints();
+    }
+  }, [isReady]);
 
   useEffect(() => {
     if (initialized) {
@@ -147,16 +153,6 @@ export default function ComplaintsPage() {
     new Map(allComplaints.map(c => [c.competition_uuid, c])).values()
   );
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/regulator/login');
-  };
-
   const handleViewComplaint = (complaint: any) => {
     setSelectedComplaint(complaint);
     setIsDialogOpen(true);
@@ -177,26 +173,14 @@ export default function ComplaintsPage() {
     }
   };
 
-  const navItems = [
-    { href: '/regulator/dashboard', title: 'Dashboard', icon: Home },
-    { href: '/regulator/operators', title: 'Operators', icon: Building2 },
-    { href: '/regulator/draw-events', title: 'Events', icon: Activity },
-    { href: '/regulator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/regulator/compliance', title: 'Compliance', icon: ShieldCheck },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading complaints...</p>
-      </div>
-    );
+  if (!isReady || loading) {
+    return <DashboardLoading message="Loading complaints..." />;
   }
 
   return (
     <>
       <DashboardShell
-        navItems={navItems}
+        navItems={regulatorNavItems}
         userRole="regulator"
         userName={regulator?.name}
         onLogout={handleLogout}

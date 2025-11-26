@@ -123,8 +123,11 @@ class ApiClient {
 
     // Always get the latest token from localStorage
     const currentToken = this.getToken();
-    console.log('[API Client] Token present:', !!currentToken, 'Endpoint:', endpoint);
-    if (currentToken) {
+    if (!currentToken) {
+      console.warn('[API Client] No token available for endpoint:', endpoint);
+      // Don't throw error here - let the backend respond with proper 401
+    } else {
+      console.log('[API Client] Token present for endpoint:', endpoint);
       headers['Authorization'] = `Bearer ${currentToken}`;
     }
 

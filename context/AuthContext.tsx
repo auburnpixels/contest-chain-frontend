@@ -14,6 +14,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isInitialized: boolean;
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -28,10 +29,12 @@ const REFRESH_INTERVAL_MS = JWT_TTL_MINUTES * 60 * 1000 * 0.8; // Refresh at 80%
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const refresh = useCallback(async () => {
     try {
+      console.log('[AuthContext] Refreshing token...');
       const response = await authApi.refresh();
       
       // Response is already the data object from the API
@@ -41,16 +44,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       apiClient.setToken(response.access_token);
+      console.log('[AuthContext] Token refreshed successfully');
       
       // Get user data after refreshing token
       const meResponse = await authApi.me();
       
       if (meResponse.user) {
         setUser(meResponse.user);
+        console.log('[AuthContext] User data loaded:', meResponse.user.email);
       }
       
       setLoading(false);
     } catch (error) {
+      console.error('[AuthContext] Token refresh failed:', error);
       apiClient.clearToken();
       setUser(null);
       setLoading(false);
@@ -104,11 +110,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check for existing token on mount
-    const token = apiClient.getToken();
-    if (token) {
-      // Verify token and get user
-      refresh()
-        .then(() => {
+    const initializeAuth = async () => {
+      const token = apiClient.getToken();
+      console.log('[AuthContext] Initializing auth, token present:', !!token);
+      
+      if (token) {
+        // Verify token and get user
+        try {
+          await refresh();
+          
           // Set up automatic token refresh after successful initial refresh
           if (refreshTimerRef.current) {
             clearInterval(refreshTimerRef.current);
@@ -119,14 +129,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               logout();
             });
           }, REFRESH_INTERVAL_MS);
-        })
-        .catch(() => {
+          
+          console.log('[AuthContext] Auth initialized successfully');
+        } catch (error) {
+          console.error('[AuthContext] Auth initialization failed:', error);
           apiClient.clearToken();
           setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
+        } finally {
+          setIsInitialized(true);
+        }
+      } else {
+        console.log('[AuthContext] No token found, auth initialization complete');
+        setLoading(false);
+        setIsInitialized(true);
+      }
+    };
+
+    initializeAuth();
 
     // Cleanup interval on unmount
     return () => {
@@ -137,7 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refresh, logout]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refresh }}>
+    <AuthContext.Provider value={{ user, loading, isInitialized, login, logout, refresh }}>
       {children}
     </AuthContext.Provider>
   );

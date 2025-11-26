@@ -1,29 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { regulatorApi, authApi, apiClient } from '@/lib/api/client';
-import { Building2, Calendar, CheckCircle2, AlertCircle, Search, Home, ShieldCheck, Activity, AlertTriangle } from 'lucide-react';
+import { regulatorApi } from '@/lib/api/client';
+import { Building2, Calendar, CheckCircle2, AlertCircle, Search } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import { Input } from '@/components/ui/input';
+import { useRegulatorAuth } from '@/hooks/useRegulatorAuth';
+import { regulatorNavItems } from '@/lib/navigation/regulator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
 
 export default function OperatorsPage() {
-  const router = useRouter();
+  const { isReady, handleLogout } = useRegulatorAuth();
   const [loading, setLoading] = useState(true);
   const [operators, setOperators] = useState<any[]>([]);
   const [regulatorName, setRegulatorName] = useState('');
 
   useEffect(() => {
-    loadOperators();
-  }, []);
+    if (isReady) {
+      loadOperators();
+    }
+  }, [isReady]);
 
   const loadOperators = async () => {
     try {
+      setLoading(true);
       const [data, dashboardData] = await Promise.all([
         regulatorApi.getOperators(),
         regulatorApi.getDashboard(),
@@ -31,41 +36,21 @@ export default function OperatorsPage() {
       setOperators(data.data || data || []);
       setRegulatorName(dashboardData?.user?.name || '');
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load operators:', error);
-      router.push('/regulator/login');
+      if (error.status === 401) {
+        await handleLogout();
+      }
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/regulator/login');
-  };
-
-  const navItems = [
-    { href: '/regulator/dashboard', title: 'Dashboard', icon: Home },
-    { href: '/regulator/operators', title: 'Operators', icon: Building2 },
-    { href: '/regulator/draw-events', title: 'Events', icon: Activity },
-    { href: '/regulator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/regulator/compliance', title: 'Compliance', icon: ShieldCheck },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading operators...</p>
-      </div>
-    );
+  if (!isReady || loading) {
+    return <DashboardLoading message="Loading operators..." />;
   }
 
   return (
     <DashboardShell
-      navItems={navItems}
+      navItems={regulatorNavItems}
       userRole="regulator"
       userName={regulatorName}
       onLogout={handleLogout}

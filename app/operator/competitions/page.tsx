@@ -6,17 +6,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { operatorApi, authApi, apiClient } from '@/lib/api/client';
+import { operatorApi } from '@/lib/api/client';
 import {
     Trophy,
     Search,
-    FileText,
-    LayoutDashboard,
-    Key,
-    Activity,
-    ShieldCheck,
-    AlertTriangle,
-    Settings,
     X,
     ChevronLeft,
     ChevronRight,
@@ -32,17 +25,22 @@ import {
 } from "@/components/operator/competition-details-dialog";
 import { CompetitionsTable } from "@/components/operator/competitions-table";
 import { PaginationControls } from "@/components/pagination-controls";
+import { useOperatorAuth } from '@/hooks/useOperatorAuth';
+import { operatorNavItems } from '@/lib/navigation/operator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
+import { useDialog } from '@/hooks/useDialog';
+import { handleApiError } from '@/lib/error-handler';
 
 type CompetitionData = OperatorCompetition;
 
 export default function CompetitionsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isReady, handleLogout } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [competitions, setCompetitions] = useState<CompetitionData[]>([]);
   const [operatorName, setOperatorName] = useState('');
-  const [selectedCompetition, setSelectedCompetition] = useState<CompetitionData | null>(null);
-  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const dialog = useDialog<CompetitionData>();
   const [initialized, setInitialized] = useState(false);
 
   // Pagination state
@@ -83,10 +81,10 @@ export default function CompetitionsPage() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (initialized) {
+    if (initialized && isReady) {
       loadCompetitions();
     }
-  }, [initialized, page, pageSize, filters.external_id, filters.name, filters.status]);
+  }, [initialized, isReady, page, pageSize, filters.external_id, filters.name, filters.status]);
 
   useEffect(() => {
     if (initialized) {
@@ -135,27 +133,13 @@ export default function CompetitionsPage() {
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
       setLoading(false);
     } catch (error: any) {
-      console.error('Failed to load competitions:', error);
-      
-      // For authentication errors, the API client will handle token refresh automatically
-      // Only show error state, don't redirect - let AuthContext handle authentication
+      handleApiError(error, handleLogout);
       setLoading(false);
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/operator/login');
-  };
-
   const handleOpenCompetition = (competition: CompetitionData) => {
-    setSelectedCompetition(competition);
-    setViewDialogOpen(true);
+    dialog.open(competition);
   };
 
   const handleFilterChange = (key: string, value: string) => {
@@ -186,29 +170,13 @@ export default function CompetitionsPage() {
     setPage(1);
   };
 
-  const navItems = [
-    { href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { href: '/operator/competitions', title: 'Competitions', icon: Trophy },
-    { href: '/operator/draw-events', title: 'Events', icon: Activity },
-    { href: '/operator/draws', title: 'Draws', icon: ShieldCheck },
-    { href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck },
-    { href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/operator/api-keys', title: 'API Keys', icon: Key },
-    { href: '/operator/details', title: 'Settings', icon: Settings },
-    { href: '/docs', title: 'Documentation', icon: FileText },
-  ];
-
-  if (loading && !initialized) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading competitions...</p>
-      </div>
-    );
+  if (!isReady || (loading && !initialized)) {
+    return <DashboardLoading message="Loading competitions..." />;
   }
 
   return (
     <DashboardShell
-      navItems={navItems}
+      navItems={operatorNavItems}
       userRole="operator"
       userName={operatorName}
       onLogout={handleLogout}
@@ -359,9 +327,9 @@ export default function CompetitionsPage() {
       </div>
 
       <CompetitionDetailsDialog
-        competition={selectedCompetition}
-        open={viewDialogOpen}
-        onOpenChange={setViewDialogOpen}
+        competition={dialog.item}
+        open={dialog.isOpen}
+        onOpenChange={(open) => !open && dialog.close()}
       />
     </DashboardShell>
   );

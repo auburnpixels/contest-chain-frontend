@@ -1,30 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { apiClient, operatorApi, authApi } from '@/lib/api/client';
+import { operatorApi } from '@/lib/api/client';
 import {
-    Activity,
-    ShieldCheck,
-    AlertTriangle,
-    Trophy,
     CheckCircle2,
-    FileText,
     Mail,
     TrendingUp,
-    LayoutDashboard,
-    Key,
-    Settings,
     Copy,
+    ShieldCheck,
+    AlertTriangle,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 import { PaginationControls } from '@/components/pagination-controls';
+import { useOperatorAuth } from '@/hooks/useOperatorAuth';
+import { operatorNavItems } from '@/lib/navigation/operator-nav';
+import { DashboardLoading } from '@/components/dashboard-loading';
+import { handleApiError } from '@/lib/error-handler';
+import { exportToCSV as exportCSV, exportToJSON as exportJSON } from '@/lib/export-utils';
+import { getCompetitionStatusVariant } from '@/lib/badge-variants';
 
 interface RaffleDetail {
   raffle_id: string;
@@ -60,7 +59,7 @@ interface ComplianceData {
 }
 
 export default function OperatorCompliancePage() {
-  const router = useRouter();
+  const { isReady, handleLogout } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<ComplianceData | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -68,19 +67,19 @@ export default function OperatorCompliancePage() {
   const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
-    loadComplianceData();
-  }, []);
+    if (isReady) {
+      loadComplianceData();
+    }
+  }, [isReady]);
 
   const loadComplianceData = async () => {
     try {
+      setLoading(true);
       const response = await operatorApi.getComplianceSummary();
       setData(response);
-      setLoading(false);
     } catch (error: any) {
-      console.error('Failed to load compliance data:', error);
-      
-      // For authentication errors, the API client will handle token refresh automatically
-      // Only show error state, don't redirect - let AuthContext handle authentication
+      handleApiError(error, handleLogout);
+    } finally {
       setLoading(false);
     }
   };
@@ -95,59 +94,28 @@ export default function OperatorCompliancePage() {
     }
   };
 
-  const exportToCSV = () => {
+  const handleExportCSV = () => {
     if (!data?.raffles || data.raffles.length === 0) {
       alert('No data to export');
       return;
     }
 
-    const headers = [
-      'Raffle ID',
-      'External ID',
-      'Title',
-      'Status',
-      'Total Entries',
-      'Postal Entries',
-      'Free Entry %',
-      'Has Audit',
-      'Audit Count',
-      'Active Complaints',
-      'Compliance Score',
-    ];
-
-    const rows = data.raffles.map((raffle) => [
-      raffle.raffle_id,
-      raffle.external_id || '',
-      raffle.name,
-      raffle.status,
-      raffle.total_entries,
-      raffle.postal_entries,
-      raffle.free_entry_percentage.toFixed(2),
-      raffle.has_audit ? 'Yes' : 'No',
-      raffle.audit_count,
-      raffle.active_complaints,
-      raffle.compliance_score,
+    exportCSV(data.raffles, `compliance-report-${new Date().toISOString().split('T')[0]}`, [
+      { key: 'raffle_id', label: 'Raffle ID' },
+      { key: 'external_id', label: 'External ID' },
+      { key: 'name', label: 'Title' },
+      { key: 'status', label: 'Status' },
+      { key: 'total_entries', label: 'Total Entries' },
+      { key: 'postal_entries', label: 'Postal Entries' },
+      { key: 'free_entry_percentage', label: 'Free Entry %', transform: (val) => val.toFixed(2) },
+      { key: 'has_audit', label: 'Has Audit', transform: (val) => val ? 'Yes' : 'No' },
+      { key: 'audit_count', label: 'Audit Count' },
+      { key: 'active_complaints', label: 'Active Complaints' },
+      { key: 'compliance_score', label: 'Compliance Score' },
     ]);
-
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((row) =>
-        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')
-      ),
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `compliance-report-${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
-  const exportToJSON = () => {
+  const handleExportJSON = () => {
     if (!data) {
       alert('No data to export');
       return;
@@ -160,40 +128,11 @@ export default function OperatorCompliancePage() {
       raffles: data.raffles,
     };
 
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json',
-    });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `compliance-report-${new Date().toISOString().split('T')[0]}.json`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    apiClient.clearToken();
-    router.push('/operator/login');
+    exportJSON(exportData, `compliance-report-${new Date().toISOString().split('T')[0]}`);
   };
 
   const getStatusBadge = (status: string) => {
-    const statusMap: { [key: string]: { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' } } = {
-      active: { label: 'active', variant: 'default' },
-      ended: { label: 'ended', variant: 'secondary' },
-      completed: { label: 'completed', variant: 'outline' },
-      drawn: { label: 'drawn', variant: 'outline' },
-    };
-    
-    const config = statusMap[status.toLowerCase()] || { label: status, variant: 'secondary' };
-
-    return <Badge variant={config.variant} className="capitalize">{config.label.replace('_', ' ')}</Badge>;
+    return <Badge variant={getCompetitionStatusVariant(status)} className="capitalize">{status.replace('_', ' ')}</Badge>;
   };
 
   const getComplianceScoreBadge = (score: number) => {
@@ -206,23 +145,8 @@ export default function OperatorCompliancePage() {
     }
   };
 
-  const navItems = [
-    { href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { href: '/operator/competitions', title: 'Competitions', icon: Trophy },
-    { href: '/operator/draw-events', title: 'Events', icon: Activity },
-    { href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck },
-    { href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/operator/api-keys', title: 'API Keys', icon: Key },
-    { href: '/operator/details', title: 'Settings', icon: Settings },
-    { href: '/docs', title: 'Documentation', icon: FileText },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading compliance data...</p>
-      </div>
-    );
+  if (!isReady || loading) {
+    return <DashboardLoading message="Loading compliance data..." />;
   }
 
   const stats = data?.summary;
@@ -255,17 +179,17 @@ export default function OperatorCompliancePage() {
 
   return (
     <DashboardShell
-      navItems={navItems}
+      navItems={operatorNavItems}
       userRole="operator"
       userName={data?.operator?.name || data?.user?.name}
       onLogout={handleLogout}
     >
       <div className="space-y-8">
           <DashboardHeader title="Compliance">
-              <Button variant="outline" size="sm" onClick={exportToCSV}>
+              <Button variant="outline" size="sm" onClick={handleExportCSV}>
                   Export CSV
               </Button>
-              <Button variant="outline" size="sm" onClick={exportToJSON}>
+              <Button variant="outline" size="sm" onClick={handleExportJSON}>
                   Export JSON
               </Button>
           </DashboardHeader>

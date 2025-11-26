@@ -1,20 +1,12 @@
 'use client';
 
 import { DashboardShell } from '@/components/dashboard-shell';
-import { LayoutDashboard, Trophy, Key, FileText } from 'lucide-react';
+import { operatorNavItems } from '@/lib/navigation/operator-nav';
 
 export default function DashboardLoading() {
-  // Skeleton nav items to match structure
-  const navItems = [
-    { href: '#', title: 'Dashboard', icon: LayoutDashboard },
-    { href: '#', title: 'Competitions', icon: Trophy },
-    { href: '#', title: 'API Keys', icon: Key },
-    { href: '#', title: 'Documentation', icon: FileText },
-  ];
-
   return (
     <DashboardShell 
-      navItems={navItems} 
+      navItems={operatorNavItems} 
       userRole="operator" 
       userName="Loading..." 
       onLogout={() => {}}
