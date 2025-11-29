@@ -163,7 +163,11 @@ class ApiClient {
                                  endpoint.includes('/auth/register') ||
                                  endpoint.includes('/auth/refresh');
           
-          if (!isAuthEndpoint && !isRetry && (errorCode === 'TOKEN_EXPIRED' || errorCode === 'TOKEN_INVALID')) {
+          // Only attempt auto-refresh for TOKEN_EXPIRED or TOKEN_INVALID
+          // Don't refresh for TOKEN_EXPIRED_NOT_REFRESHABLE, TOKEN_BLACKLISTED, etc.
+          const canAutoRefresh = errorCode === 'TOKEN_EXPIRED' || errorCode === 'TOKEN_INVALID';
+          
+          if (!isAuthEndpoint && !isRetry && canAutoRefresh) {
             try {
               console.log('[API Client] Attempting automatic token refresh...');
               await this.refreshToken();
@@ -301,6 +305,25 @@ export const operatorApi = {
   getCompetitionEvents: (uuid: string) =>
     apiClient.get<any>(`/internal/operator/competitions/${uuid}/events`),
 
+  getEntries: (params?: {
+    page?: number;
+    per_page?: number;
+    competition_id?: string;
+    entry_type?: string;
+    eligibility?: string;
+    external_id?: string;
+    user_reference?: string;
+    show_deleted?: string;
+  }) => {
+    const queryString = params ? new URLSearchParams(Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== '') {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {} as Record<string, string>)).toString() : '';
+    return apiClient.get<any>(`/internal/operator/entries${queryString ? `?${queryString}` : ''}`);
+  },
+
   getDrawEvents: (params?: {
     page?: number;
     per_page?: number;
@@ -310,7 +333,12 @@ export const operatorApi = {
     from_date?: string;
     to_date?: string;
   }) => {
-    const queryString = params ? new URLSearchParams(params as any).toString() : '';
+    const queryString = params ? new URLSearchParams(Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== '') {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {} as Record<string, string>)).toString() : '';
     return apiClient.get<any>(`/internal/operator/draw-events${queryString ? `?${queryString}` : ''}`);
   },
 
@@ -325,7 +353,12 @@ export const operatorApi = {
     status?: string;
     competition?: string;
   }) => {
-    const queryString = params ? new URLSearchParams(params as any).toString() : '';
+    const queryString = params ? new URLSearchParams(Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== '') {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {} as Record<string, string>)).toString() : '';
     return apiClient.get<any>(`/internal/operator/complaints${queryString ? `?${queryString}` : ''}`);
   },
 
@@ -336,9 +369,17 @@ export const operatorApi = {
     from_date?: string;
     to_date?: string;
   }) => {
-    const queryString = params ? new URLSearchParams(params as any).toString() : '';
+    const queryString = params ? new URLSearchParams(Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== '') {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {} as Record<string, string>)).toString() : '';
     return apiClient.get<any>(`/internal/operator/draw-audits${queryString ? `?${queryString}` : ''}`);
   },
+
+  getIndustryBenchmarks: () => 
+    apiClient.get<any>('/internal/operator/industry-benchmarks'),
 
   getApiKeys: () => apiClient.get<any>('/internal/operator/api-keys'),
 
@@ -403,21 +444,40 @@ export const publicApi = {
       (r) => r.json()
     ),
 
-  getDrawAudits: (operatorUuid?: string, page?: number) => {
+  getDrawAudits: (operatorUuid?: string, competitionUuid?: string, prizeId?: string, page?: number) => {
     const params = new URLSearchParams();
     if (operatorUuid) params.append('operator', operatorUuid);
+    if (competitionUuid) params.append('competition', competitionUuid);
+    if (prizeId) params.append('prize', prizeId);
     if (page) params.append('page', page.toString());
     const queryString = params.toString();
     return fetch(`${API_BASE_URL}/api/public/draw-audits${queryString ? `?${queryString}` : ''}`).then((r) => r.json());
   },
 
-  downloadDrawAuditsJson: (operatorUuid?: string) => {
+  downloadDrawAuditsJson: (operatorUuid?: string, competitionUuid?: string, prizeId?: string) => {
     const params = new URLSearchParams();
     if (operatorUuid) params.append('operator', operatorUuid);
+    if (competitionUuid) params.append('competition', competitionUuid);
+    if (prizeId) params.append('prize', prizeId);
     const queryString = params.toString();
     return fetch(`${API_BASE_URL}/api/public/draw-audits/download${queryString ? `?${queryString}` : ''}`).then((r) => r.json());
   },
 
   getOperators: () =>
     fetch(`${API_BASE_URL}/api/public/operators`).then((r) => r.json()),
+
+  getPublicCompetitions: (operatorUuid?: string) => {
+    const params = new URLSearchParams();
+    if (operatorUuid) params.append('operator', operatorUuid);
+    const queryString = params.toString();
+    return fetch(`${API_BASE_URL}/api/public/competitions${queryString ? `?${queryString}` : ''}`).then((r) => r.json());
+  },
+
+  getPublicPrizes: (operatorUuid?: string, competitionUuid?: string) => {
+    const params = new URLSearchParams();
+    if (operatorUuid) params.append('operator', operatorUuid);
+    if (competitionUuid) params.append('competition', competitionUuid);
+    const queryString = params.toString();
+    return fetch(`${API_BASE_URL}/api/public/prizes${queryString ? `?${queryString}` : ''}`).then((r) => r.json());
+  },
 };

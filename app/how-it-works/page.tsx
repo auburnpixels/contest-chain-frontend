@@ -1,223 +1,258 @@
-import { PageHero } from "@/components/PageHero";
-import { SectionHeading } from "@/components/section-heading";
-import { Card } from "@/components/ui/card";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { PageHero } from "@/components/marketing/PageHero";
+import { FaqBlock } from "@/components/marketing/FaqBlock";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, Clock, Video, LifeBuoy } from "lucide-react";
-
-const timeline = [
-  {
-    step: "01",
-    title: "Configure competition",
-    description:
-      "Define prizes, entry caps, eligibility, and free-entry routes via dashboard or API. CAAS versions T&Cs and locks configuration when approved.",
-  },
-  {
-    step: "02",
-    title: "Capture entries",
-    description:
-      "Entries stream in from your storefront, CRM, or batch imports. Each ticket receives a unique ID, SHA-256 hash, and Merkle position.",
-  },
-  {
-    step: "03",
-    title: "Lock + seed",
-    description:
-      "When the cutoff hits, CAAS freezes entries, publishes the hash commitment, and generates a verifiable randomness seed.",
-  },
-  {
-    step: "04",
-    title: "Draw & audit",
-    description:
-      "Winners selected with CSPRNG, multi-prize ordering recorded, and a cryptographic audit published for players and regulators.",
-  },
-];
-
-const assurances = [
-  {
-    title: "Integrity controls",
-    detail: "Late entry detection, duplicate ID prevention, eligibility enforcement, and void ticket quarantine happen before the draw fires.",
-  },
-  {
-    title: "Cryptographic evidence",
-    detail: "Seeds, hashes, signatures, and transcripts produced automatically. Export as PDF, JSON, or share public URLs.",
-  },
-  {
-    title: "Alerting & observability",
-    detail: "Slack, email, or webhook alerts let your team intervene if anything looks off. Full audit logs available for review.",
-  },
-];
-
-const lifecycle = [
-  "Config created",
-  "Entries hashed",
-  "Seed committed",
-  "Draw executed",
-  "Winners verified",
-  "Audit published",
-  "Evidence archived",
-];
-
-const touchpoints = [
-  {
-    title: "Onboarding concierge",
-    description: "Two-week guided setup with integration reviews, compliance checklist, and badge configuration.",
-  },
-  {
-    title: "Live draw coaching",
-    description: "CAAS specialists shadow your first draws to ensure audit chains publish as expected.",
-  },
-  {
-    title: "Operator success",
-    description: "Quarterly trust reviews, conversion tips, and access to our fairness community.",
-  },
-];
+import { PenTool, Database, RefreshCw, FileCheck2, Link as LinkIcon, ShieldCheck, Globe, Lock } from "lucide-react";
 
 export default function HowItWorksPage() {
+  const faqs = [
+    {
+      question: "Do I need to understand cryptography to use CAFAAS?",
+      answer: "No. You just integrate the API and use the dashboard. The chain and hashing are handled internally — they’re there to protect you, not to give you extra work."
+    },
+    {
+      question: "Can I see which entries were included in the draw?",
+      answer: "Yes. CAFAAS keeps a clear record of total entries and eligible entries when the draw was run. You can cross-check that against your own system."
+    },
+    {
+      question: "What happens if my system sends duplicate entries?",
+      answer: "That’s up to your integration logic. CAFAAS will record whatever entries you send. We recommend you enforce uniqueness on your side using your external entry IDs."
+    }
+  ];
+
+  const steps = [
+      {
+          title: "1. Create your competition",
+          desc: "You register your competition and prizes with CAFAAS via the API or dashboard.",
+          icon: PenTool
+      },
+      {
+          title: "2. Submit entries",
+          desc: "Paid and free entries are recorded in CAFAAS with eligibility markers.",
+          icon: Database
+      },
+      {
+          title: "3. Run the draw",
+          desc: "When you trigger a draw, CAFAAS selects the winner based on a deterministic random process and logs every step.",
+          icon: RefreshCw
+      },
+      {
+          title: "4. Publish the audit",
+          desc: "A public audit page is created with all the key details so anyone can verify the draw.",
+          icon: FileCheck2
+      }
+  ];
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
       <SiteHeader />
       <main>
-        <PageHero
-          eyebrow="How it works"
-          title="From entry to audit in one predictable motion."
-          description="CAAS wraps every competition in a repeatable workflow—configure, collect, lock, draw, publish, and archive. No spreadsheets. No improvised proofs."
-          primaryCta={{ label: "Schedule onboarding", href: "/contact" }}
-          secondaryCta={{ label: "Watch workflow demo", href: "/docs" }}
+        <PageHero 
+          title="How CAFAAS Works"
+          headline="Under the hood: how CAFAAS keeps draws fair and verifiable."
+          subheadline="Here’s a clear, operator-friendly explanation of what happens from the moment you create a competition to the moment a player checks the audit page."
         />
 
-        <section className="py-24">
-          <div className="mx-auto max-w-content px-6 space-y-12">
-            <SectionHeading
-              eyebrow="Process timeline"
-              title="Four steps. Auditor approved."
-              description="Every step is timestamped, logged, and linked in the audit chain."
-            />
-            <div className="grid gap-6 md:grid-cols-2">
-              {timeline.map((item) => (
-                <Card
-                  key={item.step}
-                  className="border-white/10 bg-black/40 p-6"
-                >
-                  <p className="text-sm font-mono text-accentMint">{item.step}</p>
-                  <h3 className="mt-4 text-xl font-semibold text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    {item.description}
-                  </p>
-                </Card>
-              ))}
+        {/* Section 1: High-level overview */}
+        <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
+            <div className="container px-4 md:px-6 mx-auto">
+                <h2 className="text-3xl font-bold text-center text-zinc-900 dark:text-white mb-16">Four simple stages</h2>
+                <div className="grid md:grid-cols-4 gap-8">
+                    {steps.map((step, idx) => (
+                        <div key={idx} className="bg-white dark:bg-black p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col items-center text-center">
+                            <div className="h-14 w-14 bg-brand-cobalt/10 rounded-full flex items-center justify-center mb-6 text-brand-cobalt">
+                                <step.icon className="h-7 w-7" />
+                            </div>
+                            <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-3">{step.title}</h3>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-sm">{step.desc}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
-          </div>
         </section>
 
-        <section className="bg-black/60 py-24">
-          <div className="mx-auto max-w-content px-6 space-y-12">
-            <SectionHeading
-              eyebrow="Technical assurance"
-              title="Integrity baked into every moment."
-            />
-            <div className="grid gap-6 md:grid-cols-3">
-              {assurances.map((assurance) => (
-                <Card key={assurance.title} className="border-white/10 bg-black/40 p-6">
-                  <ShieldCheck className="h-6 w-6 text-accentMint" />
-                  <h3 className="mt-4 text-lg font-semibold text-white">
-                    {assurance.title}
-                  </h3>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    {assurance.detail}
-                  </p>
-                </Card>
-              ))}
+        {/* Section 2: Entries & eligibility */}
+        <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
+            <div className="container px-4 md:px-6 mx-auto max-w-4xl">
+                <div className="flex flex-col md:flex-row gap-12 items-start">
+                     <div className="flex-1">
+                         <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">1. Recording entries and eligibility</h2>
+                         <p className="text-zinc-600 dark:text-zinc-400 mb-4">When a player enters your competition, you:</p>
+                         <ul className="list-disc pl-5 space-y-2 text-zinc-700 dark:text-zinc-300 mb-8 marker:text-brand-cobalt">
+                             <li>create a ticket/entry in your own system</li>
+                             <li>send a record to CAFAAS with:
+                                 <ul className="list-circle pl-5 mt-2 space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                                     <li>your external entry ID</li>
+                                     <li>whether it was paid or free</li>
+                                     <li>whether the eligibility question was answered correctly</li>
+                                     <li>(optional) a user reference</li>
+                                 </ul>
+                             </li>
+                         </ul>
+                     </div>
+                     <div className="flex-1 bg-zinc-50 dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                         <h3 className="font-bold text-zinc-900 dark:text-white mb-4">CAFAAS records:</h3>
+                         <ul className="space-y-2 text-zinc-600 dark:text-zinc-400 mb-6 text-sm">
+                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> entry time</li>
+                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> whether it is eligible for the draw</li>
+                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> the internal ticket number used for selection</li>
+                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> links to the competition and operator</li>
+                         </ul>
+                         <div className="bg-brand-cobalt/5 p-4 rounded-lg border border-brand-cobalt/20">
+                             <h4 className="font-bold text-brand-cobalt mb-2 text-sm uppercase">This gives you:</h4>
+                             <ul className="space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+                                 <li>• a clear list of all entries</li>
+                                 <li>• a clear separation between eligible and ineligible entries</li>
+                                 <li>• a fair pool to draw from when the competition closes</li>
+                             </ul>
+                         </div>
+                     </div>
+                </div>
             </div>
-          </div>
         </section>
 
-        <section className="py-24">
-          <div className="mx-auto max-w-content px-6 grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <SectionHeading
-                eyebrow="Operator workflow"
-                title="See the dashboard in action."
-                description="A 3-minute walk-through guides non-technical teams through the exact sequence—configure, collect, lock, draw."
-              />
-              <div className="mt-8 rounded-3xl border border-white/10 bg-gradient-to-br from-brand-navy/80 to-brand-slate/80 p-8 text-white">
-                <Video className="h-8 w-8 text-accentMint" />
-                <p className="mt-4 text-lg font-semibold">
-                  Workflow demo • Operators vs Admins
-                </p>
-                <p className="mt-2 text-sm text-white/70">
-                  Includes live draw trigger, eligibility checks, and audit page publish flow.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-3xl border border-white/10 bg-black/40 p-8">
-              <SectionHeading
-                eyebrow="Audit lifecycle"
-                title="Every artefact, in order."
-              />
-              <ol className="mt-6 space-y-4 text-sm text-muted-foreground">
-                {lifecycle.map((stage, index) => (
-                  <li key={stage} className="flex items-start gap-3">
-                    <Badge className="rounded-full bg-white/10 text-white">{index + 1}</Badge>
-                    <span>{stage}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
+        {/* Section 3: The draw process */}
+        <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
+             <div className="container px-4 md:px-6 mx-auto max-w-4xl">
+                 <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-12 text-center">2. How the draw itself works</h2>
+                 
+                 <div className="space-y-6">
+                     {[
+                         { title: "1. The eligible pool is locked", desc: "CAFAAS takes a snapshot of all the eligible entries at that moment." },
+                         { title: "2. The entry pool is hashed", desc: "CAFAAS creates a hash of the entries pool so any later change would be detectable." },
+                         { title: "3. A random seed is generated", desc: "CAFAAS generates a random seed, records it, and stores the hash of that seed." },
+                         { title: "4. The winner is selected", desc: "Using the seed and the entries list, CAFAAS deterministically chooses a winning entry." },
+                         { title: "5. An audit record is created", desc: "The result, seed hash, entry pool hash, and metadata are stored as a new event in the chain." },
+                         { title: "6. The audit page is published", desc: "A public URL shows the details in a clean, human-readable format." }
+                     ].map((item, i) => (
+                         <div key={i} className="flex gap-4 p-4 bg-white dark:bg-black rounded-xl border border-zinc-200 dark:border-zinc-800">
+                             <div className="shrink-0 h-8 w-8 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center font-bold text-zinc-500 text-sm">
+                                 {i + 1}
+                             </div>
+                             <div>
+                                 <h3 className="font-bold text-zinc-900 dark:text-white mb-1">{item.title}</h3>
+                                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">{item.desc}</p>
+                             </div>
+                         </div>
+                     ))}
+                 </div>
+
+                 <div className="mt-12 text-center">
+                     <p className="text-xl font-bold text-zinc-900 dark:text-white">
+                        You don’t see a black box. <br/>
+                        <span className="text-brand-cobalt">You see a repeatable, auditable process.</span>
+                     </p>
+                 </div>
+             </div>
         </section>
 
-        <section className="bg-black/60 py-24">
-          <div className="mx-auto max-w-content px-6 space-y-12">
-            <SectionHeading
-              eyebrow="Support touchpoints"
-              title="Humans with compliance brains."
-              description="Real people help your team get every draw right."
-            />
-            <div className="grid gap-6 md:grid-cols-3">
-              {touchpoints.map((touch) => (
-                <Card key={touch.title} className="border-white/10 bg-black/40 p-6">
-                  <LifeBuoy className="h-6 w-6 text-accentMint" />
-                  <h3 className="mt-4 text-lg font-semibold text-white">
-                    {touch.title}
-                  </h3>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    {touch.description}
-                  </p>
-                </Card>
-              ))}
+        {/* Section 4: The hash chain */}
+        <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
+            <div className="container px-4 md:px-6 mx-auto max-w-4xl">
+                 <div className="flex flex-col md:flex-row gap-12 items-center">
+                    <div className="flex-1">
+                        <div className="h-12 w-12 bg-brand-cobalt/10 rounded-xl flex items-center justify-center mb-6 text-brand-cobalt">
+                            <LinkIcon className="h-6 w-6" />
+                        </div>
+                        <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">3. What the “hash chain” actually means</h2>
+                        <p className="text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed">
+                            Every significant event in a competition’s lifecycle (and draw lifecycle) is turned into a JSON-like record and:
+                        </p>
+                        <ul className="list-disc pl-5 space-y-2 text-zinc-700 dark:text-zinc-300 mb-6 marker:text-brand-cobalt">
+                            <li>Hashed using a cryptographic function (e.g. SHA-256)</li>
+                            <li>Linked to the hash of the previous event</li>
+                        </ul>
+                        <p className="text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed">
+                            So each event contains:
+                        </p>
+                        <ul className="list-disc pl-5 space-y-2 text-zinc-700 dark:text-zinc-300 mb-6 marker:text-brand-cobalt">
+                            <li>its own data</li>
+                            <li>the hash of the previous event</li>
+                            <li>its own new hash</li>
+                        </ul>
+                    </div>
+                    <div className="flex-1 bg-zinc-900 text-white p-8 rounded-2xl shadow-xl">
+                        <h3 className="font-mono text-lg text-brand-cobalt mb-4">Integrity Check</h3>
+                        <p className="font-mono text-sm text-zinc-400 mb-6">
+                            This creates a chain. If any event in the middle is modified later, all subsequent hashes no longer match — the chain breaks and the integrity check fails.
+                        </p>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3 text-sm">
+                                <ShieldCheck className="h-5 w-5 text-green-500" />
+                                <span>draws can’t quietly be rewritten</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm">
+                                <ShieldCheck className="h-5 w-5 text-green-500" />
+                                <span>entries can’t silently disappear from the pool</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm">
+                                <ShieldCheck className="h-5 w-5 text-green-500" />
+                                <span>audits can’t be edited after the fact</span>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
             </div>
-          </div>
         </section>
 
-        <section className="py-24">
-          <div className="mx-auto max-w-content px-6 rounded-3xl border border-white/10 bg-gradient-to-r from-brand-navy via-brand-slate to-black p-10 text-white">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-accentMint">
-                  Next step
-                </p>
-                <h2 className="mt-2 text-3xl font-semibold">
-                  Schedule a live workflow review.
-                </h2>
-                <p className="mt-2 text-sm text-white/70">
-                  We’ll map your exact competition flow to CAAS in under 30 minutes.
-                </p>
-              </div>
-              <a
-                href="/contact"
-                className="rounded-full bg-accentMint px-8 py-3 text-center text-brand-navy font-semibold"
-              >
-                Book onboarding slot
-              </a>
+        {/* Section 5: Public audit pages */}
+        <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
+            <div className="container px-4 md:px-6 mx-auto max-w-4xl">
+                <h2 className="text-3xl font-bold text-center text-zinc-900 dark:text-white mb-12">4. What players and regulators actually see</h2>
+                <div className="grid md:grid-cols-2 gap-8">
+                     <div className="bg-white dark:bg-black p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                         <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-4">Each draw has a public audit page that shows:</h3>
+                         <ul className="space-y-2 text-zinc-600 dark:text-zinc-400 text-sm">
+                             <li>• competition name and prize</li>
+                             <li>• operator name</li>
+                             <li>• total entries and eligible entries</li>
+                             <li>• winner entry details (your external entry ID + ticket number)</li>
+                             <li>• draw timestamp</li>
+                             <li>• seed hash</li>
+                             <li>• entry pool hash</li>
+                             <li>• signature hash (chain item)</li>
+                             <li>• simple integrity check result</li>
+                         </ul>
+                     </div>
+                     <div className="bg-white dark:bg-black p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                         <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-4">In plain language, the audit page answers:</h3>
+                         <ul className="space-y-2 text-zinc-600 dark:text-zinc-400 text-sm">
+                             <li>• When did you run the draw?</li>
+                             <li>• How many entries were included?</li>
+                             <li>• Was the pool frozen before drawing?</li>
+                             <li>• Was a random seed used and recorded?</li>
+                             <li>• Is the audit chain still intact?</li>
+                         </ul>
+                     </div>
+                </div>
             </div>
-          </div>
         </section>
+
+        {/* Section 6: Chain verification */}
+        <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
+             <div className="container px-4 md:px-6 mx-auto max-w-3xl text-center">
+                 <div className="h-16 w-16 bg-brand-cobalt/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                     <Lock className="h-8 w-8 text-brand-cobalt" />
+                 </div>
+                 <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">5. Chain verification</h2>
+                 <p className="text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
+                     CAFAAS can run integrity checks that walk through each event in the chain, re-calculate hashes, and confirm that nothing has been altered.
+                     In future, this can be exposed to regulators, trusted third parties, and possibly operators themselves.
+                 </p>
+                 <div className="bg-zinc-50 dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                     <h3 className="font-bold text-xl text-zinc-900 dark:text-white mb-2">The key idea:</h3>
+                     <p className="text-zinc-700 dark:text-zinc-300 text-lg">
+                         Your fairness doesn’t live in a private log file. <br/>
+                         It lives in a chain of events designed to show tampering.
+                     </p>
+                 </div>
+             </div>
+        </section>
+
+        <FaqBlock faqs={faqs} title="How it works – mini FAQ" />
       </main>
       <SiteFooter />
     </div>
   );
 }
-

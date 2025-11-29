@@ -8,7 +8,7 @@ const integrations = [
   {
     stack: "WooCommerce",
     steps: [
-      "Install CAAS plugin from marketplace.",
+      "Install Cafaas plugin from marketplace.",
       "Map order statuses to entry creation calls.",
       "Embed trust badge on product and thank-you pages.",
     ],

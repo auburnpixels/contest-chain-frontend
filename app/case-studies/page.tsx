@@ -8,7 +8,7 @@ const studies = [
   {
     title: "PrizeDraw UK",
     metric: "+12% conversion",
-    summary: "Added CAAS audit badges to each competition page and cut refund requests by 40%.",
+    summary: "Added Cafaas audit badges to each competition page and cut refund requests by 40%.",
   },
   {
     title: "RaffleAid",
@@ -37,7 +37,7 @@ export default function CaseStudiesPage() {
         <PageHero
           eyebrow="Case studies"
           title="Operators that sell trust first."
-          description="See how raffles, giveaways, and charity draws turned compliance into a growth asset with CAAS."
+          description="See how raffles, giveaways, and charity draws turned compliance into a growth asset with Cafaas."
           primaryCta={{ label: "Book a ROI review", href: "/contact" }}
         />
 
@@ -81,7 +81,7 @@ export default function CaseStudiesPage() {
             <Card className="border-white/10 bg-gradient-to-br from-white/10 to-transparent p-8">
               <SectionHeading
                 eyebrow="Quote"
-                title="“CAAS lets us look as legitimate as we operate.”"
+                title="“Cafaas lets us look as legitimate as we operate.”"
                 description="Sarah Lennon • Head of Ops, Elite Competitions"
               />
             </Card>

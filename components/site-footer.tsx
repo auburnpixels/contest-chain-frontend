@@ -11,7 +11,7 @@ export function SiteFooter() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-blue text-white">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <span className="font-display font-bold text-xl text-white tracking-tight">CAAS</span>
+              <span className="font-display font-bold text-xl text-white tracking-tight">Cafaas</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
               The infrastructure for provably fair competitions.
@@ -58,13 +58,14 @@ export function SiteFooter() {
               <li><Link href="/blog" className="hover:text-brand-blue transition-colors">Blog</Link></li>
               <li><Link href="/careers" className="hover:text-brand-blue transition-colors">Careers</Link></li>
               <li><Link href="/contact" className="hover:text-brand-blue transition-colors">Contact</Link></li>
+              <li><Link href="/compliance-score-explained" className="hover:text-brand-blue transition-colors">Compliance Score</Link></li>
             </ul>
           </div>
         </div>
         
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
-            <span>&copy; 2025 CaaS Platform. All rights reserved.</span>
+            <span>&copy; 2025 Cafaas Platform. All rights reserved.</span>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>

@@ -13,7 +13,7 @@ export const COMPETITION_STATUS_CONFIG: Record<
   }
 > = {
   unpublished: { color: "gray", text: "Unpublished" },
-  active: { color: "green", text: "Active" },
+  active: { color: "blue", text: "Active" },
   awaiting_draw: { color: "yellow", text: "Awaiting Draw" },
   completed: { color: "green", text: "Completed" },
 };

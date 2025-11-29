@@ -158,8 +158,8 @@ export default function OperatorDetailsPage() {
 
                   {errorMessage && (
                       <div className="px-6">
-                          <Alert className="bg-red-500/10 border-red-500/50">
-                              <AlertDescription className="text-red-500">
+                          <Alert className="bg-brand-cobalt/100/10 border-red-500/50">
+                              <AlertDescription className="text-brand-cobalt">
                                   {errorMessage}
                               </AlertDescription>
                           </Alert>
@@ -181,7 +181,7 @@ export default function OperatorDetailsPage() {
                           {/* Operator Name */}
                           <div className="space-y-2">
                               <Label htmlFor="name" className="text-foreground">
-                                  Name <span className="text-red-500">*</span>
+                                  Name <span className="text-brand-cobalt">*</span>
                               </Label>
                               <Input
                                   id="name"
@@ -198,7 +198,7 @@ export default function OperatorDetailsPage() {
                                   disabled={saving}
                               />
                               {errors.name && (
-                                  <p className="text-sm text-red-500">{errors.name}</p>
+                                  <p className="text-sm text-brand-cobalt">{errors.name}</p>
                               )}
                               <p className="text-sm text-muted-foreground">
                                   The name of your organization or business.
@@ -225,7 +225,7 @@ export default function OperatorDetailsPage() {
                                   disabled={saving}
                               />
                               {errors.url && (
-                                  <p className="text-sm text-red-500">{errors.url}</p>
+                                  <p className="text-sm text-brand-cobalt">{errors.url}</p>
                               )}
                               <p className="text-sm text-muted-foreground">
                                   Your company website.

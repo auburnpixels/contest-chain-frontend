@@ -15,11 +15,11 @@ const defaultSteps = [
   {
     title: "Configure Competition",
     description: "Define your prize, entry cap, and rules via Dashboard or API.",
-    detail: "CAAS timestamps your T&Cs and initializes the audit chain.",
+    detail: "Cafaas timestamps your T&Cs and initializes the audit chain.",
   },
   {
     title: "Ingest Entries",
-    description: "As users buy tickets, you send them to CAAS.",
+    description: "As users buy tickets, you send them to Cafaas.",
     detail: "We assign a unique ID and SHA-256 hash to every single entry instantly.",
   },
   {

@@ -18,7 +18,7 @@ export default function ApiReferencePage() {
             API Reference
          </h1>
          <p className="text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Complete documentation for the CaaS Platform REST API.
+            Complete documentation for the Cafaas Platform REST API.
             Manage competitions, process entries, and verify results programmatically.
          </p>
          <div className="flex justify-center gap-4">
@@ -715,7 +715,7 @@ export default function ApiReferencePage() {
           {/* Compliance */}
           <section id="compliance" className="scroll-mt-28">
              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-red-500/10 rounded-lg text-red-500"><ShieldCheck className="h-6 w-6" /></div>
+                <div className="p-2 bg-brand-cobalt/100/10 rounded-lg text-brand-cobalt"><ShieldCheck className="h-6 w-6" /></div>
                 <h2 className="text-3xl font-bold text-white tracking-tight">Compliance</h2>
              </div>
 
@@ -806,13 +806,13 @@ function TrophyIcon(props: any) {
 function Endpoint({ method, path, title, description, children }: { method: string, path: string, title: string, description: string, children?: React.ReactNode }) {
    const color = method === "POST" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" 
                 : method === "GET" ? "bg-green-500/10 text-green-400 border-green-500/20"
-                : method === "DELETE" ? "bg-red-500/10 text-red-400 border-red-500/20"
+                : method === "DELETE" ? "bg-brand-cobalt/100/10 text-red-400 border-red-500/20"
                 : method === "PUT" ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
                 : "bg-zinc-500/10 text-zinc-400";
    
    const methodColorText = method === "POST" ? "text-blue-500" 
                 : method === "GET" ? "text-green-500"
-                : method === "DELETE" ? "text-red-500"
+                : method === "DELETE" ? "text-brand-cobalt"
                 : method === "PUT" ? "text-amber-500"
                 : "text-zinc-400";
 
@@ -867,7 +867,7 @@ function Row({ name, type, required, description }: { name: string, type: string
    return (
       <tr>
          <td className="px-6 py-4 font-mono text-blue-400 font-medium">
-            {name} {required && <span className="text-red-500 ml-1" title="Required">*</span>}
+            {name} {required && <span className="text-brand-cobalt ml-1" title="Required">*</span>}
          </td>
          <td className="px-6 py-4 text-purple-400 font-mono text-xs">{type}</td>
          <td className="px-6 py-4 text-zinc-400 leading-relaxed">{description}</td>

@@ -28,8 +28,8 @@ export default function WhyOperatorsPage() {
       <SiteHeader />
       <main>
         <PageHero
-          eyebrow="Why CAAS"
-          title="Operators choose CAAS because trust drives sales."
+          eyebrow="Why Cafaas"
+          title="Operators choose Cafaas because trust drives sales."
           description="We combine fairness tech, audit automation, and dashboards so your team can scale."
         />
 
@@ -37,7 +37,7 @@ export default function WhyOperatorsPage() {
           <div className="mx-auto max-w-content px-6 space-y-10">
             <SectionHeading
               eyebrow="Comparison"
-              title="CAAS vs. traditional workflows."
+              title="Cafaas vs. traditional workflows."
             />
             <div className="space-y-6">
               {comparisons.map((row) => (
@@ -45,7 +45,7 @@ export default function WhyOperatorsPage() {
                   <h3 className="text-lg font-semibold text-white">{row.title}</h3>
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
                     <div>
-                      <p className="text-sm uppercase tracking-[0.3em] text-accentMint">CAAS</p>
+                      <p className="text-sm uppercase tracking-[0.3em] text-accentMint">Cafaas</p>
                       <p className="text-white">{row.caas}</p>
                     </div>
                     <div>

@@ -22,7 +22,7 @@ const endpoints = [
 const webhooks = [
   { event: "draw.published", detail: "A draw completed and winners are ready to announce." },
   { event: "audit.available", detail: "Audit pack is generated and hosted publicly." },
-  { event: "entry.flagged", detail: "CAAS detected a duplicate ID, void ticket, or other anomaly." },
+  { event: "entry.flagged", detail: "Cafaas detected a duplicate ID, void ticket, or other anomaly." },
 ];
 
 const sdks = [

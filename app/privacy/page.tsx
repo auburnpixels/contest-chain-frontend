@@ -13,7 +13,7 @@ export default function PrivacyPage() {
             
             <h2 className="text-2xl font-bold text-white mt-8">1. Introduction</h2>
             <p>
-               CaaS Platform ("we", "our", "us") respects your privacy and is committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website or use our services.
+               Cafaas Platform ("we", "our", "us") respects your privacy and is committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website or use our services.
             </p>
 
             <h2 className="text-2xl font-bold text-white mt-8">2. The Data We Collect</h2>

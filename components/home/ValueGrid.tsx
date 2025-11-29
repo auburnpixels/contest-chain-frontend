@@ -30,7 +30,7 @@ export function ValueGrid() {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold tracking-tight text-brand-dark sm:text-4xl mb-4">
-            Why Operators Choose CAAS
+            Why Operators Choose Cafaas
           </h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
              Compliance isn't just a checkbox. It's your competitive advantage.

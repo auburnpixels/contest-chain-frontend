@@ -38,7 +38,7 @@ const config: Config = {
         brand: {
           navy: "#0D1733",
           slate: "#475569", // Slate 600
-          cobalt: "#1B4EDB",
+          cobalt: "#8E6BFF", // Setting cobalt to purple/pink as requested for "one highlight"
           graphite: "#1F2937", // Gray 800
           steel: "#9CA3AF", // Gray 400
           dark: "#111827", // Gray 900

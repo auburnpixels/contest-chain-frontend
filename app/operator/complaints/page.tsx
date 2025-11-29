@@ -19,6 +19,9 @@ import { getComplaintStatusBadge, getComplaintCountByStatus, formatComplaintCate
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
+import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
+import { Clock, CheckCircle2 } from 'lucide-react';
+import { dateFormatters } from '@/lib/date-utils';
 
 export default function OperatorComplaintsPage() {
   const router = useRouter();
@@ -31,6 +34,7 @@ export default function OperatorComplaintsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [competitions, setCompetitions] = useState<any[]>([]);
+  const [dashboardStats, setDashboardStats] = useState<any>(null);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -125,6 +129,7 @@ export default function OperatorComplaintsPage() {
       
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
       setComplaints(complaintsData.data || []);
+      setDashboardStats(dashboardData?.stats || null);
       
       // Update pagination data if available from API
       if (complaintsData.current_page !== undefined) {
@@ -193,11 +198,52 @@ export default function OperatorComplaintsPage() {
         onLogout={handleLogout}
       >
         <div className="space-y-8">
-            <DashboardHeader title="Complaints">
+            <DashboardHeader title="Consumer complaints" tagline="These are consumer-submitted complaints via your CAFAAS public audit pages or API.">
                 <Badge variant="outline" className="px-3 py-1">
                     {getComplaintCountByStatus(complaints, 'pending')} Pending
                 </Badge>
             </DashboardHeader>
+
+          {/* Metrics Cards - 3 cards */}
+          <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
+            <ComplianceScoreCard
+              title="Total complaints"
+              value={dashboardStats?.total_complaints || 0}
+              status={(dashboardStats?.pending_complaints || 0) > 5 ? 'warning' : 'neutral'}
+              icon={MessageSquare}
+              footer={`${dashboardStats?.pending_complaints || 0} pending`}
+            />
+
+            <ComplianceScoreCard
+              title="Response time"
+              value={
+                dashboardStats?.average_response_time_hours
+                  ? dashboardStats.average_response_time_hours < 24 
+                    ? `${Math.round(dashboardStats.average_response_time_hours)}h` 
+                    : `${Math.round(dashboardStats.average_response_time_hours / 24)}d`
+                  : 'N/A'
+              }
+              status={
+                dashboardStats?.average_response_time_hours
+                  ? dashboardStats.average_response_time_hours < 24 
+                    ? 'good' 
+                    : dashboardStats.average_response_time_hours < 48 
+                      ? 'warning' 
+                      : 'critical'
+                  : 'neutral'
+              }
+              icon={Clock}
+              footer={`Average response time`}
+            />
+
+            <ComplianceScoreCard
+              title="Resolved this month"
+              value={dashboardStats?.resolved_complaints_this_month || 0}
+              status="neutral"
+              icon={CheckCircle2}
+              footer="This month"
+            />
+          </div>
 
           {/* Filters Card */}
           <div className="px-4 lg:px-6">
@@ -247,7 +293,7 @@ export default function OperatorComplaintsPage() {
                       <SelectContent>
                         <SelectItem value="all">All competitions</SelectItem>
                         {competitions.map((competition) => (
-                          <SelectItem key={competition.uuid} value={competition.uuid}>
+                          <SelectItem key={competition.id} value={competition.id}>
                             {competition.name}
                           </SelectItem>
                         ))}
@@ -278,7 +324,7 @@ export default function OperatorComplaintsPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col gap-1.5">
-                    <CardTitle className="leading-none font-semibold !text-base">Active Complaints</CardTitle>
+                    <CardTitle className="leading-none font-semibold !text-base">All complaints</CardTitle>
                     <CardDescription className="text-muted-foreground text-sm">
                       Review issues reported by participants
                     </CardDescription>
@@ -321,11 +367,7 @@ export default function OperatorComplaintsPage() {
                               {getComplaintStatusBadge(complaint)}
                             </TableCell>
                             <TableCell className="text-sm text-muted-foreground">
-                              {new Date(complaint.created_at).toLocaleDateString('en-GB', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric'
-                              })}
+                              {dateFormatters.shortDateTime(complaint.created_at)}
                             </TableCell>
                             <TableCell className="text-right">
                               <OperatorActionsMenu

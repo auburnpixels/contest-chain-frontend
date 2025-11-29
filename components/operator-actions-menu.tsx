@@ -8,12 +8,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {LucideIcon, MoreVertical} from 'lucide-react';
+import {MoreVertical} from 'lucide-react';
 import {cn} from '@/lib/utils';
 
 export interface OperatorAction {
     label: string;
-    icon: LucideIcon;
     onSelect?: () => void;
     href?: string;
     disabled?: boolean;
@@ -62,7 +61,6 @@ export function OperatorActionsMenu({
                                     onClick={action.onSelect}
                                     className={cn('flex items-center gap-2', action.className)}
                                 >
-                                    <action.icon className="h-3 w-3 text-muted-foreground"/>
                                     <span>{action.label}</span>
                                 </Link>
                             </DropdownMenuItem>
@@ -79,7 +77,6 @@ export function OperatorActionsMenu({
                             }}
                             className={cn('flex items-center gap-2 text-xs cursor-pointer', action.className)}
                         >
-                            <action.icon className="h-3 w-3 text-muted-foreground"/>
                             <span>{action.label}</span>
                         </DropdownMenuItem>
                     );

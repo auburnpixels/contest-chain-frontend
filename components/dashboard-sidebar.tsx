@@ -31,7 +31,7 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
         <div className="">
           <div className="flex items-center p-4 h-12 border-b">
             <h2>
-              CaaS Platform
+              Cafaas Platform
             </h2>
           </div>
           

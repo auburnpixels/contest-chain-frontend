@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { OperatorActionsMenu } from '@/components/operator-actions-menu';
-import { Eye, Activity, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Eye, Activity, ShieldCheck, AlertTriangle, Ticket } from 'lucide-react';
 import Link from 'next/link';
 import {
   formatEntries,
@@ -9,6 +9,9 @@ import {
 } from './competition-details-dialog';
 import { formatDrawDate } from '@/lib/date-utils';
 import { getStatusIndicatorBadge } from '@/lib/competition-status';
+import { ComplianceScoreDisplay } from './compliance-score-display';
+import { DrawIntegrityBadge } from '@/components/draw-integrity-badge';
+import {InfoTooltip} from "@/components/info-tooltip";
 
 interface CompetitionsTableProps {
   competitions: OperatorCompetition[];
@@ -25,76 +28,94 @@ export function CompetitionsTable({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead>External ID</TableHead>
-          <TableHead>Competition</TableHead>
+            <TableHead>Competition</TableHead>
+            <TableHead>External ID</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Prizes</TableHead>
-          <TableHead>Entries</TableHead>
+            <TableHead>Entries</TableHead>
+            <TableHead>Prizes</TableHead>
           <TableHead>Complaints</TableHead>
-          <TableHead>Draw At</TableHead>
+          <TableHead>
+              <div className="flex items-center">
+                  <span>Draw integrity</span>
+                  <InfoTooltip>
+                      Displays how many prizes have full, verified audit trails. Green means the draws for this competition has been checked and recorded correctly.
+                  </InfoTooltip>
+              </div>
+          </TableHead>
+          <TableHead>Compliance</TableHead>
+            <TableHead>Draw at</TableHead>
           {showActions && <TableHead></TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
         {competitions.map((competition) => (
           <TableRow key={competition.id}>
-            <TableCell className="font-mono text-xs text-muted-foreground">
-              {competition.id?.substring(0, 8)}...
-            </TableCell>
+              <TableCell className="font-medium text-foreground">
+                  {competition.name}
+              </TableCell>
             <TableCell>
-              <Badge variant="outline">
                 {competition.external_id}
-              </Badge>
-            </TableCell>
-            <TableCell className="font-medium text-foreground">
-              {competition.name}
             </TableCell>
             <TableCell>
               {getStatusIndicatorBadge(competition)}
             </TableCell>
+              <TableCell>
+                  {competition.entries_count} <span className="text-muted-foreground">({competition.free_entries_count} free)</span>
+              </TableCell>
             <TableCell>
               {competition.prizes?.length || 0}
             </TableCell>
             <TableCell>
-              {formatEntries(competition)}
+              {(competition.complaints_count || 0) > 0 ? (
+                  <Link href={`/operator/complaints?competition=${competition.id}`}>
+                      <span className=" underline">{competition.complaints_count} complaints</span>
+                  </Link>
+              ) : (
+                <span className="text-muted-foreground">0</span>
+              )}
             </TableCell>
             <TableCell>
-              {(competition.complaints_count || 0) > 0 ? (
-                <span className="text-red-500">
-                    {competition.complaints_count}
-                </span>
+              <DrawIntegrityBadge
+                totalPrizes={competition.total_prizes || 0}
+                drawnPrizes={competition.drawn_prizes || 0}
+                hasCompleteIntegrity={competition.has_complete_draw_integrity || false}
+              />
+            </TableCell>
+            <TableCell>
+              {competition.compliance_score_detail ? (
+                <ComplianceScoreDisplay score={competition.compliance_score_detail} size="sm" />
               ) : (
-                0
+                <span className="text-muted-foreground">Pending</span>
               )}
             </TableCell>
             <TableCell>
               {formatDrawDate(competition)}
             </TableCell>
+
             {showActions && (
               <TableCell>
                 <OperatorActionsMenu
                   actions={[
                     {
                       label: 'Details',
-                      icon: Eye,
                       onSelect: onViewDetails ? () => onViewDetails(competition) : undefined,
                     },
                     {
+                      label: 'Entries',
+                      href: `/operator/entries?competition_id=${competition.id}`,
+                    },
+                    {
                       label: 'Events',
-                      icon: Activity,
                       href: `/operator/draw-events?competition=${competition.id}`,
                     },
                     {
                       label: 'Audits',
-                      icon: ShieldCheck,
-                      href: `/operator/competitions/${competition.id}`,
+                      href: `/operator/draws?competition=${competition.id}`,
                       disabled: (competition.draw_audits_count || 0) === 0,
                     },
                       {
                           label: 'Complaints',
-                          icon: AlertTriangle,
-                          href: `/operator/complaints/${competition.id}`,
+                          href: `/operator/complaints?competition=${competition.id}`,
                           disabled: (competition.complaints_count || 0) === 0,
                       },
                   ]}

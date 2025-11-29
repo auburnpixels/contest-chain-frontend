@@ -52,7 +52,7 @@ export default function AuditPage() {
         <Card className="max-w-md bg-zinc-950 border-zinc-900 text-white">
           <CardHeader className="text-center">
             <div className="mx-auto h-12 w-12 bg-red-900/20 rounded-full flex items-center justify-center mb-4 border border-red-900/30">
-               <AlertCircle className="h-6 w-6 text-red-500" />
+               <AlertCircle className="h-6 w-6 text-brand-cobalt" />
             </div>
             <CardTitle className="text-2xl">Audit Not Found</CardTitle>
             <CardDescription className="text-zinc-400">{error}</CardDescription>
@@ -245,7 +245,7 @@ export default function AuditPage() {
       </main>
       
       <footer className="border-t border-zinc-900 bg-black py-12 text-center text-zinc-600 text-sm">
-         <p>&copy; 2025 CaaS Platform. Providing transparency and trust.</p>
+         <p>&copy; 2025 Cafaas Platform. Providing transparency and trust.</p>
       </footer>
     </div>
   );

@@ -72,7 +72,7 @@ const sdks = [
 const automations = [
   {
     title: "WooCommerce checkout",
-    detail: "Sync orders directly into CAAS entries and trigger public badges.",
+    detail: "Sync orders directly into Cafaas entries and trigger public badges.",
   },
   {
     title: "Laravel jobs",
@@ -80,7 +80,7 @@ const automations = [
   },
   {
     title: "Node worker",
-    detail: "Listen for CAAS webhooks and pipe verified winners to marketing stacks.",
+    detail: "Listen for Cafaas webhooks and pipe verified winners to marketing stacks.",
   },
   {
     title: "PHP CLI",
@@ -96,7 +96,7 @@ export default function FeaturesPage() {
         <PageHero
           eyebrow="Features"
           title="The Stripe-grade toolkit for competition fairness."
-          description="CAAS ships every layer operators need to look legitimate—audits, dashboards, SDKs, and automation-ready workflows."
+          description="Cafaas ships every layer operators need to look legitimate—audits, dashboards, SDKs, and automation-ready workflows."
           primaryCta={{ label: "Book product tour", href: "/contact" }}
           secondaryCta={{ label: "Browse docs", href: "/docs" }}
         />
@@ -191,7 +191,7 @@ export default function FeaturesPage() {
               </CardHeader>
               <CardContent className="mt-6 p-0">
                 <p className="text-lg text-white/80">
-                  CAAS ties together audit chains, dashboards, and developer tooling so every competition looks like
+                  Cafaas ties together audit chains, dashboards, and developer tooling so every competition looks like
                   it was run by the industry’s most trusted operator.
                 </p>
               </CardContent>

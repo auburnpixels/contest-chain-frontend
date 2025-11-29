@@ -16,6 +16,11 @@ import {DashboardHeader} from "@/components/dashboard-header";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 import { PaginationControls } from "@/components/pagination-controls";
 import {IndicatorBadge} from "@/components/ui/indicator-badge";
+import { operatorNavItems } from '@/lib/navigation/operator-nav';
+import { useOperatorAuth } from '@/hooks/useOperatorAuth';
+import { DashboardLoading } from '@/components/dashboard-loading';
+import { handleApiError } from '@/lib/error-handler';
+import { dateFormatters } from '@/lib/date-utils';
 
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
@@ -157,7 +162,14 @@ export default function EventsPage() {
       const eventsData = await operatorApi.getDrawEvents(params);
 
       const events = eventsData.data || [];
-      const paginationData = eventsData.pagination || {};
+      const paginationData = {
+        current_page: eventsData.current_page || 1,
+        per_page: eventsData.per_page || 25,
+        total: eventsData.total || 0,
+        last_page: eventsData.last_page || 1,
+        from: eventsData.from || 0,
+        to: eventsData.to || 0,
+      };
       
       // Enrich events with competition info if available
       const enrichedEvents = events.map((event: any) => ({
@@ -375,28 +387,19 @@ export default function EventsPage() {
     return pages;
   };
 
-  const navItems = [
-    { href: '/operator/dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { href: '/operator/competitions', title: 'Competitions', icon: Trophy },
-    { href: '/operator/draw-events', title: 'Events', icon: Activity },
-    { href: '/operator/compliance', title: 'Compliance', icon: ShieldCheck },
-    { href: '/operator/complaints', title: 'Complaints', icon: AlertTriangle },
-    { href: '/operator/api-keys', title: 'API Keys', icon: Key },
-    { href: '/operator/details', title: 'Settings', icon: Settings },
-    { href: '/docs', title: 'Documentation', icon: FileText },
-  ];
+  const { isReady, handleLogout: authLogout } = useOperatorAuth();
 
-  if (loading && events.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <p className="text-lg text-muted-foreground animate-pulse">Loading events...</p>
-      </div>
-    );
+  if (!isReady || (loading && events.length === 0)) {
+    return <DashboardLoading message="Loading events..." />;
   }
+
+  const handleLogout = async () => {
+    await authLogout();
+  };
 
   return (
     <DashboardShell
-      navItems={navItems}
+      navItems={operatorNavItems}
       userRole="operator"
       userName={operatorName}
       onLogout={handleLogout}
@@ -639,7 +642,7 @@ export default function EventsPage() {
                                                     </span>
                                                   </TableCell>
                                                   <TableCell>
-                                                      {new Date(event.created_at).toLocaleString()}
+                                                      {dateFormatters.shortDateTime(event.created_at)}
                                                   </TableCell>
                                                   <TableCell>
                                                       <IndicatorBadge
@@ -679,7 +682,6 @@ export default function EventsPage() {
                           </>
                       ) : (
                           <div className="text-center py-12">
-                              <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                               <h3 className="text-lg font-medium mb-2 text-foreground">No events found</h3>
                               <p className="text-sm text-muted-foreground">
                                   {hasActiveFilters ? 'Try adjusting your filters' : 'Events will appear here once your competitions become active.'}
@@ -763,7 +765,7 @@ export default function EventsPage() {
                         </button>
                       </div>
                     ) : (
-                      <p className="text-slate-500 italic text-sm bg-slate-950/50 p-3 rounded border border-slate-800">
+                      <p className="text-zinc-500 italic text-sm bg-black/50 p-3 rounded border border-slate-800">
                         Genesis Event (First in chain)
                       </p>
                     )}
@@ -772,13 +774,13 @@ export default function EventsPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Chain Position</label>
-                      <p className="text-white font-mono text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
+                      <p className="text-white font-mono text-sm bg-black/50 p-2 rounded border border-slate-800">
                         {formatChainPosition(selectedEvent.sequence)}
                       </p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event ID</label>
-                      <p className="text-white font-mono text-xs bg-slate-950/50 p-2 rounded border border-slate-800 break-all">
+                      <p className="text-white font-mono text-xs bg-black/50 p-2 rounded border border-slate-800 break-all">
                         {selectedEvent.id}
                       </p>
                     </div>
@@ -795,33 +797,33 @@ export default function EventsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event Type</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
+                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
                       <code className="text-xs">{selectedEvent.event_type}</code>
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Actor</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
+                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
                       {selectedEvent.actor_type || 'system'}
                       {selectedEvent.actor_id && ` (ID: ${selectedEvent.actor_id})`}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Competition</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
+                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
                       {selectedEvent.competition_title}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Timestamp</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
+                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
                       {new Date(selectedEvent.created_at).toLocaleString()}
                     </p>
                   </div>
                   {selectedEvent.ip_address && (
                     <div className="col-span-2">
                       <label className="text-sm font-medium text-muted-foreground mb-1.5 block">IP Address</label>
-                      <p className="text-white text-sm font-mono bg-slate-950/50 p-2 rounded border border-slate-800">
+                      <p className="text-white text-sm font-mono bg-black/50 p-2 rounded border border-slate-800">
                         {selectedEvent.ip_address}
                       </p>
                     </div>
@@ -900,7 +902,7 @@ export default function EventsPage() {
                         <span className="text-lg font-semibold">Chain Valid</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2 text-red-500">
+                      <div className="flex items-center gap-2 text-brand-cobalt">
                         <AlertTriangle className="h-5 w-5" />
                         <span className="text-lg font-semibold">Chain Invalid</span>
                       </div>
@@ -923,27 +925,27 @@ export default function EventsPage() {
             <div className="p-6 space-y-6">
               {/* Summary Statistics */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Total Events</label>
                   <p className="text-2xl font-bold text-white">
                     {chainStatus.summary?.total_events || chainStatus.total_events || 0}
                   </p>
                 </div>
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Verified</label>
                   <p className="text-2xl font-bold text-green-500">
                     {chainStatus.summary?.verified_events || chainStatus.verified_events || 0}
                   </p>
                 </div>
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Pending</label>
                   <p className="text-2xl font-bold text-yellow-500">
                     {chainStatus.summary?.unchained_events || chainStatus.unchained_events || 0}
                   </p>
                 </div>
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Failed</label>
-                  <p className="text-2xl font-bold text-red-500">
+                  <p className="text-2xl font-bold text-brand-cobalt">
                     {chainStatus.summary?.failed_events || chainStatus.failed_events || 0}
                   </p>
                 </div>

@@ -16,7 +16,7 @@ const steps = [
   },
   {
     title: "Trigger the Draw",
-    description: "CAAS generates a secure seed, randomises the entry pool, and selects a winner.",
+    description: "Cafaas generates a secure seed, randomises the entry pool, and selects a winner.",
     icon: PlayCircle
   },
   {

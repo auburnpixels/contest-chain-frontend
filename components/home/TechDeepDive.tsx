@@ -26,7 +26,7 @@ export function TechDeepDive() {
 
             <div className="space-y-6 text-lg text-slate-600">
               <p>
-                Every draw event becomes part of the CAAS Fairness Chain — a global, append-only timeline of competition results.
+                Every draw event becomes part of the Cafaas Fairness Chain — a global, append-only timeline of competition results.
               </p>
               <p>
                 Each event contains the hash of the previous event, forming an unbreakable chain of trust. This ensures:

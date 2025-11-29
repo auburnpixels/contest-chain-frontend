@@ -24,10 +24,10 @@ export function AudienceProof() {
             {/* Left: Audience List */}
             <div>
                 <h2 className="text-3xl font-bold tracking-tight text-brand-dark mb-6">
-                    Who CAAS Is For
+                    Who Cafaas Is For
                 </h2>
                 <p className="text-lg text-slate-600 mb-8">
-                    If your customers ever question fairness, CAAS protects your reputation and increases trust instantly.
+                    If your customers ever question fairness, Cafaas protects your reputation and increases trust instantly.
                 </p>
                 
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -90,7 +90,7 @@ export function AudienceProof() {
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 <TestimonialCard 
                     quote="Finally a way to prove our draws are fair. Player trust shot up overnight."
-                    author="Early CAAS Operator"
+                    author="Early Cafaas Operator"
                 />
                 <TestimonialCard 
                     quote="The audit page is a game-changer. We embed it everywhere."

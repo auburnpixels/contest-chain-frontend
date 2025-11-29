@@ -55,8 +55,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       setLoading(false);
-    } catch (error) {
-      console.error('[AuthContext] Token refresh failed:', error);
+    } catch (error: any) {
+      // Expected errors - token is too old or invalid, user needs to log in again
+      // These are normal scenarios, so we silently clear the token
+      const expectedErrorCodes = [
+        'TOKEN_EXPIRED_NOT_REFRESHABLE',
+        'TOKEN_INVALID',
+        'TOKEN_BLACKLISTED',
+        'TOKEN_ABSENT',
+      ];
+      
+      if (error?.code && expectedErrorCodes.includes(error.code)) {
+        console.log('[AuthContext] Token cannot be refreshed (expected):', error.code);
+        apiClient.clearToken();
+        setUser(null);
+        setLoading(false);
+        // Don't throw for expected errors
+        return;
+      }
+      
+      // Unexpected errors - log them for debugging
+      console.error('[AuthContext] Token refresh failed (unexpected):', error);
       apiClient.clearToken();
       setUser(null);
       setLoading(false);
@@ -125,15 +144,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
           refreshTimerRef.current = setInterval(() => {
             refresh().catch((error) => {
-              console.error('Auto-refresh failed:', error);
-              logout();
+              // Only logout on unexpected errors during auto-refresh
+              // Expected errors are already handled silently in refresh()
+              if (error) {
+                console.error('Auto-refresh failed with unexpected error:', error);
+                logout();
+              }
             });
           }, REFRESH_INTERVAL_MS);
           
           console.log('[AuthContext] Auth initialized successfully');
         } catch (error) {
-          console.error('[AuthContext] Auth initialization failed:', error);
-          apiClient.clearToken();
+          // refresh() already handles expected errors silently
+          // Only log if there's an unexpected error that was thrown
+          if (error) {
+            console.error('[AuthContext] Auth initialization failed with unexpected error:', error);
+          }
+          // Token already cleared by refresh() function
           setLoading(false);
         } finally {
           setIsInitialized(true);

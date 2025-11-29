@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/context/AuthContext";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const body = Geist({
   subsets: ["latin"],
@@ -11,7 +12,7 @@ const body = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "CaaS Platform - Fairness & Compliance Engine",
+  title: "Cafaas Platform - Fairness & Compliance Engine",
   description: "Compliance-as-a-Service for UK Prize Competitions",
 };
 
@@ -31,9 +32,11 @@ export default function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
         >
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <TooltipProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -12,7 +12,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
     <section className="py-32 bg-brand-navy relative max-w-7xl mx-auto">
       <div className="mx-auto max-w-content px-6">
         <SectionHeading
-          eyebrow="Why CAAS?"
+          eyebrow="Why Cafaas?"
           title="The standard for fair play."
           description="We replaced the trust-me bro model with cryptographic proof."
           align="center"
@@ -52,7 +52,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
                 </div>
                 <h3 className="text-3xl font-display font-semibold text-white">Real-time public ledgers for every draw.</h3>
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                  Stop taking screenshots. CAAS automatically generates a hosted audit page for every competition you run. Entrants can verify their own ticket inclusion and the randomness of the result.
+                  Stop taking screenshots. Cafaas automatically generates a hosted audit page for every competition you run. Entrants can verify their own ticket inclusion and the randomness of the result.
                 </p>
                 <ul className="space-y-3">
                   {["Merkle tree verification", "Entry list hashing", "Winner proof-of-inclusion"].map((item) => (
@@ -114,7 +114,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
                 </div>
                 <h3 className="text-3xl font-display font-semibold text-white">Badge up and boost conversion.</h3>
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                  Display the "Verified by CAAS" badge on your checkout and product pages. Operators see an average 15-20% increase in ticket sales when players know the game is fair.
+                  Display the "Verified by Cafaas" badge on your checkout and product pages. Operators see an average 15-20% increase in ticket sales when players know the game is fair.
                 </p>
                  <ul className="space-y-3">
                   {["Embeddable trust widgets", "Click-to-verify seal", "Regulatory compliance evidence"].map((item) => (
@@ -133,7 +133,7 @@ export const CoreValueProposition = ({ highlights }: CoreValuePropositionProps) 
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground uppercase tracking-wider font-bold">Fairness Verified</p>
-                            <p className="text-white font-display text-xl">CAAS Protocol</p>
+                            <p className="text-white font-display text-xl">Cafaas Protocol</p>
                         </div>
                     </div>
                  </div>

@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { regulatorApi } from '@/lib/api/client';
+import { regulatorApi, authApi, apiClient } from '@/lib/api/client';
 import { 
   Building2, 
   Trophy,
@@ -13,12 +14,18 @@ import {
   TrendingUp,
   Copy,
   Check,
-  X
+  X,
+  ShieldCheck,
+  Home,
+  Activity,
+  AlertTriangle,
+  FileText
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import { useRegulatorAuth } from '@/hooks/useRegulatorAuth';
 import { regulatorNavItems } from '@/lib/navigation/regulator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
+import { DrawIntegrityBadge } from '@/components/draw-integrity-badge';
 
 interface RaffleDetail {
   raffle_id: string;
@@ -33,6 +40,11 @@ interface RaffleDetail {
   audit_count: number;
   active_complaints: number;
   compliance_score: number;
+  // Draw Integrity
+  total_prizes: number;
+  drawn_prizes: number;
+  has_complete_draw_integrity: boolean;
+  draw_integrity_percentage: number;
 }
 
 interface ComplianceSummary {
@@ -53,7 +65,8 @@ interface ComplianceData {
 }
 
 export default function CompliancePage() {
-  const { isReady, handleLogout } = useRegulatorAuth();
+  const { isReady } = useRegulatorAuth();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<ComplianceData | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -107,6 +120,10 @@ export default function CompliancePage() {
       'Audit Count',
       'Active Complaints',
       'Compliance Score',
+      'Draw Integrity',
+      'Total Prizes',
+      'Drawn Prizes',
+      'Draw Integrity %',
     ];
 
     const rows = data.raffles.map((raffle) => [
@@ -121,6 +138,10 @@ export default function CompliancePage() {
       raffle.audit_count,
       raffle.active_complaints,
       raffle.compliance_score,
+      raffle.has_complete_draw_integrity ? 'Complete' : `${raffle.drawn_prizes}/${raffle.total_prizes}`,
+      raffle.total_prizes,
+      raffle.drawn_prizes,
+      raffle.draw_integrity_percentage.toFixed(2),
     ]);
 
     const csvContent = [
@@ -372,6 +393,7 @@ export default function CompliancePage() {
                       <th className="text-right text-sm font-medium text-muted-foreground pb-3 px-2">Free Entry %</th>
                       <th className="text-center text-sm font-medium text-muted-foreground pb-3 px-2">Audit</th>
                       <th className="text-center text-sm font-medium text-muted-foreground pb-3 px-2">Complaints</th>
+                      <th className="text-center text-sm font-medium text-muted-foreground pb-3 px-2">Draw Integrity</th>
                       <th className="text-center text-sm font-medium text-muted-foreground pb-3 px-2">Compliance Score</th>
                     </tr>
                   </thead>
@@ -423,7 +445,7 @@ export default function CompliancePage() {
                               </button>
                             </div>
                           ) : (
-                            <X className="h-4 w-4 text-red-600 mx-auto" />
+                            <X className="h-4 w-4 text-brand-cobalt mx-auto" />
                           )}
                         </td>
                         <td className="py-3 px-2 text-center">
@@ -434,6 +456,13 @@ export default function CompliancePage() {
                           ) : (
                             <Check className="h-4 w-4 text-green-600 mx-auto" />
                           )}
+                        </td>
+                        <td className="py-3 px-2 text-center">
+                          <DrawIntegrityBadge
+                            totalPrizes={raffle.total_prizes}
+                            drawnPrizes={raffle.drawn_prizes}
+                            hasCompleteIntegrity={raffle.has_complete_draw_integrity}
+                          />
                         </td>
                         <td className="py-3 px-2 text-center">
                           {getComplianceScoreBadge(raffle.compliance_score)}

@@ -1,22 +1,30 @@
 'use client';
 
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog';
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import {Badge} from '@/components/ui/badge';
 import {Card, CardContent} from '@/components/ui/card';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from '@/components/ui/tooltip';
+import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import {CheckCircle, AlertCircle, XCircle, Gift, Activity,ShieldCheck} from 'lucide-react';
 import {getStatusIndicatorBadge} from '@/lib/competition-status';
 import {formatDrawDate} from '@/lib/date-utils';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {ComplianceScoreDisplay} from "@/components/operator/compliance-score-display";
+import {InfoTooltip} from "@/components/info-tooltip";
 
 export interface OperatorCompetitionPrize {
     id: string;
+    external_id: string;
     name: string;
     draw_order: number;
     has_been_drawn: boolean;
-    winner_entry_id?: string | null;
-    drawn_at?: string | null;
+    winning_ticket?: {
+        id: string;
+        external_id: string;
+    } | null;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface OperatorCompetition {
@@ -28,6 +36,7 @@ export interface OperatorCompetition {
     max_tickets?: number;
     draw_at?: string | null;
     entries_count?: number;
+    free_entries_count?: number;
     complaints_count?: number;
     compliance_status?: string;
     compliance_percentage?: number;
@@ -36,11 +45,18 @@ export interface OperatorCompetition {
         has_audit_trail?: boolean;
         has_entries?: boolean;
     };
+    compliance_score?: number | null;
+    compliance_score_detail?: import('@/lib/api').ComplianceScore | null;
     is_draw_overdue?: boolean;
     draw_events_count?: number;
     draw_audits_count?: number;
     issues?: string[];
     prizes?: OperatorCompetitionPrize[];
+    // Draw Integrity
+    total_prizes?: number;
+    drawn_prizes?: number;
+    has_complete_draw_integrity?: boolean;
+    draw_integrity_percentage?: number;
 }
 
 export interface CompetitionDetailsDialogProps {
@@ -85,25 +101,23 @@ export const getComplianceIndicator = (competition: OperatorCompetition) => {
     }
 
     return (
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <div className={`inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md ${bgClass} cursor-help`}>
-                        <Icon className={`h-4 w-4 ${colorClass}`}/>
-                        <span className={`text-sm font-medium ${colorClass}`}>
-                            {compliance_percentage}%
-                        </span>
-                    </div>
-                </TooltipTrigger>
-                <TooltipContent side="left" className="max-w-xs">
-                    <div className="space-y-1">
-                        {tooltipMessages.map((msg, idx) => (
-                            <p key={idx} className="text-xs">{msg}</p>
-                        ))}
-                    </div>
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <div className={`inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md ${bgClass} cursor-help`}>
+                    <Icon className={`h-4 w-4 ${colorClass}`}/>
+                    <span className={`text-sm font-medium ${colorClass}`}>
+                        {compliance_percentage}%
+                    </span>
+                </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs">
+                <div className="space-y-1">
+                    {tooltipMessages.map((msg, idx) => (
+                        <p key={idx} className="text-xs">{msg}</p>
+                    ))}
+                </div>
+            </TooltipContent>
+        </Tooltip>
     );
 };
 
@@ -112,12 +126,9 @@ export function CompetitionDetailsDialog({competition, open, onOpenChange}: Comp
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">
+                    <DialogTitle>
                         {competition?.name || competition?.name}
                     </DialogTitle>
-                    <DialogDescription>
-                        Competition details and prizes
-                    </DialogDescription>
                 </DialogHeader>
 
                 {competition && (
@@ -125,14 +136,8 @@ export function CompetitionDetailsDialog({competition, open, onOpenChange}: Comp
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">External ID</label>
-                                <p className="mt-1 text-sm font-mono bg-muted px-2 py-1 rounded">
+                                <p>
                                     {competition.external_id || '—'}
-                                </p>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-muted-foreground">ID</label>
-                                <p className="mt-1 text-sm font-mono bg-muted px-2 py-1 rounded truncate">
-                                    {competition.id}
                                 </p>
                             </div>
                             <div>
@@ -142,120 +147,116 @@ export function CompetitionDetailsDialog({competition, open, onOpenChange}: Comp
                                 </div>
                             </div>
                             <div>
+                                <label className="text-sm font-medium text-muted-foreground">Maximum entries</label>
+                                <p className="mt-1 text-sm">
+                                    {(competition.ticket_quantity || competition.max_tickets || 0).toLocaleString()}
+                                </p>
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium text-muted-foreground">Entries</label>
+                                <p className="mt-1 text-sm font-medium">
+                                    {(competition.entries_count || 0).toLocaleString()} <span className="text-muted-foreground">({competition.free_entries_count} free)</span>
+                                </p>
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium text-muted-foreground">Complaints</label>
+                                <div>
+                                    {(competition.complaints_count || 0) > 0 ? (
+                                        <Link href={`/operator/complaints?competition=${competition.id}`}>
+                                            <span className="text-red-500 underline">{competition.complaints_count} complaints</span>
+                                        </Link>
+                                    ) : (
+                                        <span className="text-muted-foreground">0</span>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
                                 <label className="text-sm font-medium text-muted-foreground">Draw Date</label>
                                 <div className="mt-1">
                                     {formatDrawDate(competition)}
                                 </div>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Max Tickets</label>
-                                <p className="mt-1 text-sm">
-                                    {(competition.ticket_quantity || competition.max_tickets || 0).toLocaleString()}
-                                </p>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-muted-foreground">Total Entries</label>
-                                <p className="mt-1 text-sm font-medium">
-                                    {(competition.entries_count || 0).toLocaleString()}
-                                </p>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-muted-foreground">Compliance</label>
-                                <div className="mt-1 flex items-center gap-2">
-                                    {getComplianceIndicator(competition)}
-                                    <span className="text-sm">{competition.compliance_percentage ?? 100}%</span>
+                                <label className="text-sm font-medium text-muted-foreground flex items-center">
+                                    Compliance Score
+                                    <InfoTooltip>
+                                        Overall fairness and regulatory compliance score for this competition. Higher scores indicate better adherence to standards.
+                                    </InfoTooltip>
+                                </label>
+                                <div className="mt-1">
+                                    {competition.compliance_score_detail ? (
+                                        <ComplianceScoreDisplay score={competition.compliance_score_detail} size="sm" />
+                                    ) : (
+                                        <span className="text-muted-foreground">Pending</span>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        <div>
-                            <div className="flex items-center justify-between mb-3">
-                                <h3 className="text-lg font-semibold flex items-center gap-2">
-                                    <Gift className="h-5 w-5"/>
-                                    Prizes ({competition.prizes?.length || 0})
-                                </h3>
-                            </div>
 
-                            {competition.prizes && competition.prizes.length > 0 ? (
-                                <div className="space-y-3">
+
+                        <div className="flex flex-col gap-2">
+                            <label className="text-sm font-medium text-muted-foreground">Prizes ({competition.prizes?.length || 0})</label>
+
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Winner</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {competition.prizes
-                                        .slice()
+                                        ?.slice()
                                         .sort((a, b) => a.draw_order - b.draw_order)
                                         .map((prize) => (
-                                            <Card key={prize.id} className="bg-slate-900/50 border-slate-800">
-                                                <CardContent className="p-4">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="flex-1">
-                                                            <div className="flex items-center gap-2 mb-2">
-                                                                <Badge variant="outline" className="text-xs">
-                                                                    #{prize.draw_order}
-                                                                </Badge>
-                                                                <h4 className="font-semibold">{prize.name}</h4>
-                                                                {prize.has_been_drawn && (
-                                                                    <Badge className="bg-blue-600 text-white">
-                                                                        Drawn
-                                                                    </Badge>
-                                                                )}
-                                                            </div>
-                                                            <div className="grid grid-cols-2 gap-3 text-sm">
-                                                                <div>
-                                                                    <span className="text-muted-foreground">Prize ID:</span>
-                                                                    <code className="ml-2 bg-muted px-1.5 py-0.5 rounded text-xs">
-                                                                        {prize.id}
-                                                                    </code>
-                                                                </div>
-                                                                {prize.has_been_drawn && (
-                                                                    <>
-                                                                        <div>
-                                                                            <span className="text-muted-foreground">Winner:</span>
-                                                                            <code className="ml-2 bg-muted px-1.5 py-0.5 rounded text-xs">
-                                                                                {prize.winner_entry_id || 'N/A'}
-                                                                            </code>
-                                                                        </div>
-                                                                        {prize.drawn_at && (
-                                                                            <div>
-                                                                                <span className="text-muted-foreground">Drawn at:</span>
-                                                                                <span className="ml-2 text-xs">
-                                                                                    {new Date(prize.drawn_at).toLocaleString('en-GB')}
-                                                                                </span>
-                                                                            </div>
-                                                                        )}
-                                                                    </>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-                                </div>
-                            ) : (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    <Gift className="h-12 w-12 mx-auto mb-2 opacity-50"/>
-                                    <p className="text-sm">No prizes configured for this competition</p>
-                                </div>
-                            )}
-                        </div>
 
-                        <div className="flex items-center gap-2 pt-4 border-t border-slate-800">
-                            <Link href={`/operator/draw-events?competition=${competition.id}`} className="flex-1">
-                                <Button variant="outline" className="w-full gap-2">
-                                    <Activity className="h-4 w-4"/>
-                                    View Events
-                                </Button>
-                            </Link>
-                            <Link href={`/operator/competitions/${competition.id}`} className="flex-1">
-                                <Button variant="outline" className="w-full gap-2">
-                                    <ShieldCheck className="h-4 w-4"/>
-                                    View Audits
-                                </Button>
-                            </Link>
+                                            <TableRow>
+                                                <TableCell>{prize.name}</TableCell>
+                                                <TableCell>
+                                                    {prize.winning_ticket ? (
+                                                        prize.winning_ticket.external_id
+                                                    ) : (
+                                                        <span className="text-sm text-muted-foreground">Not drawn yet</span>
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                </TableBody>
+                            </Table>
                         </div>
                     </div>
                 )}
+
+                <div className="flex items-center gap-2 mt-4">
+                    <Link href={`/operator/audits?competition=${competition?.id}`} className="flex-1">
+                        <Button variant="outline" className="w-full gap-2" disabled={(competition?.draw_audits_count || 0) === 0}>
+                            View audits
+                        </Button>
+                    </Link>
+
+                    <Link href={`/operator/complaints?competition=${competition?.id}`} className="flex-1">
+                        <Button variant="outline" className="w-full gap-2">
+                            View complaints
+                        </Button>
+                    </Link>
+
+                    <Link href={`/operator/draw-events?competition=${competition?.id}`} className="flex-1">
+                        <Button variant="outline" className="w-full gap-2">
+                            View draw events
+                        </Button>
+                    </Link>
+
+                    <Link href={`/operator/entries?competition=${competition?.id}`} className="flex-1">
+                        <Button variant="outline" className="w-full gap-2">
+                            View entries
+                        </Button>
+                    </Link>
+                </div>
             </DialogContent>
         </Dialog>
     );
 }
+
 
 

@@ -1,41 +1,113 @@
 export interface Operator {
   id: number;
   name: string;
-  email: string;
-  status: 'active' | 'pending' | 'suspended';
-  created_at: string;
+  slug: string;
+  url: string | null;
+  is_active: boolean;
 }
 
-export interface Competition {
+export interface User {
   id: number;
-  external_id: string;
-  uuid: string;
   name: string;
-  description?: string;
-  ticket_quantity: number;
-  ticket_price: number;
-  draw_at: string;
-  status: 'pending' | 'active' | 'completed' | 'cancelled';
+  email: string;
+  role: string;
+}
+
+export interface Prize {
+  id: string;
+  external_id: string;
+  name: string;
+  draw_order: number;
+  has_been_drawn: boolean;
+  winning_ticket: {
+    id: string;
+    external_id: string;
+  } | null;
   created_at: string;
   updated_at: string;
 }
 
-export interface CompetitionStatistics {
-  total_entries: number;
-  unique_participants: number;
-  revenue_estimate: number;
-  tickets_sold_percentage: number;
+export interface Competition {
+  id: string;
+  external_id: string;
+  name: string;
+  status: string;
+  draw_at: string | null;
+  created_at: string;
+  updated_at: string;
+  entries_count: number;
+  free_entries_count: number;
+  prizes_count: number;
+  complaints_count: number;
+  draw_audits_count: number;
+  draw_events_count: number;
+  compliance_status: string;
+  compliance_percentage: number;
+  compliance_checks: Record<string, any>;
+  compliance_score: number | null; // Simple numeric score from ComplianceScoreCalculator
+  compliance_score_detail?: ComplianceScore | null; // Detailed breakdown (optional)
+  is_draw_overdue: boolean;
+  prizes?: Prize[];
 }
 
 export interface DrawAudit {
-  id: number;
-  competition_id: number;
-  draw_block_hash: string;
-  previous_block_hash: string;
-  seed_value: string;
-  winner_ticket_number: string;
+  id: string;
+  sequence: number;
+  draw_id: string;
   drawn_at_utc: string;
-  verified: boolean;
+  total_entries: number;
+  selected_entry: {
+    id: string;
+    external_id: string;
+  } | null;
+  signature_hash: string;
+  previous_signature_hash: string | null;
+  pool_hash: string | null;
+  rng_seed_or_hash: string;
+  created_at: string;
+  competition?: {
+    id: string;
+    name: string;
+    external_id: string;
+  };
+  prize?: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface DrawEvent {
+  id: string;
+  sequence: number;
+  event_type: string;
+  event_payload: any;
+  event_hash: string;
+  previous_event_hash: string | null;
+  is_chained: boolean;
+  actor_type: string;
+  actor_id: string | null;
+  ip_address: string | null;
+  created_at: string;
+  competition?: {
+    id: string;
+    name: string;
+    external_id: string;
+  };
+}
+
+export interface Complaint {
+  id: string;
+  competition_id: string;
+  external_id?: string;
+  competition?: string;
+  reporter_name: string;
+  reporter_email: string;
+  category: string;
+  message: string;
+  admin_notes: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ApiError {
@@ -44,6 +116,30 @@ export interface ApiError {
     message: string;
     details?: any;
   };
+}
+
+export interface ComplianceCategory {
+  score: number;
+  max: number;
+  details: Record<string, any>;
+}
+
+export interface ComplianceScore {
+  total_score: number;
+  grade: 'excellent' | 'acceptable' | 'poor';
+  grade_label: string;
+  grade_color: string;
+  is_final: boolean;
+  categories: {
+    entry_integrity: ComplianceCategory;
+    draw_integrity: ComplianceCategory;
+    draw_logging: ComplianceCategory;
+    fairness: ComplianceCategory;
+    complaint: ComplianceCategory;
+    transparency: ComplianceCategory;
+    timeliness: ComplianceCategory;
+  };
+  calculated_at: string;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';

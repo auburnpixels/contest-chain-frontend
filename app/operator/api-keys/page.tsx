@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { operatorApi } from '@/lib/api/client';
-import { Key, Copy, Trash2, Plus, Eye, EyeOff, Calendar, AlertCircle } from 'lucide-react';
+import { Key, Copy, Trash2, Plus, Eye, EyeOff, Calendar, AlertCircle, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
@@ -17,6 +17,8 @@ import {IndicatorBadge} from "@/components/ui/indicator-badge";
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
+import { dateFormatters } from '@/lib/date-utils';
+import { DismissibleAlert } from '@/components/dismissible-alert';
 
 export default function ApiKeysPage() {
   const { isReady, handleLogout } = useOperatorAuth();
@@ -46,7 +48,6 @@ export default function ApiKeysPage() {
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
       setLoading(false);
     } catch (error: any) {
-      console.error('[API Keys] Failed to load API keys:', error);
       if (error.status === 401) {
         await handleLogout();
       }
@@ -229,6 +230,14 @@ export default function ApiKeysPage() {
               </Dialog>
           </DashboardHeader>
 
+          {/* Info Banner */}
+          <div className="px-4 lg:px-6">
+            <DismissibleAlert
+              id="api-keys-explainer"
+              title="What are API keys?"
+              description="API keys allow you to securely integrate CAFAAS into your website, app, or backend systems. Use them to create competitions, submit entries, and run draws programmatically."
+            />
+          </div>
 
           <div className="px-4 lg:px-6">
               <Card>
@@ -292,11 +301,7 @@ export default function ApiKeysPage() {
                                               <TableCell>
                                                   {apiKey.last_used_at ? (
                                                       <div>
-                                                          {new Date(apiKey.last_used_at).toLocaleDateString('en-GB', {
-                                                              day: '2-digit',
-                                                              month: 'short',
-                                                              year: 'numeric',
-                                                          })}
+                                                          {dateFormatters.shortDateTime(apiKey.last_used_at)}
                                                       </div>
                                                   ) : (
                                                       <span>Never</span>
@@ -304,11 +309,7 @@ export default function ApiKeysPage() {
                                               </TableCell>
                                               <TableCell>
                                                   <div>
-                                                      {new Date(apiKey.created_at).toLocaleDateString('en-GB', {
-                                                          day: '2-digit',
-                                                          month: 'short',
-                                                          year: 'numeric',
-                                                      })}
+                                                      {dateFormatters.shortDateTime(apiKey.created_at)}
                                                   </div>
                                               </TableCell>
                                               <TableCell>
@@ -345,11 +346,19 @@ export default function ApiKeysPage() {
                               </TableBody>
                           </Table>
                       ) : (
-                          <div className="text-center py-12">
-                              <h3 className="text-lg font-medium mb-2 text-foreground">No API keys yet</h3>
-                              <p className="text-sm text-muted-foreground mb-4">
-                                  Create your first API key to start integrating with the CaaS platform
+                          <div className="flex flex-col items-center justify-center py-12 text-center">
+                              <Key className="h-12 w-12 text-muted-foreground mb-4" />
+                              <h3 className="text-lg font-semibold mb-2">No API keys yet</h3>
+                              <p className="text-sm text-muted-foreground mb-6 max-w-md">
+                                  Create your first API key to start integrating CAFAAS into your systems. Keys allow you to manage competitions, entries, and draws programmatically.
                               </p>
+                              <Button
+                                  variant="outline"
+                                  onClick={() => setIsCreateDialogOpen(true)}
+                              >
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Create Your First API Key
+                              </Button>
                           </div>
                       )}
                   </CardContent>
@@ -371,7 +380,7 @@ export default function ApiKeysPage() {
                   <CardContent className="space-y-4">
                       <div>
                           <h4 className=" mb-2 text-sm">1. Include in request headers</h4>
-                          <pre className="bg-muted text-slate-300 p-4 rounded-md text-xs overflow-x-auto">
+                          <pre className="bg-muted text-zinc-400 p-4 rounded-md text-xs overflow-x-auto">
                             <code>{`curl -H "X-API-KEY: your_api_key_here" \\ https://api.caas-platform.com/api/v1/operator/competitions`}</code>
                             </pre>
                       </div>
@@ -380,8 +389,8 @@ export default function ApiKeysPage() {
                           <p className="text-sm text-muted-foreground">
                               Use environment variables in your application:
                           </p>
-                          <pre className="bg-muted text-slate-300 p-4 rounded-md text-xs overflow-x-auto mt-2">
-                <code>CAAS_API_KEY=your_api_key_here</code>
+                          <pre className="bg-muted text-zinc-400 p-4 rounded-md text-xs overflow-x-auto mt-2">
+                <code>Cafaas_API_KEY=your_api_key_here</code>
               </pre>
                       </div>
                       <div>

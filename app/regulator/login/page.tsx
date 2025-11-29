@@ -55,7 +55,7 @@ export default function RegulatorLoginPage() {
             <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center">
               <Shield className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold">CaaS Platform</span>
+            <span className="text-xl font-bold">Cafaas Platform</span>
           </div>
           
           <div className="max-w-md space-y-6">
@@ -85,7 +85,7 @@ export default function RegulatorLoginPage() {
 
         <div className="relative z-10">
           <p className="text-sm text-slate-500">
-            &copy; 2025 CaaS Platform. All rights reserved.
+            &copy; 2025 Cafaas Platform. All rights reserved.
           </p>
         </div>
       </div>

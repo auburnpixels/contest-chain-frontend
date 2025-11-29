@@ -166,3 +166,8 @@ ESLint helps enforce the DRY principles from `.cursorrules`:
 
 **Your Next.js app now has professional-grade linting! 🎉**
 
+
+
+
+
+

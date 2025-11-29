@@ -35,7 +35,7 @@ const trustKit = [
   },
   {
     title: "Embeddable badge",
-    description: "Copy a single snippet to display “CAAS Verified” widgets across competition pages.",
+    description: "Copy a single snippet to display “Cafaas Verified” widgets across competition pages.",
   },
   {
     title: "Customer instructions",
@@ -62,7 +62,7 @@ export default function PublicPage() {
         <PageHero
           eyebrow="Public audit viewer"
           title="Let entrants verify every draw themselves."
-          description="CAAS publishes a consumer-friendly audit page for every competition. Ticket holders get undeniable proof without contacting your team."
+          description="Cafaas publishes a consumer-friendly audit page for every competition. Ticket holders get undeniable proof without contacting your team."
           primaryCta={{ label: "View audit demo", href: "/audit/example-uuid" }}
           secondaryCta={{ label: "Embed trust badge", href: "/docs" }}
         />
@@ -134,12 +134,12 @@ export default function PublicPage() {
             <SectionHeading
               eyebrow="Trust badges"
               title="Proof without explanations."
-              description="Operators embed verified badges once. CAAS handles uptime, accessibility, and localization."
+              description="Operators embed verified badges once. Cafaas handles uptime, accessibility, and localization."
             />
             <div className="grid gap-6 md:grid-cols-2">
               <Card className="border-white/10 bg-black/40 p-6 text-center">
                 <Shield className="mx-auto h-10 w-10 text-accentMint" />
-                <p className="mt-4 text-xl font-semibold text-white">CAAS Verified Badge</p>
+                <p className="mt-4 text-xl font-semibold text-white">Cafaas Verified Badge</p>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Adjustable styles (mint, dark, monochrome) and automatic status updates post draw.
                 </p>

@@ -14,12 +14,12 @@ type TrustSectionProps = {
 
 const defaultTestimonials = [
   {
-    quote: "CAAS stopped accusations overnight. We send the audit link and the ticket holder instantly believes us.",
+    quote: "Cafaas stopped accusations overnight. We send the audit link and the ticket holder instantly believes us.",
     author: "James Morton",
     role: "Founder, PrizeDraw UK",
   },
   {
-    quote: "Multi-prize draws used to take a day of admin. Now CAAS publishes the entire audit chain in minutes.",
+    quote: "Multi-prize draws used to take a day of admin. Now Cafaas publishes the entire audit chain in minutes.",
     author: "Sarah Lennon",
     role: "Head of Ops, Elite Competitions",
   }

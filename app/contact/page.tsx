@@ -14,7 +14,7 @@ export default function ContactPage() {
       <main>
         <PageHero
           eyebrow="Contact"
-          title="Talk to the CAAS team."
+          title="Talk to the Cafaas team."
           description="Sales, support, regulator inquiries—one inbox with aligned response times."
         />
 

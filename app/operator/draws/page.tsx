@@ -30,6 +30,14 @@ import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { handleApiError } from '@/lib/error-handler';
+import { DrawAuditDetailsDialog } from '@/components/operator/draw-audit-details-dialog';
+import { OperatorActionsMenu } from '@/components/operator-actions-menu';
+import { Eye } from 'lucide-react';
+import { useDialog } from '@/hooks/useDialog';
+import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
+import { Calendar } from 'lucide-react';
+import { dateFormatters } from '@/lib/date-utils';
+import {InfoTooltip} from "@/components/info-tooltip";
 
 // Format chain position with commas
 const formatChainPosition = (sequence: number): string => {
@@ -74,6 +82,8 @@ export default function OperatorDrawsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [initialized, setInitialized] = useState(false);
+  const dialog = useDialog<DrawAudit>();
+  const [dashboardStats, setDashboardStats] = useState<any>(null);
 
   // Filter options
   const [competitions, setCompetitions] = useState<any[]>([]);
@@ -115,9 +125,8 @@ export default function OperatorDrawsPage() {
   const loadDrawAudits = async () => {
     try {
       setLoading(true);
-      console.log('[Draws] Fetching draw audits...');
       const [auditsData, dashboardData, competitionsData] = await Promise.all([
-        operatorApi.getDrawAudits(),
+        operatorApi.getDrawAudits({ per_page: 1000 }),
         operatorApi.getDashboard(),
         operatorApi.getCompetitions({ per_page: 1000 }),
       ]);
@@ -126,13 +135,18 @@ export default function OperatorDrawsPage() {
       const sortedAudits = (auditsData.data || []).sort((a: DrawAudit, b: DrawAudit) => b.sequence - a.sequence);
       
       setAllDrawAudits(sortedAudits);
-      setDrawAudits(sortedAudits);
       setCompetitions(competitionsData.data || []);
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
-      setLoading(false);
+      setDashboardStats(dashboardData?.stats || null);
       
-      // Apply filters after loading
-      applyFilters();
+      // Apply filters with the new data
+      let filtered = [...sortedAudits];
+      if (filters.competition_id) {
+        filtered = filtered.filter(audit => audit.competition?.id === filters.competition_id);
+      }
+      setDrawAudits(filtered);
+      
+      setLoading(false);
     } catch (error: any) {
       handleApiError(error, handleLogout);
       setLoading(false);
@@ -219,11 +233,53 @@ export default function OperatorDrawsPage() {
       onLogout={handleLogout}
     >
       <div className="space-y-8">
-        <DashboardHeader title="Draw Audits">
+        <DashboardHeader title="Draws & winners">
           <Badge variant="outline" className="px-3 py-1">
             {allDrawAudits.length} Total
           </Badge>
         </DashboardHeader>
+
+        {/* Metrics Cards - 3 cards */}
+        <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
+          <ComplianceScoreCard
+            title="Total draws"
+            value={dashboardStats?.total_draws || 0}
+            status="neutral"
+            icon={Dices}
+            footer="All time"
+          />
+
+          <ComplianceScoreCard
+            title="Chain verified"
+            value={
+              dashboardStats?.total_draws > 0
+                ? `${dashboardStats.draws_with_valid_signatures || 0} of ${dashboardStats.total_draws}`
+                : '0 of 0'
+            }
+            status={
+              dashboardStats?.total_draws > 0 && 
+              (dashboardStats.draws_with_valid_signatures / dashboardStats.total_draws) >= 0.95
+                ? 'good'
+                : dashboardStats?.total_draws > 0 && 
+                  (dashboardStats.draws_with_valid_signatures / dashboardStats.total_draws) >= 0.8
+                  ? 'warning'
+                  : dashboardStats?.total_draws > 0
+                    ? 'critical'
+                    : 'neutral'
+            }
+            icon={ShieldCheck}
+            footer="With valid signatures"
+            helpText="Shows how many of your prize draws have been fully verified and securely added to the audit chain."
+          />
+
+          <ComplianceScoreCard
+            title="Recent draws (7 days)"
+            value={dashboardStats?.draws_last_7_days || 0}
+            status="neutral"
+            icon={Calendar}
+            footer="Last 7 days"
+          />
+        </div>
 
         <div className="px-4 lg:px-6">
           {/* Filters Card */}
@@ -274,7 +330,7 @@ export default function OperatorDrawsPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1.5">
-                  <CardTitle className="leading-none font-semibold !text-base">All Draw Audits</CardTitle>
+                  <CardTitle className="leading-none font-semibold !text-base">All draw audits</CardTitle>
                   <CardDescription className="text-muted-foreground text-sm">
                     Cryptographically verified draw results
                   </CardDescription>
@@ -288,22 +344,42 @@ export default function OperatorDrawsPage() {
                     <TableHeader>
                       <TableRow>
                           <TableHead>ID</TableHead>
+                          <TableHead>
+                              <div className="flex items-center">
+                                  <span>Chain Position</span>
+                                  <InfoTooltip>
+                                      Shows when this event happened in the overall audit timeline. Earlier numbers mean earlier events. This ensures the order can’t be altered.
+                                  </InfoTooltip>
+                              </div>
+                          </TableHead>
                           <TableHead>Competition</TableHead>
                           <TableHead>Prize</TableHead>
                           <TableHead>Draw Date</TableHead>
                           <TableHead>Entries</TableHead>
                           <TableHead>Winner</TableHead>
-                          <TableHead>Chain Position</TableHead>
-                            <TableHead>Signature</TableHead>
-                            <TableHead>Integrity</TableHead>
-                        <TableHead></TableHead>
+                          <TableHead>
+                              <div className="flex items-center">
+                                  <span>Integrity</span>
+                                  <InfoTooltip>
+                                      Valid means the event is securely chained and cannot be altered. Pending means it's still waiting to be added.
+                                  </InfoTooltip>
+                              </div>
+                          </TableHead>
+                          <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {paginatedDrawAudits.map((audit) => (
                       <TableRow key={audit.id}>
                           <TableCell>
-                              {audit.draw_id?.substring(0, 8)}...
+                              <code className="text-xs text-muted-foreground font-mono">
+                                  {audit.draw_id?.substring(0, 8)}...
+                              </code>
+                          </TableCell>
+                          <TableCell>
+                              <Badge variant="outline" className="font-mono">
+                                  {formatChainPosition(audit.sequence)}
+                              </Badge>
                           </TableCell>
                           <TableCell>
                               {audit.competition ? (
@@ -317,13 +393,7 @@ export default function OperatorDrawsPage() {
                           </TableCell>
 
                           <TableCell className="text-sm">
-                              {new Date(audit.drawn_at_utc).toLocaleDateString('en-GB', {
-                                  day: '2-digit',
-                                  month: 'short',
-                                  year: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                              })}
+                              {dateFormatters.shortDateTime(audit.drawn_at_utc)}
                           </TableCell>
 
                         <TableCell>
@@ -331,21 +401,24 @@ export default function OperatorDrawsPage() {
                         </TableCell>
                         <TableCell>
                           {audit.selected_entry ? (
-                              <span>#{audit.selected_entry.number}</span>
+                              <span>{audit.selected_entry.external_id}</span>
                           ) : (
                               <span></span>
                           )}
                         </TableCell>
-                          <TableCell>
-                              <Badge variant="outline" className="font-mono">
-                                  {formatChainPosition(audit.sequence)}
-                              </Badge>
-                          </TableCell>
-                        <TableCell className="font-mono text-xs text-muted-foreground">
-                          {audit.signature_hash?.substring(0, 12)}...
+                        <TableCell>
+                          <IndicatorBadge color="green" text="Valid" />
                         </TableCell>
                         <TableCell>
-                          <IndicatorBadge color="green" text="Verified" />
+                          <OperatorActionsMenu
+                            actions={[
+                              {
+                                label: 'Details',
+                                icon: Eye,
+                                onSelect: () => dialog.open(audit),
+                              },
+                            ]}
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
@@ -361,11 +434,11 @@ export default function OperatorDrawsPage() {
                 />
               </>
               ) : (
-                <div className="text-center py-12">
-                  <ShieldCheck className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-medium mb-2 text-foreground">No draw audits</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Draw audits will appear here once you conduct draws for your competitions
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Dices className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No draw audits yet</h3>
+                  <p className="text-sm text-muted-foreground mb-6 max-w-md">
+                    Draw audits will appear here automatically once you conduct draws for your competitions. Each draw is cryptographically verified and added to the audit chain.
                   </p>
                 </div>
               )}
@@ -373,6 +446,12 @@ export default function OperatorDrawsPage() {
           </Card>
         </div>
       </div>
+
+      <DrawAuditDetailsDialog
+        audit={dialog.item}
+        open={dialog.isOpen}
+        onOpenChange={(open) => !open && dialog.close()}
+      />
     </DashboardShell>
   );
 }

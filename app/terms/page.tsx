@@ -13,12 +13,12 @@ export default function TermsPage() {
             
             <h2 className="text-2xl font-bold text-white mt-8">1. Acceptance of Terms</h2>
             <p>
-               By accessing and using the CaaS Platform services, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.
+               By accessing and using the Cafaas Platform services, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.
             </p>
 
             <h2 className="text-2xl font-bold text-white mt-8">2. Service Description</h2>
             <p>
-               CaaS Platform provides a compliance and fairness engine for prize competitions ("Service"). You are responsible for obtaining access to the Service and that access may involve third party fees (such as Internet service provider or airtime charges).
+               Cafaas Platform provides a compliance and fairness engine for prize competitions ("Service"). You are responsible for obtaining access to the Service and that access may involve third party fees (such as Internet service provider or airtime charges).
             </p>
 
             <h2 className="text-2xl font-bold text-white mt-8">3. Operator Responsibilities</h2>
@@ -32,7 +32,7 @@ export default function TermsPage() {
 
             <h2 className="text-2xl font-bold text-white mt-8">4. Intellectual Property</h2>
             <p>
-               The Service and its original content, features and functionality are and will remain the exclusive property of CaaS Platform and its licensors. The Service is protected by copyright, trademark, and other laws of both the United Kingdom and foreign countries.
+               The Service and its original content, features and functionality are and will remain the exclusive property of Cafaas Platform and its licensors. The Service is protected by copyright, trademark, and other laws of both the United Kingdom and foreign countries.
             </p>
 
             <h2 className="text-2xl font-bold text-white mt-8">5. Termination</h2>

@@ -1,266 +1,166 @@
-import { PageHero } from "@/components/PageHero";
-import { SectionHeading } from "@/components/section-heading";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { Check, ArrowRightCircle } from "lucide-react";
-
-const plans = [
-  {
-    name: "Starter",
-    price: "Free",
-    detail: "Perfect for validating trust badges on a single competition.",
-    bullets: ["50 entries / draw", "1 public audit per month", "Email support"],
-    cta: "Launch sandbox",
-  },
-  {
-    name: "Growth",
-    price: "£49 per draw",
-    detail: "Only pay when you publish a verified draw.",
-    bullets: ["Unlimited entries", "White-label audit viewer", "Priority chat support"],
-    cta: "Scale with CAAS",
-    featured: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    detail: "Tailored for multi-brand groups and regulated partners.",
-    bullets: ["Dedicated compliance concierge", "Custom data residency", "Horizon monitoring"],
-    cta: "Talk to sales",
-  },
-];
-
-const comparison = [
-  {
-    label: "Public audit pages",
-    starter: "Basic theme",
-    growth: "Custom domain + branding",
-    enterprise: "Full white-label + SSO",
-  },
-  {
-    label: "API & SDK access",
-    starter: "Read-only sandbox",
-    growth: "Full write access",
-    enterprise: "Private endpoints + rate tiers",
-  },
-  {
-    label: "Evidence packs",
-    starter: "Manual download",
-    growth: "Automated per draw",
-    enterprise: "Auto-share to regulators",
-  },
-  {
-    label: "Support",
-    starter: "Email (48h SLA)",
-    growth: "Chat (4h SLA)",
-    enterprise: "Dedicated Slack & TAM",
-  },
-];
-
-const faqs = [
-  {
-    question: "Do I pay per month or per draw?",
-    answer: "You pay for what you run. Growth charges £49 per verified draw. If you skip a month, you pay nothing.",
-  },
-  {
-    question: "Is there a free tier for testing?",
-    answer: "Yes. Starter lets you run internal test draws and publish one public audit page every month at no cost.",
-  },
-  {
-    question: "What if I exceed the entry limit?",
-    answer: "We auto-upgrade draws that exceed tier limits and notify you before charging. No downtime for your competition.",
-  },
-  {
-    question: "Can I expense CAAS as compliance spend?",
-    answer: "Absolutely. Most operators categorize CAAS as compliance tooling or platform assurance.",
-  },
-];
+import { PageHero } from "@/components/marketing/PageHero";
+import { FaqBlock } from "@/components/marketing/FaqBlock";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Check, ShieldCheck, FileCheck, RefreshCw, Gift, Database, Sparkles } from "lucide-react";
 
 export default function PricingPage() {
+  const faqs = [
+    {
+      question: "What counts as a “draw”?",
+      answer: "A draw is the process of selecting a winner (or winners) for a specific prize in a competition. If you run multiple prizes in one go, each prize draw still generates its own audited event."
+    },
+    {
+      question: "Do I pay per competition or per draw?",
+      answer: "You pay a monthly subscription plus a fee per draw. This lets you run as many competitions as you like and pay based on how often you actually draw winners."
+    },
+    {
+      question: "What happens if I exceed my typical draw volume?",
+      answer: "We’ll never hard-stop your draws. If you consistently exceed your tier’s typical volume, we’ll reach out and discuss whether another plan or a custom arrangement is better."
+    },
+    {
+      question: "Are fairness and audit features available on all plans?",
+      answer: "Yes. We don’t believe fairness should be an “add-on”. All plans include the full core fairness and audit engine. Higher tiers unlock branding, webhooks and support options."
+    },
+    {
+      question: "Can I cancel at any time?",
+      answer: "Yes, you can cancel your subscription at the end of any billing period. Audit data and history will remain accessible for a reasonable retention period."
+    }
+  ];
+
+  const tiers = [
+      {
+          name: "Starter",
+          price: "£29",
+          fee: "£0.50",
+          desc: "For small to mid-size operators running a handful of competitions per month.",
+          features: [
+              "CAFAAS Verified badge",
+              "Public audit pages",
+              "Operator dashboard",
+              "Core API access",
+              "Up to 1 team member",
+              "Standard support"
+          ]
+      },
+      {
+          name: "Growth",
+          price: "£79",
+          fee: "£0.25",
+          desc: "For growing operators and brands running frequent competitions.",
+          features: [
+              "Everything in Starter",
+              "Custom audit branding (logo & colours)",
+              "Webhook support (result notifications, status updates)",
+              "Up to 5 team members",
+              "Priority support"
+          ],
+          highlight: true
+      },
+      {
+          name: "Platform",
+          price: "£199",
+          fee: "£0.10",
+          desc: "For platforms and high-volume competition businesses.",
+          features: [
+              "Everything in Growth",
+              "Custom domain for audit pages (e.g. audit.yourbrand.com)",
+              "Full theme control for audit pages",
+              "Advanced audit exports and reporting",
+              "Up to 20 team members",
+              "Dedicated support channel"
+          ]
+      }
+  ];
+
+  const includedFeatures = [
+      { title: "Tamper-evident audit chain", icon: ShieldCheck },
+      { title: "Public audit pages", icon: FileCheck },
+      { title: "Draw logging and integrity checks", icon: RefreshCw },
+      { title: "Support for multiple prizes per competition", icon: Gift },
+      { title: "Entry logging (paid & free)", icon: Database },
+      { title: "Access to new fairness features as they launch", icon: Sparkles }
+  ];
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
       <SiteHeader />
       <main>
-        <PageHero
-          eyebrow="Pricing"
-          title="Usage-based pricing aligned to transparent draws."
-          description="Start free. Only pay when you publish verifiable results. Every plan includes the audit chain, trust badge, and compliance monitoring."
-          primaryCta={{ label: "Start for free", href: "/operator/register" }}
-          secondaryCta={{ label: "Book pricing call", href: "/contact" }}
+        <PageHero 
+          title="Pricing"
+          headline="Simple, predictable pricing that scales with your competitions."
+          subheadline="Pay a small monthly fee to access the platform, plus a per-draw fee that scales down as you grow. All fairness and audit features are available on every plan."
         />
 
-        <section className="bg-black/50 py-24">
-          <div className="mx-auto max-w-content px-6">
-            <SectionHeading
-              eyebrow="Plan Selector"
-              title="Choose how you want to pay for transparency."
-              description="Select the plan that matches your draw volume. Switch tiers anytime."
-              align="center"
-            />
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {plans.map((plan) => (
-                <Card
-                  key={plan.name}
-                  className={`h-full rounded-3xl border ${
-                    plan.featured
-                      ? "border-accentMint/70 bg-white/10 shadow-brand"
-                      : "border-white/10 bg-black/40"
-                  }`}
-                >
-                  <CardHeader>
-                    <CardTitle className="text-white">{plan.name}</CardTitle>
-                    <p className="text-3xl font-semibold text-white">{plan.price}</p>
-                    <p className="text-sm text-muted-foreground">{plan.detail}</p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <ul className="space-y-3 text-sm text-slate-200">
-                      {plan.bullets.map((item) => (
-                        <li key={item} className="flex items-center gap-3">
-                          <Check className="h-4 w-4 text-accentMint" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      className={`w-full rounded-full ${
-                        plan.featured
-                          ? "bg-accentMint text-brand-navy hover:bg-accentMint/90"
-                          : "bg-white/10 text-white hover:bg-white/20"
-                      }`}
-                    >
-                      {plan.cta}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
+        {/* Pricing Cards */}
+        <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
+             <div className="container px-4 md:px-6 mx-auto max-w-6xl">
+                 <div className="grid md:grid-cols-3 gap-8 items-start">
+                     {tiers.map((tier, idx) => (
+                         <div key={idx} className={`relative flex flex-col p-8 rounded-3xl border ${tier.highlight ? 'border-brand-cobalt bg-white dark:bg-zinc-900 ring-1 ring-brand-cobalt shadow-xl scale-105 z-10' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black'}`}>
+                             {tier.highlight && (
+                                 <div className="absolute -top-4 left-0 right-0 flex justify-center">
+                                     <span className="bg-brand-cobalt text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Most Popular</span>
+                                 </div>
+                             )}
+                             <div className="mb-6">
+                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">{tier.name}</h3>
+                                 <div className="flex items-baseline gap-1">
+                                     <span className="text-4xl font-bold text-zinc-900 dark:text-white">{tier.price}</span>
+                                     <span className="text-zinc-500 dark:text-zinc-400">/mo</span>
+                                 </div>
+                                 <div className="text-sm font-medium text-brand-cobalt mt-2">+ {tier.fee} per draw</div>
+                                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-4 min-h-[40px]">{tier.desc}</p>
+                             </div>
+                             
+                             <ul className="space-y-4 mb-8 flex-1">
+                                 {tier.features.map((feature, i) => (
+                                     <li key={i} className="flex items-start gap-3 text-sm text-zinc-600 dark:text-zinc-300">
+                                         <Check className="h-5 w-5 text-brand-cobalt flex-shrink-0" />
+                                         <span>{feature}</span>
+                                     </li>
+                                 ))}
+                             </ul>
+
+                             <Button className={`w-full ${tier.highlight ? 'bg-brand-cobalt hover:bg-brand-cobalt/90 text-white' : 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200'}`} asChild>
+                                 <Link href="/operator/register">Get Started</Link>
+                             </Button>
+                         </div>
+                     ))}
+                 </div>
+             </div>
         </section>
 
-        <section className="py-24">
-          <div className="mx-auto max-w-content px-6 space-y-12">
-            <SectionHeading
-              eyebrow="Usage-based model"
-              title="Designed around draw volume, not seat counts."
-              description="Your team pays only when a verified draw is published. Integrations, SDKs, and monitoring are always included."
-            />
-            <div className="grid gap-6 md:grid-cols-3">
-              <Card className="border-white/5 bg-black/40 p-6">
-                <p className="text-sm text-accentMint">Metered events</p>
-                <p className="mt-4 text-3xl font-semibold text-white">Per verified draw</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Usage resets each month. No cost for paused operators.
-                </p>
-              </Card>
-              <Card className="border-white/5 bg-black/40 p-6">
-                <p className="text-sm text-accentMint">Included</p>
-                <p className="mt-4 text-3xl font-semibold text-white">API + SDKs</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  No extra line items for developer access or staging environments.
-                </p>
-              </Card>
-              <Card className="border-white/5 bg-black/40 p-6">
-                <p className="text-sm text-accentMint">Fairness guarantee</p>
-                <p className="mt-4 text-3xl font-semibold text-white">Chargebacks covered</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  CAAS credits the draw fee if an audit chain fails to publish.
-                </p>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-black/50 py-24">
-          <div className="mx-auto max-w-content px-6 space-y-10">
-            <SectionHeading
-              eyebrow="Feature comparison"
-              title="Every tier ships transparency. Higher tiers add automation."
-            />
-            <div className="overflow-x-auto rounded-3xl border border-white/10">
-              <table className="w-full min-w-[700px] text-left">
-                <thead>
-                  <tr className="bg-white/5 text-sm text-muted-foreground">
-                    <th className="px-6 py-4 font-medium text-white">Feature</th>
-                    <th className="px-6 py-4 font-medium">Starter</th>
-                    <th className="px-6 py-4 font-medium">Growth</th>
-                    <th className="px-6 py-4 font-medium">Enterprise</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparison.map((row) => (
-                    <tr key={row.label} className="border-t border-white/5 text-sm">
-                      <td className="px-6 py-4 text-white">{row.label}</td>
-                      <td className="px-6 py-4 text-slate-300">{row.starter}</td>
-                      <td className="px-6 py-4 text-slate-300">{row.growth}</td>
-                      <td className="px-6 py-4 text-slate-300">{row.enterprise}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-24">
-          <div className="mx-auto max-w-content px-6 grid gap-12 lg:grid-cols-2">
-            <div>
-              <SectionHeading
-                eyebrow="ROI snapshot"
-                title="Transparency pays for itself."
-                description="Operators report fewer disputes, higher ticket conversion, and faster regulator sign-off."
-              />
-              <ul className="mt-8 space-y-4 text-sm text-muted-foreground">
-                <li>• 12% average increase in ticket conversion after adding audit badge.</li>
-                <li>• 90% reduction in “prove it” support tickets.</li>
-                <li>• 1–2 hours saved per draw on evidence compilation.</li>
-              </ul>
-            </div>
-            <Card className="border-white/10 bg-gradient-to-br from-white/10 to-transparent p-6">
-              <CardHeader className="p-0">
-                <CardTitle className="flex items-center gap-2 text-white">
-                  Scenario: 4 draws / month
-                  <ArrowRightCircle className="h-5 w-5 text-accentMint" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="mt-6 space-y-3 text-sm text-slate-200">
-                <div className="flex justify-between border-b border-white/10 pb-3">
-                  <span>CAAS investment</span>
-                  <span>£196</span>
+        {/* Section: What's included */}
+        <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
+            <div className="container px-4 md:px-6 mx-auto max-w-4xl">
+                <div className="text-center mb-12">
+                     <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-4">Every plan includes:</h2>
                 </div>
-                <div className="flex justify-between border-b border-white/10 pb-3">
-                  <span>Average extra ticket revenue*</span>
-                  <span>£1,680</span>
+                
+                <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                    {includedFeatures.map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800">
+                            <div className="h-10 w-10 bg-white dark:bg-black rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-800 text-brand-cobalt shadow-sm">
+                                <item.icon className="h-5 w-5" />
+                            </div>
+                            <span className="font-medium text-zinc-900 dark:text-white">{item.title}</span>
+                        </div>
+                    ))}
                 </div>
-                <div className="flex justify-between">
-                  <span>Support hours saved</span>
-                  <span>8 hrs</span>
+
+                <div className="mt-12 text-center max-w-2xl mx-auto p-6 bg-brand-cobalt/5 rounded-2xl border border-brand-cobalt/10">
+                    <p className="text-zinc-700 dark:text-zinc-300 font-medium">
+                        No fairness features are “locked” behind higher plans. <br/>
+                        <span className="text-sm opacity-80 font-normal">Plans mainly differ in branding, automation and support.</span>
+                    </p>
                 </div>
-                <p className="mt-4 text-xs text-muted-foreground">
-                  *Based on 12% uplift on 4,000 tickets at £3.50 average ticket price.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+            </div>
         </section>
 
-        <section className="bg-black/60 py-24">
-          <div className="mx-auto max-w-content px-6 space-y-10">
-            <SectionHeading
-              eyebrow="FAQ"
-              title="Everything you need to know before integrating."
-              align="center"
-            />
-            <div className="grid gap-6 md:grid-cols-2">
-              {faqs.map((faq) => (
-                <Card key={faq.question} className="border-white/10 bg-black/40 p-6">
-                  <h3 className="text-lg font-semibold text-white">{faq.question}</h3>
-                  <p className="mt-3 text-sm text-muted-foreground">{faq.answer}</p>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
+        <FaqBlock faqs={faqs} title="Pricing FAQ" />
       </main>
       <SiteFooter />
     </div>

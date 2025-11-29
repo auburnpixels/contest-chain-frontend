@@ -6,7 +6,7 @@ import { Quote, Star } from "lucide-react";
 export default function TestimonialsPage() {
   const testimonials = [
     {
-      quote: "Using CAAS stopped 90% of fairness complaints overnight.",
+      quote: "Using Cafaas stopped 90% of fairness complaints overnight.",
       author: "James M.",
       role: "Director, Prize Draw UK",
       rating: 5
@@ -52,7 +52,7 @@ export default function TestimonialsPage() {
           Trusted by Operators
         </h1>
         <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-          See what competition owners are saying about CAAS.
+          See what competition owners are saying about Cafaas.
         </p>
       </section>
 

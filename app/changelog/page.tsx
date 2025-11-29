@@ -14,7 +14,7 @@ export default function ChangelogPage() {
             Changelog
          </h1>
          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-            Latest updates, improvements, and fixes to the CaaS Platform.
+            Latest updates, improvements, and fixes to the Cafaas Platform.
          </p>
       </section>
 
@@ -68,7 +68,7 @@ export default function ChangelogPage() {
                      <h2 className="text-xl font-bold text-white tracking-tight">Public Beta Launch</h2>
                   </div>
                   <p className="text-zinc-400 leading-relaxed">
-                     CaaS Platform is now open for public beta registration. Operators can sign up and start creating test competitions in the sandbox environment.
+                     Cafaas Platform is now open for public beta registration. Operators can sign up and start creating test competitions in the sandbox environment.
                   </p>
                </div>
             </div>

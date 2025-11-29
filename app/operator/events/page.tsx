@@ -8,8 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { operatorApi } from '@/lib/api/client';
-import { Eye, Activity, CheckCircle, Copy, X } from 'lucide-react';
+import { Eye, Activity, CheckCircle, X, AlertTriangle } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
+import { DismissibleAlert } from '@/components/dismissible-alert';
+import { InfoTooltip } from '@/components/info-tooltip';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {DashboardHeader} from "@/components/dashboard-header";
@@ -19,17 +21,23 @@ import {IndicatorBadge} from "@/components/ui/indicator-badge";
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
+import { useDialog } from '@/hooks/useDialog';
+import { EventDetailsDialog, DrawEvent } from '@/components/operator/event-details-dialog';
+import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
+import { ShieldCheck } from 'lucide-react';
+import { dateFormatters } from '@/lib/date-utils';
 
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
   const mapping: Record<string, string> = {
+    'competition.created': 'Competition Created',
     'operator.competition_created': 'Competition Created',
     'operator.draw_requested': 'Draw Triggered',
     'operator.api_request': 'API Request',
     'operator.entry_created': 'Entry Created',
-    'raffle.published': 'Competition Published',
-    'raffle.closed': 'Competition Closed',
-    'raffle.updated': 'Competition Updated',
+    'competition.published': 'Competition Published',
+    'competition.closed': 'Competition Closed',
+    'competition.updated': 'Competition Updated',
     'entry.created': 'Entry Added',
     'entry.deleted': 'Entry Removed',
     'draw.started': 'Draw Started',
@@ -54,14 +62,14 @@ export default function EventsPage() {
   const searchParams = useSearchParams();
   const { isReady, handleLogout } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<DrawEvent[]>([]);
   const [operatorName, setOperatorName] = useState('');
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [copySuccess, setCopySuccess] = useState('');
+  const eventDialog = useDialog<DrawEvent>();
   const [initialized, setInitialized] = useState(false);
   const [verifyingChain, setVerifyingChain] = useState(false);
   const [chainStatus, setChainStatus] = useState<any>(null);
+  const [chainIntegrity, setChainIntegrity] = useState<any>(null);
+  const [dashboardStats, setDashboardStats] = useState<any>(null);
   const [showChainModal, setShowChainModal] = useState(false);
   const [exportingCsv, setExportingCsv] = useState(false);
   const [exportingJson, setExportingJson] = useState(false);
@@ -140,6 +148,8 @@ export default function EventsPage() {
       ]);
       
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
+      setChainIntegrity(dashboardData?.system?.chain_integrity || null);
+      setDashboardStats(dashboardData?.stats || null);
       setFilterOptions(filtersData);
     } catch (error: any) {
       console.error('Failed to load filter options:', error);
@@ -163,17 +173,23 @@ export default function EventsPage() {
       const eventsData = await operatorApi.getDrawEvents(params);
 
       const events = eventsData.data || [];
-      const paginationData = eventsData.pagination || {};
       
       // Enrich events with competition info if available
-      const enrichedEvents = events.map((event: any) => ({
+      const enrichedEvents = events.map((event: DrawEvent) => ({
         ...event,
         competition_title: event.competition?.name || 'N/A',
         competition_id: event.competition?.id,
       }));
 
       setEvents(enrichedEvents);
-      setPagination(paginationData);
+      setPagination({
+        current_page: eventsData.current_page || 1,
+        per_page: eventsData.per_page || 25,
+        total: eventsData.total || 0,
+        last_page: eventsData.last_page || 1,
+        from: eventsData.from || 0,
+        to: eventsData.to || 0,
+      });
       setLoading(false);
     } catch (error: any) {
       console.error('[Events] Failed to load events:', error);
@@ -296,12 +312,6 @@ export default function EventsPage() {
     }
   };
 
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    setCopySuccess(label);
-    setTimeout(() => setCopySuccess(''), 2000);
-  };
-
   const filterByCompetition = (competitionIdentifier: string | undefined) => {
     if (competitionIdentifier) {
       setFilters({ ...filters, competition_id: competitionIdentifier });
@@ -383,7 +393,7 @@ export default function EventsPage() {
       onLogout={handleLogout}
     >
       <div className="space-y-6">
-          <DashboardHeader title="Events">
+          <DashboardHeader title="Event chain">
               <div className="flex gap-2">
                   <Button
                       variant="outline"
@@ -435,6 +445,43 @@ export default function EventsPage() {
                   </Button>
               </div>
           </DashboardHeader>
+
+          {/* Explainer Banner */}
+          <div className="px-4 lg:px-6">
+            <DismissibleAlert
+              id="events-explainer"
+              title="What are events?"
+              description="Every action in CAFAAS (competitions created, entries added, draws run) is logged as an event. These events are cryptographically linked in a chain to prevent tampering. Think of it as a tamper-proof audit log."
+            />
+          </div>
+
+          {/* Metrics Cards - 2 cards */}
+          <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2">
+            <ComplianceScoreCard
+              title="Total events"
+              value={(dashboardStats?.api_events_total || 0).toLocaleString()}
+              status="neutral"
+              icon={Activity}
+              footer="All time"
+            />
+
+            <ComplianceScoreCard
+              title="Chain integrity"
+              value={
+                chainIntegrity?.chain_status === 'valid' 
+                  ? 'Verified'
+                  : chainIntegrity?.chain_status === 'invalid' 
+                    ? 'Invalid' 
+                    : chainIntegrity?.chain_status === 'building'
+                      ? 'Building...'
+                      : 'Verifying...'
+              }
+              status={chainIntegrity?.chain_status === 'valid' ? 'good' : chainIntegrity?.chain_status === 'invalid' ? 'critical' : 'neutral'}
+              icon={ShieldCheck}
+              footer={`${chainIntegrity?.verified_events || 0} of ${chainIntegrity?.total_events || 0} events verified`}
+              helpText="Confirms your competition's audit records are securely linked and can't be changed. This ensures your draw results remain trustworthy."
+            />
+          </div>
 
           <div className="px-4 lg:px-6">
               <Card className="bg-card border-border">
@@ -567,7 +614,7 @@ export default function EventsPage() {
                   <CardHeader>
                       <div className="flex items-center justify-between">
                           <div className="flex flex-col gap-1.5">
-                              <CardTitle className="leading-none font-semibold !text-base">Event Log</CardTitle>
+                              <CardTitle className="leading-none font-semibold !text-base">Event log</CardTitle>
                               <CardDescription className="text-muted-foreground text-sm">
                                   Recent system activity across your competitions
                               </CardDescription>
@@ -581,23 +628,36 @@ export default function EventsPage() {
                                   <Table>
                                       <TableHeader>
                                           <TableRow>
-                                              <TableHead>ID</TableHead>
-                                              <TableHead>Event</TableHead>
+                                              <TableHead>
+                                                  <div className="flex items-center">
+                                                      <span>Chain Position</span>
+                                                      <InfoTooltip>
+                                                          Shows when this event happened in the overall audit timeline. Earlier numbers mean earlier events. This ensures the order can’t be altered.
+                                                      </InfoTooltip>
+                                                  </div>
+                                              </TableHead>
+                                              <TableHead>Event Type</TableHead>
                                               <TableHead>Competition</TableHead>
                                               <TableHead>Actor</TableHead>
-                                              <TableHead>Chain Position</TableHead>
                                               <TableHead>Timestamp</TableHead>
-                                              <TableHead>Integrity</TableHead>
+                                              <TableHead>
+                                                  <div className="flex items-center">
+                                                      <span>Integrity</span>
+                                                      <InfoTooltip>
+                                                          Valid means the event is securely chained and cannot be altered. Pending means it's still waiting to be added.
+                                                      </InfoTooltip>
+                                                  </div>
+                                              </TableHead>
                                               <TableHead></TableHead>
                                           </TableRow>
                                       </TableHeader>
                                       <TableBody>
-                                          {events.map((event: any) => (
+                                          {events.map((event) => (
                                               <TableRow key={event.id}>
                                                   <TableCell>
-                                                      <code className="text-xs text-muted-foreground font-mono">
-                                                          {event.id?.toString().substring(0, 8)}...
-                                                      </code>
+                                                    <Badge variant="outline">
+                                                      {formatChainPosition(event.sequence)}
+                                                    </Badge>
                                                   </TableCell>
                                                   <TableCell>
                                                       {getEventDisplayName(event.event_type)}
@@ -615,12 +675,7 @@ export default function EventsPage() {
                                                       </Badge>
                                                   </TableCell>
                                                   <TableCell>
-                                                    <span>
-                                                      {formatChainPosition(event.sequence)}
-                                                    </span>
-                                                  </TableCell>
-                                                  <TableCell>
-                                                      {new Date(event.created_at).toLocaleString()}
+                                                      {dateFormatters.shortDateTime(event.created_at)}
                                                   </TableCell>
                                                   <TableCell>
                                                       <IndicatorBadge
@@ -633,11 +688,7 @@ export default function EventsPage() {
                                                           actions={[
                                                               {
                                                                   label: 'Details',
-                                                                  icon: Eye,
-                                                                  onSelect: () => {
-                                                                      setSelectedEvent(event);
-                                                                      setShowModal(true);
-                                                                  },
+                                                                  onSelect: () => eventDialog.open(event),
                                                               },
                                                           ]}
                                                       />
@@ -660,7 +711,6 @@ export default function EventsPage() {
                           </>
                       ) : (
                           <div className="text-center py-12">
-                              <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                               <h3 className="text-lg font-medium mb-2 text-foreground">No events found</h3>
                               <p className="text-sm text-muted-foreground">
                                   {hasActiveFilters ? 'Try adjusting your filters' : 'Events will appear here once your competitions become active.'}
@@ -673,195 +723,12 @@ export default function EventsPage() {
 
       </div>
 
-      {/* Event Details Modal */}
-      {showModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
-          <div className="bg-slate-900 border border-slate-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
-            {/* Header */}
-            <div className="p-6 border-b border-slate-800 bg-slate-900/50">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    {getEventDisplayName(selectedEvent.event_type)}
-                  </h2>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground">
-                      Event {formatChainPosition(selectedEvent.sequence)}
-                    </span>
-                    <div className="flex items-center gap-1.5 text-green-500">
-                      <CheckCircle className="h-4 w-4" />
-                      <span className="text-sm font-medium">Valid</span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-muted-foreground hover:text-white text-2xl leading-none"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Cryptographic Verification */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2">
-                  Cryptographic Verification
-                </h3>
-                
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event Hash</label>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 text-green-400 font-mono text-xs break-all bg-green-950/20 p-3 rounded border border-green-900/30">
-                        {selectedEvent.event_hash}
-                      </code>
-                      <button
-                        onClick={() => copyToClipboard(selectedEvent.event_hash, 'Event Hash')}
-                        className="p-2 hover:bg-slate-800 rounded text-muted-foreground hover:text-white transition-colors"
-                        title="Copy hash"
-                      >
-                        <Copy className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Previous Event Hash</label>
-                    {selectedEvent.previous_event_hash ? (
-                      <div className="flex items-center gap-2">
-                        <code className="flex-1 text-blue-400 font-mono text-xs break-all bg-blue-950/20 p-3 rounded border border-blue-900/30">
-                          {selectedEvent.previous_event_hash}
-                        </code>
-                        <button
-                          onClick={() => copyToClipboard(selectedEvent.previous_event_hash, 'Previous Hash')}
-                          className="p-2 hover:bg-slate-800 rounded text-muted-foreground hover:text-white transition-colors"
-                          title="Copy hash"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <p className="text-slate-500 italic text-sm bg-slate-950/50 p-3 rounded border border-slate-800">
-                        Genesis Event (First in chain)
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Chain Position</label>
-                      <p className="text-white font-mono text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
-                        {formatChainPosition(selectedEvent.sequence)}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event ID</label>
-                      <p className="text-white font-mono text-xs bg-slate-950/50 p-2 rounded border border-slate-800 break-all">
-                        {selectedEvent.id}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Event Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2">
-                  Event Information
-                </h3>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event Type</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
-                      <code className="text-xs">{selectedEvent.event_type}</code>
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Actor</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
-                      {selectedEvent.actor_type || 'system'}
-                      {selectedEvent.actor_id && ` (ID: ${selectedEvent.actor_id})`}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Competition</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
-                      {selectedEvent.competition_title}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Timestamp</label>
-                    <p className="text-white text-sm bg-slate-950/50 p-2 rounded border border-slate-800">
-                      {new Date(selectedEvent.created_at).toLocaleString()}
-                    </p>
-                  </div>
-                  {selectedEvent.ip_address && (
-                    <div className="col-span-2">
-                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">IP Address</label>
-                      <p className="text-white text-sm font-mono bg-slate-950/50 p-2 rounded border border-slate-800">
-                        {selectedEvent.ip_address}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Signed Payload */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2">
-                  Signed Payload
-                </h3>
-                
-                <div className="relative">
-                  <pre className="text-white font-mono text-xs bg-black p-4 rounded border border-slate-800 overflow-x-auto max-h-64">
-{JSON.stringify(selectedEvent.event_payload, null, 2)}
-                  </pre>
-                  <button
-                    onClick={() => copyToClipboard(JSON.stringify(selectedEvent.event_payload, null, 2), 'Payload')}
-                    className="absolute top-2 right-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-muted-foreground hover:text-white transition-colors"
-                    title="Copy payload"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Actions Footer */}
-            <div className="p-6 border-t border-slate-800 bg-slate-900/50 flex justify-between items-center">
-              <div>
-                {copySuccess && (
-                  <span className="text-sm text-green-400">✓ {copySuccess} copied!</span>
-                )}
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => copyToClipboard(selectedEvent.event_hash, 'Event Hash')}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded text-sm font-medium transition-colors"
-                >
-                  Copy Event Hash
-                </button>
-                <button
-                  onClick={() => copyToClipboard(JSON.stringify(selectedEvent, null, 2), 'Full Details')}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded text-sm font-medium transition-colors"
-                >
-                  Copy Full Details
-                </button>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-medium transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Event Details Dialog */}
+      <EventDetailsDialog
+        event={eventDialog.item}
+        open={eventDialog.isOpen}
+        onOpenChange={(open) => !open && eventDialog.close()}
+      />
 
       {/* Chain Verification Modal */}
       {showChainModal && chainStatus && (
@@ -881,7 +748,7 @@ export default function EventsPage() {
                         <span className="text-lg font-semibold">Chain Valid</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2 text-red-500">
+                      <div className="flex items-center gap-2 text-brand-cobalt">
                         <AlertTriangle className="h-5 w-5" />
                         <span className="text-lg font-semibold">Chain Invalid</span>
                       </div>
@@ -904,27 +771,27 @@ export default function EventsPage() {
             <div className="p-6 space-y-6">
               {/* Summary Statistics */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Total Events</label>
                   <p className="text-2xl font-bold text-white">
                     {chainStatus.summary?.total_events || chainStatus.total_events || 0}
                   </p>
                 </div>
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Verified</label>
                   <p className="text-2xl font-bold text-green-500">
                     {chainStatus.summary?.verified_events || chainStatus.verified_events || 0}
                   </p>
                 </div>
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Pending</label>
                   <p className="text-2xl font-bold text-yellow-500">
                     {chainStatus.summary?.unchained_events || chainStatus.unchained_events || 0}
                   </p>
                 </div>
-                <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Failed</label>
-                  <p className="text-2xl font-bold text-red-500">
+                  <p className="text-2xl font-bold text-brand-cobalt">
                     {chainStatus.summary?.failed_events || chainStatus.failed_events || 0}
                   </p>
                 </div>

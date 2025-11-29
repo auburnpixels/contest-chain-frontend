@@ -51,18 +51,18 @@ export default function OperatorRegisterPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
       {/* Left Panel - Branding */}
-      <div className="hidden lg:flex flex-col justify-between bg-slate-950 p-12 text-white relative overflow-hidden">
+      <div className="hidden lg:flex flex-col justify-between bg-black p-12 text-white relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-slate-900/0 z-0" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-        <div className="absolute top-24 right-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-cobalt/20 to-black/0 z-0" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-cobalt/50 to-transparent" />
+        <div className="absolute top-24 right-24 w-96 h-96 bg-brand-cobalt/20 rounded-full blur-3xl" />
         
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-12">
-            <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-xl bg-brand-cobalt flex items-center justify-center">
               <Building2 className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold">CaaS Platform</span>
+            <span className="text-xl font-bold">Cafaas Platform</span>
           </div>
           
           <div className="max-w-md space-y-6">
@@ -74,15 +74,15 @@ export default function OperatorRegisterPage() {
             </p>
             
             <div className="space-y-4 pt-8">
-              <div className="flex items-center gap-3 text-sm text-slate-300">
-                <div className="h-8 w-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <ShieldCheck className="h-4 w-4 text-blue-400" />
+              <div className="flex items-center gap-3 text-sm text-zinc-400">
+                <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
+                  <ShieldCheck className="h-4 w-4 text-brand-cobalt" />
                 </div>
                 <span>Instant compliance verification</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-300">
-                <div className="h-8 w-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4 text-blue-400" />
+              <div className="flex items-center gap-3 text-sm text-zinc-400">
+                <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4 text-brand-cobalt" />
                 </div>
                 <span>Automated fairness audits</span>
               </div>
@@ -91,8 +91,8 @@ export default function OperatorRegisterPage() {
         </div>
 
         <div className="relative z-10">
-          <p className="text-sm text-slate-500">
-            &copy; 2025 CaaS Platform. All rights reserved.
+          <p className="text-sm text-zinc-500">
+            &copy; 2025 Cafaas Platform. All rights reserved.
           </p>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function OperatorRegisterPage() {
         <div className="w-full max-w-sm space-y-8">
           <div className="text-center lg:text-left space-y-2">
              <div className="lg:hidden flex justify-center mb-4">
-                <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-brand-cobalt flex items-center justify-center">
                   <Building2 className="h-6 w-6 text-white" />
                 </div>
              </div>
@@ -113,7 +113,7 @@ export default function OperatorRegisterPage() {
           </div>
 
           {/* Info Banner */}
-          <Alert className="bg-blue-500/10 border-blue-500/20 text-blue-500">
+          <Alert className="bg-brand-cobalt/10 border-brand-cobalt/20 text-brand-cobalt">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs">
               You'll get instant access to your operator dashboard.
@@ -194,7 +194,7 @@ export default function OperatorRegisterPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500" disabled={loading}>
+            <Button type="submit" className="w-full bg-brand-cobalt hover:bg-brand-cobalt/90" disabled={loading}>
               {loading ? 'Creating Account...' : 'Create Account'}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -204,7 +204,7 @@ export default function OperatorRegisterPage() {
             Already have an account?{' '}
             <Link 
               href="/operator/login"
-              className="text-blue-500 hover:text-blue-400 hover:underline font-medium"
+              className="text-brand-cobalt hover:text-brand-cobalt/80 hover:underline font-medium"
             >
               Sign in here
             </Link>

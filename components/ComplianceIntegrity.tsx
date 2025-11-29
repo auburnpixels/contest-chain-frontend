@@ -34,7 +34,7 @@ export const ComplianceIntegrity = ({ items }: ComplianceIntegrityProps) => {
              <SectionHeading
                 eyebrow="Integrity Engine"
                 title="We catch what humans miss."
-                description="CAAS doesn't just log events. It actively blocks invalid states to keep your competition legally defensible."
+                description="Cafaas doesn't just log events. It actively blocks invalid states to keep your competition legally defensible."
                 align="left"
               />
               
@@ -44,7 +44,7 @@ export const ComplianceIntegrity = ({ items }: ComplianceIntegrityProps) => {
                     <div>
                         <h4 className="text-white font-medium mb-2">Not Legal Advice</h4>
                         <p className="text-sm text-muted-foreground leading-relaxed">
-                            CAAS provides technical proof of fairness. While this solves 99% of player disputes, operators are still responsible for their own legal compliance with local gambling laws.
+                            Cafaas provides technical proof of fairness. While this solves 99% of player disputes, operators are still responsible for their own legal compliance with local gambling laws.
                         </p>
                     </div>
                  </div>

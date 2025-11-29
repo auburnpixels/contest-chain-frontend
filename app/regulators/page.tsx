@@ -60,7 +60,7 @@ export default function RegulatorsPage() {
       <section className="container mx-auto px-4 py-24 text-center">
          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-16 max-w-4xl mx-auto relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-10 pointer-events-none"></div>
-            <h2 className="text-3xl font-bold text-white mb-4 relative z-10">Partner with CaaS</h2>
+            <h2 className="text-3xl font-bold text-white mb-4 relative z-10">Partner with Cafaas</h2>
             <p className="text-zinc-400 mb-8 text-lg relative z-10">
                We work directly with regulatory bodies to define digital standards for fairness. Contact our policy team to learn more.
             </p>
