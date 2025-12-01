@@ -10,6 +10,130 @@ export interface ApiResponse<T> {
   error?: ApiError;
 }
 
+export interface TicketVerification {
+  ticket: {
+    external_id: string;
+    submitted_at: string;
+    is_free_entry: boolean;
+    is_eligible: boolean;
+    user_reference?: string;
+  };
+  competition: {
+    id: string;
+    name: string;
+    external_id: string;
+    status: string;
+  };
+  operator: {
+    id: string;
+    name: string;
+  };
+  draw_status: {
+    has_been_drawn: boolean;
+    drawn_at?: string;
+    draw_audit_id?: string;
+  };
+  result: {
+    is_winner: boolean;
+    prize?: string;
+    draw_audit_url?: string;
+  };
+}
+
+export interface ChainVerification {
+  verified_at: string;
+  chain_status: 'valid' | 'invalid';
+  total_events: number;
+  verified_events: number;
+  unchained_events: number;
+  failed_events: number;
+  has_broken_links: boolean;
+  has_invalid_hashes: boolean;
+}
+
+export interface ApiErrorWithStatus extends Error {
+  status?: number;
+  code?: string;
+  validationErrors?: Record<string, string[]>;
+}
+
+export interface PublicCompetition {
+  competition: {
+    id: string;
+    name: string;
+    external_id: string;
+    status: string;
+    draw_at?: string;
+    created_at: string;
+    prizes: Array<{
+      id: string;
+      name: string;
+      description?: string;
+    }>;
+  };
+  operator: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  draw_audits: Array<{
+    id: string;
+    drawn_at: string;
+    total_entries: number;
+    prize?: {
+      id: string;
+      name: string;
+    };
+    winner?: {
+      external_id: string;
+    };
+    signature_hash: string;
+  }>;
+  entry_stats: {
+    total_entries: number;
+    free_entries: number;
+    paid_entries: number;
+    eligible_entries: number;
+    eligibility_rate: number;
+  };
+  entry_timeline: Array<{
+    date: string;
+    count: number;
+  }>;
+  stats: {
+    total_entries: number;
+    total_draws: number;
+    total_complaints: number;
+    active_complaints: number;
+  };
+}
+
+export interface PublicOperator {
+  operator: {
+    id: string;
+    name: string;
+    slug: string;
+    created_at: string;
+  };
+  stats: {
+    total_competitions: number;
+    total_draws: number;
+    total_entries: number;
+    draw_audit_rate: number;
+  };
+  recent_competitions: Array<{
+    id: string;
+    name: string;
+    external_id: string;
+    status: string;
+    draw_at?: string;
+    created_at: string;
+    total_entries: number;
+    total_draws: number;
+    total_prizes: number;
+  }>;
+}
+
 /**
  * API client for CaaS platform
  */
@@ -148,7 +272,7 @@ class ApiClient {
         
         // Laravel validation error format
         if (response.status === 422 && errorData.errors) {
-          const error: any = new Error(errorData.message || 'Validation failed');
+          const error = new Error(errorData.message || 'Validation failed') as ApiErrorWithStatus;
           error.validationErrors = errorData.errors;
           error.status = 422;
           throw error;
@@ -163,11 +287,7 @@ class ApiClient {
                                  endpoint.includes('/auth/register') ||
                                  endpoint.includes('/auth/refresh');
           
-          // Only attempt auto-refresh for TOKEN_EXPIRED or TOKEN_INVALID
-          // Don't refresh for TOKEN_EXPIRED_NOT_REFRESHABLE, TOKEN_BLACKLISTED, etc.
-          const canAutoRefresh = errorCode === 'TOKEN_EXPIRED' || errorCode === 'TOKEN_INVALID';
-          
-          if (!isAuthEndpoint && !isRetry && canAutoRefresh) {
+          if (!isAuthEndpoint && !isRetry && (errorCode === 'TOKEN_EXPIRED' || errorCode === 'TOKEN_INVALID')) {
             try {
               console.log('[API Client] Attempting automatic token refresh...');
               await this.refreshToken();
@@ -182,14 +302,14 @@ class ApiClient {
             }
           }
           
-          const error: any = new Error(errorData.error?.message || errorData.message || 'Unauthorized');
+          const error = new Error(errorData.error?.message || errorData.message || 'Unauthorized') as ApiErrorWithStatus;
           error.status = 401;
           error.code = errorCode;
           throw error;
         }
         
         // Other API errors
-        const error: any = new Error(errorData.error?.message || errorData.message || 'Request failed');
+        const error = new Error(errorData.error?.message || errorData.message || 'Request failed') as ApiErrorWithStatus;
         error.status = response.status;
         error.code = errorData.error?.code;
         throw error;
@@ -310,9 +430,7 @@ export const operatorApi = {
     per_page?: number;
     competition_id?: string;
     entry_type?: string;
-    eligibility?: string;
-    external_id?: string;
-    user_reference?: string;
+    correct_answer?: string;
     show_deleted?: string;
   }) => {
     const queryString = params ? new URLSearchParams(Object.entries(params).reduce((acc, [key, value]) => {
@@ -345,7 +463,7 @@ export const operatorApi = {
   getDrawEventsFilters: () =>
     apiClient.get<any>('/internal/operator/draw-events/filters'),
 
-  getComplianceSummary: () => apiClient.get<any>('/internal/operator/compliance-summary'),
+  getAttentionSummary: () => apiClient.get<any>('/api/v1/operator/attention/summary'),
 
   getComplaints: (params?: {
     page?: number;
@@ -377,9 +495,6 @@ export const operatorApi = {
     }, {} as Record<string, string>)).toString() : '';
     return apiClient.get<any>(`/internal/operator/draw-audits${queryString ? `?${queryString}` : ''}`);
   },
-
-  getIndustryBenchmarks: () => 
-    apiClient.get<any>('/internal/operator/industry-benchmarks'),
 
   getApiKeys: () => apiClient.get<any>('/internal/operator/api-keys'),
 
@@ -463,9 +578,6 @@ export const publicApi = {
     return fetch(`${API_BASE_URL}/api/public/draw-audits/download${queryString ? `?${queryString}` : ''}`).then((r) => r.json());
   },
 
-  getOperators: () =>
-    fetch(`${API_BASE_URL}/api/public/operators`).then((r) => r.json()),
-
   getPublicCompetitions: (operatorUuid?: string) => {
     const params = new URLSearchParams();
     if (operatorUuid) params.append('operator', operatorUuid);
@@ -479,5 +591,33 @@ export const publicApi = {
     if (competitionUuid) params.append('competition', competitionUuid);
     const queryString = params.toString();
     return fetch(`${API_BASE_URL}/api/public/prizes${queryString ? `?${queryString}` : ''}`).then((r) => r.json());
+  },
+
+  getOperators: () =>
+    fetch(`${API_BASE_URL}/api/public/operators-list`).then((r) => r.json()),
+
+  getCompetitionsByOperator: (operatorId: string) =>
+    fetch(`${API_BASE_URL}/api/public/operators/${operatorId}/competitions`).then((r) => r.json()),
+
+  verifyTicket: (competitionId: string, externalId: string) =>
+    fetch(`${API_BASE_URL}/api/public/tickets/${competitionId}/${externalId}/verify`).then((r) => r.json()),
+
+  verifyChain: () =>
+    fetch(`${API_BASE_URL}/api/public/chain/verify`).then((r) => r.json()),
+
+  getPublicCompetition: (competitionId: string) =>
+    fetch(`${API_BASE_URL}/api/public/competitions/${competitionId}`).then((r) => r.json()),
+
+  getPublicOperator: (slug: string) =>
+    fetch(`${API_BASE_URL}/api/public/operators/${slug}/profile`).then((r) => r.json()),
+
+  submitComplaint: (data: {
+    competition_id: string;
+    name: string;
+    email: string;
+    category: string;
+    description: string;
+  }) => {
+    return apiClient.post<{ message: string; id: string }>('/api/public/complaints', data);
   },
 };

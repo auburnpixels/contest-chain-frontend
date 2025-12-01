@@ -26,7 +26,7 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
   const pathname = usePathname();
 
   return (
-    <div className={cn("pb-12 min-h-screen flex flex-col bg-sidebar text-sidebar-foreground border-r", className)}>
+    <div className={cn("pb-12 min-h-screen flex flex-col bg-card border-r border-zinc-800", className)}>
       <div className="">
         <div className="">
           <div className="flex items-center p-4 h-12 border-b">
@@ -41,10 +41,10 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
                 <Button
                   variant="ghost"
                   className={cn(
-                    "w-full justify-start gap-3 mb-1 transition-all duration-200 font-normal hover:text-sidebar-accent-foreground hover:bg-sidebar-accent-foreground",
+                    "w-full justify-start gap-3 mb-1 transition-all duration-200 font-normal hover:text-white hover:bg-white/5",
                     pathname === item.href 
-                      ? "bg-sidebar-accent-foreground"
-                      : ""
+                      ? "bg-brand-cobalt/10 text-brand-cobalt font-medium"
+                      : "text-zinc-400"
                   )}
                 >
                   <item.icon className={cn("h-4 w-4")} />

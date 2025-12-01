@@ -3,7 +3,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { PageHero } from "@/components/marketing/PageHero";
 import { FaqBlock } from "@/components/marketing/FaqBlock";
 import { Badge } from "@/components/ui/badge";
-import { PenTool, Database, RefreshCw, FileCheck2, Link as LinkIcon, ShieldCheck, Globe, Lock } from "lucide-react";
+import { PenTool, Database, RefreshCw, FileCheck2, Check, Link as LinkIcon, ShieldCheck, Globe, Lock } from "lucide-react";
 
 export default function HowItWorksPage() {
   const faqs = [
@@ -45,7 +45,7 @@ export default function HowItWorksPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
+    <div className="min-h-screen bg-black text-white selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
       <SiteHeader />
       <main>
         <PageHero 
@@ -55,17 +55,17 @@ export default function HowItWorksPage() {
         />
 
         {/* Section 1: High-level overview */}
-        <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
+        <section className="py-24 bg-zinc-900/30 border-y border-white/5">
             <div className="container px-4 md:px-6 mx-auto">
-                <h2 className="text-3xl font-bold text-center text-zinc-900 dark:text-white mb-16">Four simple stages</h2>
+                <h2 className="text-3xl font-bold text-center text-white mb-16">Four simple stages</h2>
                 <div className="grid md:grid-cols-4 gap-8">
                     {steps.map((step, idx) => (
-                        <div key={idx} className="bg-white dark:bg-black p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col items-center text-center">
-                            <div className="h-14 w-14 bg-brand-cobalt/10 rounded-full flex items-center justify-center mb-6 text-brand-cobalt">
+                        <div key={idx} className="bg-black/40 p-6 rounded-2xl border border-white/10 shadow-sm hover:border-brand-cobalt/30 transition-colors flex flex-col items-center text-center group">
+                            <div className="h-16 w-16 bg-zinc-900 rounded-full flex items-center justify-center mb-6 text-brand-cobalt border border-white/5 group-hover:scale-110 transition-transform">
                                 <step.icon className="h-7 w-7" />
                             </div>
-                            <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-3">{step.title}</h3>
-                            <p className="text-zinc-600 dark:text-zinc-400 text-sm">{step.desc}</p>
+                            <h3 className="font-bold text-lg text-white mb-3">{step.title}</h3>
+                            <p className="text-zinc-400 text-sm leading-relaxed">{step.desc}</p>
                         </div>
                     ))}
                 </div>
@@ -73,35 +73,42 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Section 2: Entries & eligibility */}
-        <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
+        <section className="py-24 bg-black">
             <div className="container px-4 md:px-6 mx-auto max-w-4xl">
                 <div className="flex flex-col md:flex-row gap-12 items-start">
                      <div className="flex-1">
-                         <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">1. Recording entries and eligibility</h2>
-                         <p className="text-zinc-600 dark:text-zinc-400 mb-4">When a player enters your competition, you:</p>
-                         <ul className="list-disc pl-5 space-y-2 text-zinc-700 dark:text-zinc-300 mb-8 marker:text-brand-cobalt">
-                             <li>create a ticket/entry in your own system</li>
-                             <li>send a record to CAFAAS with:
-                                 <ul className="list-circle pl-5 mt-2 space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-                                     <li>your external entry ID</li>
-                                     <li>whether it was paid or free</li>
-                                     <li>whether the eligibility question was answered correctly</li>
-                                     <li>(optional) a user reference</li>
-                                 </ul>
+                         <h2 className="text-3xl font-bold text-white mb-6">1. Recording entries and eligibility</h2>
+                         <p className="text-zinc-400 mb-4">When a player enters your competition, you:</p>
+                         <ul className="space-y-4 text-zinc-300 mb-8">
+                             <li className="flex gap-3">
+                                <div className="h-6 w-6 rounded-full bg-brand-cobalt/20 text-brand-cobalt flex items-center justify-center shrink-0 mt-0.5">1</div>
+                                <span>create a ticket/entry in your own system</span>
+                             </li>
+                             <li className="flex gap-3">
+                                <div className="h-6 w-6 rounded-full bg-brand-cobalt/20 text-brand-cobalt flex items-center justify-center shrink-0 mt-0.5">2</div>
+                                <div>
+                                    send a record to CAFAAS with:
+                                    <ul className="pl-4 mt-2 space-y-2 text-sm text-zinc-500 border-l-2 border-zinc-800">
+                                        <li>• your external entry ID</li>
+                                        <li>• whether it was paid or free</li>
+                                        <li>• whether the eligibility question was answered correctly</li>
+                                        <li>• (optional) a user reference</li>
+                                    </ul>
+                                </div>
                              </li>
                          </ul>
                      </div>
-                     <div className="flex-1 bg-zinc-50 dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-                         <h3 className="font-bold text-zinc-900 dark:text-white mb-4">CAFAAS records:</h3>
-                         <ul className="space-y-2 text-zinc-600 dark:text-zinc-400 mb-6 text-sm">
-                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> entry time</li>
-                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> whether it is eligible for the draw</li>
-                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> the internal ticket number used for selection</li>
-                             <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" /> links to the competition and operator</li>
+                     <div className="flex-1 bg-zinc-900/50 p-8 rounded-2xl border border-white/10">
+                         <h3 className="font-bold text-white mb-4">CAFAAS records:</h3>
+                         <ul className="space-y-3 text-zinc-400 mb-8 text-sm">
+                             <li className="flex items-center gap-3"><div className="h-2 w-2 rounded-full bg-brand-cobalt" /> entry time</li>
+                             <li className="flex items-center gap-3"><div className="h-2 w-2 rounded-full bg-brand-cobalt" /> whether it is eligible for the draw</li>
+                             <li className="flex items-center gap-3"><div className="h-2 w-2 rounded-full bg-brand-cobalt" /> the internal ticket number used for selection</li>
+                             <li className="flex items-center gap-3"><div className="h-2 w-2 rounded-full bg-brand-cobalt" /> links to the competition and operator</li>
                          </ul>
-                         <div className="bg-brand-cobalt/5 p-4 rounded-lg border border-brand-cobalt/20">
-                             <h4 className="font-bold text-brand-cobalt mb-2 text-sm uppercase">This gives you:</h4>
-                             <ul className="space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+                         <div className="bg-brand-cobalt/5 p-5 rounded-xl border border-brand-cobalt/20">
+                             <h4 className="font-bold text-brand-cobalt mb-3 text-xs uppercase tracking-wider">This gives you:</h4>
+                             <ul className="space-y-2 text-sm text-zinc-300">
                                  <li>• a clear list of all entries</li>
                                  <li>• a clear separation between eligible and ineligible entries</li>
                                  <li>• a fair pool to draw from when the competition closes</li>
@@ -113,11 +120,11 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Section 3: The draw process */}
-        <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
+        <section className="py-24 bg-zinc-900/30 border-y border-white/5">
              <div className="container px-4 md:px-6 mx-auto max-w-4xl">
-                 <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-12 text-center">2. How the draw itself works</h2>
+                 <h2 className="text-3xl font-bold text-white mb-12 text-center">2. How the draw itself works</h2>
                  
-                 <div className="space-y-6">
+                 <div className="grid gap-4">
                      {[
                          { title: "1. The eligible pool is locked", desc: "CAFAAS takes a snapshot of all the eligible entries at that moment." },
                          { title: "2. The entry pool is hashed", desc: "CAFAAS creates a hash of the entries pool so any later change would be detectable." },
@@ -126,20 +133,20 @@ export default function HowItWorksPage() {
                          { title: "5. An audit record is created", desc: "The result, seed hash, entry pool hash, and metadata are stored as a new event in the chain." },
                          { title: "6. The audit page is published", desc: "A public URL shows the details in a clean, human-readable format." }
                      ].map((item, i) => (
-                         <div key={i} className="flex gap-4 p-4 bg-white dark:bg-black rounded-xl border border-zinc-200 dark:border-zinc-800">
-                             <div className="shrink-0 h-8 w-8 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center font-bold text-zinc-500 text-sm">
+                         <div key={i} className="flex gap-6 p-6 bg-black/40 rounded-xl border border-white/10 items-center">
+                             <div className="shrink-0 h-10 w-10 bg-zinc-900 rounded-full flex items-center justify-center font-bold text-zinc-500 text-sm border border-white/5">
                                  {i + 1}
                              </div>
                              <div>
-                                 <h3 className="font-bold text-zinc-900 dark:text-white mb-1">{item.title}</h3>
-                                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">{item.desc}</p>
+                                 <h3 className="font-bold text-white mb-1">{item.title}</h3>
+                                 <p className="text-zinc-400 text-sm">{item.desc}</p>
                              </div>
                          </div>
                      ))}
                  </div>
 
                  <div className="mt-12 text-center">
-                     <p className="text-xl font-bold text-zinc-900 dark:text-white">
+                     <p className="text-xl font-bold text-white">
                         You don’t see a black box. <br/>
                         <span className="text-brand-cobalt">You see a repeatable, auditable process.</span>
                      </p>
@@ -148,47 +155,55 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Section 4: The hash chain */}
-        <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
+        <section className="py-24 bg-black">
             <div className="container px-4 md:px-6 mx-auto max-w-4xl">
                  <div className="flex flex-col md:flex-row gap-12 items-center">
                     <div className="flex-1">
-                        <div className="h-12 w-12 bg-brand-cobalt/10 rounded-xl flex items-center justify-center mb-6 text-brand-cobalt">
-                            <LinkIcon className="h-6 w-6" />
+                        <div className="h-14 w-14 bg-brand-cobalt/10 rounded-2xl flex items-center justify-center mb-8 text-brand-cobalt border border-brand-cobalt/20">
+                            <LinkIcon className="h-7 w-7" />
                         </div>
-                        <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">3. What the “hash chain” actually means</h2>
-                        <p className="text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed">
+                        <h2 className="text-3xl font-bold text-white mb-6">3. What the “hash chain” actually means</h2>
+                        <p className="text-zinc-400 mb-6 leading-relaxed">
                             Every significant event in a competition’s lifecycle (and draw lifecycle) is turned into a JSON-like record and:
                         </p>
-                        <ul className="list-disc pl-5 space-y-2 text-zinc-700 dark:text-zinc-300 mb-6 marker:text-brand-cobalt">
-                            <li>Hashed using a cryptographic function (e.g. SHA-256)</li>
-                            <li>Linked to the hash of the previous event</li>
+                        <ul className="space-y-3 text-zinc-300 mb-8">
+                            <li className="flex items-center gap-3">
+                                <div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" />
+                                Hashed using a cryptographic function (e.g. SHA-256)
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <div className="h-1.5 w-1.5 rounded-full bg-brand-cobalt" />
+                                Linked to the hash of the previous event
+                            </li>
                         </ul>
-                        <p className="text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed">
+                        <p className="text-zinc-400 mb-6 leading-relaxed">
                             So each event contains:
                         </p>
-                        <ul className="list-disc pl-5 space-y-2 text-zinc-700 dark:text-zinc-300 mb-6 marker:text-brand-cobalt">
-                            <li>its own data</li>
-                            <li>the hash of the previous event</li>
-                            <li>its own new hash</li>
+                        <ul className="space-y-2 text-zinc-500 text-sm font-mono bg-zinc-900/50 p-4 rounded-lg border border-white/5">
+                            <li>&#123;</li>
+                            <li className="pl-4">"data": &#123; ... &#125;,</li>
+                            <li className="pl-4">"previous_hash": "a1b2...",</li>
+                            <li className="pl-4">"hash": "c3d4..."</li>
+                            <li>&#125;</li>
                         </ul>
                     </div>
-                    <div className="flex-1 bg-zinc-900 text-white p-8 rounded-2xl shadow-xl">
+                    <div className="flex-1 bg-gradient-to-br from-zinc-900 to-black text-white p-8 rounded-2xl border border-white/10 shadow-2xl">
                         <h3 className="font-mono text-lg text-brand-cobalt mb-4">Integrity Check</h3>
-                        <p className="font-mono text-sm text-zinc-400 mb-6">
+                        <p className="font-mono text-sm text-zinc-400 mb-8 leading-relaxed">
                             This creates a chain. If any event in the middle is modified later, all subsequent hashes no longer match — the chain breaks and the integrity check fails.
                         </p>
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3 text-sm">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3 text-sm bg-black/40 p-3 rounded-lg border border-white/5">
                                 <ShieldCheck className="h-5 w-5 text-green-500" />
-                                <span>draws can’t quietly be rewritten</span>
+                                <span className="text-zinc-300">draws can’t quietly be rewritten</span>
                             </div>
-                            <div className="flex items-center gap-3 text-sm">
+                            <div className="flex items-center gap-3 text-sm bg-black/40 p-3 rounded-lg border border-white/5">
                                 <ShieldCheck className="h-5 w-5 text-green-500" />
-                                <span>entries can’t silently disappear from the pool</span>
+                                <span className="text-zinc-300">entries can’t silently disappear</span>
                             </div>
-                            <div className="flex items-center gap-3 text-sm">
+                            <div className="flex items-center gap-3 text-sm bg-black/40 p-3 rounded-lg border border-white/5">
                                 <ShieldCheck className="h-5 w-5 text-green-500" />
-                                <span>audits can’t be edited after the fact</span>
+                                <span className="text-zinc-300">audits can’t be edited after the fact</span>
                             </div>
                         </div>
                     </div>
@@ -197,54 +212,90 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Section 5: Public audit pages */}
-        <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
+        <section className="py-24 bg-zinc-900/30 border-y border-white/5">
             <div className="container px-4 md:px-6 mx-auto max-w-4xl">
-                <h2 className="text-3xl font-bold text-center text-zinc-900 dark:text-white mb-12">4. What players and regulators actually see</h2>
+                <h2 className="text-3xl font-bold text-center text-white mb-12">4. What players and regulators actually see</h2>
                 <div className="grid md:grid-cols-2 gap-8">
-                     <div className="bg-white dark:bg-black p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-                         <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-4">Each draw has a public audit page that shows:</h3>
-                         <ul className="space-y-2 text-zinc-600 dark:text-zinc-400 text-sm">
-                             <li>• competition name and prize</li>
-                             <li>• operator name</li>
-                             <li>• total entries and eligible entries</li>
-                             <li>• winner entry details (your external entry ID + ticket number)</li>
-                             <li>• draw timestamp</li>
-                             <li>• seed hash</li>
-                             <li>• entry pool hash</li>
-                             <li>• signature hash (chain item)</li>
-                             <li>• simple integrity check result</li>
+                     <div className="bg-black/40 p-8 rounded-2xl border border-white/10 hover:border-brand-cobalt/30 transition-colors">
+                         <h3 className="font-bold text-lg text-white mb-6 flex items-center gap-2">
+                            <FileCheck2 className="h-5 w-5 text-brand-cobalt" />
+                            Audit Data Points
+                         </h3>
+                         <ul className="space-y-3 text-zinc-400 text-sm">
+                             <li className="border-b border-white/5 pb-2">Competition & Prize Details</li>
+                             <li className="border-b border-white/5 pb-2">Operator Identity</li>
+                             <li className="border-b border-white/5 pb-2">Total & Eligible Entry Counts</li>
+                             <li className="border-b border-white/5 pb-2">Winner Entry ID + Ticket Number</li>
+                             <li className="border-b border-white/5 pb-2">Exact Timestamp (UTC)</li>
+                             <li className="border-b border-white/5 pb-2 font-mono text-xs">Seed Hash (SHA-256)</li>
+                             <li className="border-b border-white/5 pb-2 font-mono text-xs">Entry Pool Hash (SHA-256)</li>
+                             <li className="font-mono text-xs text-brand-cobalt">Chain Signature Hash</li>
                          </ul>
                      </div>
-                     <div className="bg-white dark:bg-black p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-                         <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-4">In plain language, the audit page answers:</h3>
-                         <ul className="space-y-2 text-zinc-600 dark:text-zinc-400 text-sm">
-                             <li>• When did you run the draw?</li>
-                             <li>• How many entries were included?</li>
-                             <li>• Was the pool frozen before drawing?</li>
-                             <li>• Was a random seed used and recorded?</li>
-                             <li>• Is the audit chain still intact?</li>
-                         </ul>
+                     <div className="bg-black/40 p-8 rounded-2xl border border-white/10 hover:border-brand-cobalt/30 transition-colors">
+                         <h3 className="font-bold text-lg text-white mb-6 flex items-center gap-2">
+                            <ShieldCheck className="h-5 w-5 text-green-500" />
+                            Plain English Verification
+                         </h3>
+                         <div className="space-y-4">
+                            <div className="flex gap-4">
+                                <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 text-green-500">
+                                    <Check className="h-4 w-4" />
+                                </div>
+                                <div>
+                                    <p className="font-medium text-white text-sm">When did you run the draw?</p>
+                                    <p className="text-xs text-zinc-500 mt-1">Confirmed by timestamp</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 text-green-500">
+                                    <Check className="h-4 w-4" />
+                                </div>
+                                <div>
+                                    <p className="font-medium text-white text-sm">Was the pool frozen?</p>
+                                    <p className="text-xs text-zinc-500 mt-1">Confirmed by pool hash</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 text-green-500">
+                                    <Check className="h-4 w-4" />
+                                </div>
+                                <div>
+                                    <p className="font-medium text-white text-sm">Was it truly random?</p>
+                                    <p className="text-xs text-zinc-500 mt-1">Confirmed by seed generation</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 text-green-500">
+                                    <Check className="h-4 w-4" />
+                                </div>
+                                <div>
+                                    <p className="font-medium text-white text-sm">Is the chain intact?</p>
+                                    <p className="text-xs text-zinc-500 mt-1">Confirmed by signature links</p>
+                                </div>
+                            </div>
+                         </div>
                      </div>
                 </div>
             </div>
         </section>
 
         {/* Section 6: Chain verification */}
-        <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
+        <section className="py-24 bg-black">
              <div className="container px-4 md:px-6 mx-auto max-w-3xl text-center">
-                 <div className="h-16 w-16 bg-brand-cobalt/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                 <div className="h-20 w-20 bg-brand-cobalt/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-brand-cobalt/20">
                      <Lock className="h-8 w-8 text-brand-cobalt" />
                  </div>
-                 <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">5. Chain verification</h2>
-                 <p className="text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
+                 <h2 className="text-3xl font-bold text-white mb-6">5. Chain verification</h2>
+                 <p className="text-zinc-400 mb-10 leading-relaxed max-w-2xl mx-auto">
                      CAFAAS can run integrity checks that walk through each event in the chain, re-calculate hashes, and confirm that nothing has been altered.
                      In future, this can be exposed to regulators, trusted third parties, and possibly operators themselves.
                  </p>
-                 <div className="bg-zinc-50 dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-                     <h3 className="font-bold text-xl text-zinc-900 dark:text-white mb-2">The key idea:</h3>
-                     <p className="text-zinc-700 dark:text-zinc-300 text-lg">
+                 <div className="bg-zinc-900/50 p-10 rounded-2xl border border-white/10 inline-block">
+                     <h3 className="font-bold text-xl text-white mb-2">The key idea:</h3>
+                     <p className="text-zinc-300 text-lg">
                          Your fairness doesn’t live in a private log file. <br/>
-                         It lives in a chain of events designed to show tampering.
+                         <span className="text-brand-cobalt">It lives in a chain of events designed to show tampering.</span>
                      </p>
                  </div>
              </div>

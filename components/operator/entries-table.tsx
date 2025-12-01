@@ -1,87 +1,90 @@
+'use client';
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { IndicatorBadge } from '@/components/ui/indicator-badge';
+import { isEntryEligible } from '@/lib/utils';
 import { dateFormatters } from '@/lib/date-utils';
-import { maskEmail } from '@/lib/utils';
+import { CheckCircle2, XCircle, Clock } from 'lucide-react';
 
-export interface OperatorEntry {
+export interface Entry {
   id: string;
-  external_id: string;
-  ticket_number: number;
+  competition_id: string;
+  user_id: string;
+  ticket_number: string;
   is_free: boolean;
-  user_reference: string | null;
-  question_answered_correctly: boolean;
-  deleted_at: string | null;
   created_at: string;
-  competition: {
-    id: string;
+  correct_answer?: boolean;
+  deleted_at?: string | null;
+  competition?: {
     name: string;
-    external_id: string;
-  } | null;
+  };
+  user?: {
+    name: string;
+    email: string;
+  };
 }
 
 interface EntriesTableProps {
-  entries: OperatorEntry[];
+  entries: Entry[];
+  showCompetitionName?: boolean;
 }
 
-export function EntriesTable({ entries }: EntriesTableProps) {
+export function EntriesTable({ entries, showCompetitionName = false }: EntriesTableProps) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead>External ID</TableHead>
-          <TableHead>Competition</TableHead>
-          <TableHead>User Reference</TableHead>
+          <TableHead>Ticket</TableHead>
+          {showCompetitionName && <TableHead>Competition</TableHead>}
           <TableHead>Type</TableHead>
-          <TableHead>Eligible</TableHead>
-          <TableHead>Created</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Submitted</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {entries.map((entry) => {
-          const isDeleted = !!entry.deleted_at;
+          const isEligible = isEntryEligible(entry.is_free, entry.correct_answer || false, entry.deleted_at);
           
           return (
-          <TableRow key={entry.id} className={isDeleted ? 'opacity-60' : ''}>
-            <TableCell className="font-mono text-xs text-muted-foreground">
-              {entry.id?.substring(0, 8)}...
-            </TableCell>
-            <TableCell>
-                {entry.external_id}
-            </TableCell>
-              <TableCell>
-                  <div className="max-w-[200px] truncate">
-                      {entry.competition?.name || '—'}
-                  </div>
+            <TableRow key={entry.id}>
+              <TableCell className="font-mono text-xs">
+                {entry.ticket_number}
               </TableCell>
-            <TableCell>
-              {maskEmail(entry.user_reference)}
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                {entry.is_free ? 'Free' : 'Paid'}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              {isDeleted ? (
-                <IndicatorBadge color="red" text="Deleted" />
-              ) : entry.question_answered_correctly ? (
-                <IndicatorBadge color="green" text="Correct answer" />
-              ) : (
-                <IndicatorBadge color="red" text="Incorrect answer" />
+              {showCompetitionName && (
+                <TableCell className="max-w-[200px] truncate">
+                  {entry.competition?.name || 'Unknown'}
+                </TableCell>
               )}
-            </TableCell>
-            <TableCell className="text-sm text-muted-foreground">
-              {dateFormatters.shortDateTime(entry.created_at)}
-            </TableCell>
-          </TableRow>
+              <TableCell>
+                <Badge variant={entry.is_free ? 'outline' : 'default'}>
+                  {entry.is_free ? 'Free' : 'Paid'}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                {entry.deleted_at ? (
+                  <Badge variant="destructive" className="flex w-fit items-center gap-1">
+                    <XCircle className="h-3 w-3" />
+                    Voided
+                  </Badge>
+                ) : isEligible ? (
+                  <Badge variant="success" className="flex w-fit items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Eligible
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="flex w-fit items-center gap-1">
+                    <XCircle className="h-3 w-3" />
+                    Ineligible
+                  </Badge>
+                )}
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {dateFormatters.shortDateTime(entry.created_at)}
+              </TableCell>
+            </TableRow>
           );
         })}
       </TableBody>
     </Table>
   );
 }
-
-
-

@@ -20,24 +20,23 @@ import { ChainIntegrityBadge } from "@/components/operator/chain-integrity-badge
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { handleApiError } from '@/lib/error-handler';
-import type { ChainIntegrityData } from '@/lib/integrity-utils';
-import { ComplianceScoreDisplay } from '@/components/operator/compliance-score-display';
-import type { ComplianceScore } from '@/lib/api';
-import { Activity, ShieldCheck, Trophy, TrendingUp, AlertTriangle, FileText, Download, CheckCircle2, Ticket } from 'lucide-react';
-import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
-import { IndustryBenchmarks } from '@/components/compliance/industry-benchmarks';
+import { Activity, ShieldCheck, Trophy, TrendingUp, AlertTriangle, FileText, Download, CheckCircle2, Ticket, Info, Key } from 'lucide-react';
+import { MetricCard } from '@/components/metric-card';
 import { exportToJSON } from '@/lib/export-utils';
-import { 
-  calculateOverallScore,
-  formatComplianceStatus,
-  generateComplianceReportData,
-  type RaffleDetail 
-} from '@/lib/compliance-utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface DashboardData {
     user: any;
     operator: Operator;
     compliance: any;
+    recent_competitions?: CompetitionData[];
+    attention?: {
+        total_competitions: number;
+        competitions_needing_attention: number;
+        total_issues: number;
+        critical_issues: number;
+        warning_issues: number;
+    };
     stats?: {
         total_competitions?: number;
         active_competitions?: number;
@@ -47,6 +46,7 @@ interface DashboardData {
         draws_this_month?: number;
         api_events_total?: number;
         active_api_keys?: number;
+        competitions_with_draw_audits?: number;
     };
     system?: {
         rng_version?: string;
@@ -64,17 +64,12 @@ export default function OperatorDashboardPage() {
     const [selectedCompetition, setSelectedCompetition] = useState<CompetitionData | null>(null);
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [lastApiEvent, setLastApiEvent] = useState<string | null>(null);
-    const [averageComplianceScore, setAverageComplianceScore] = useState<ComplianceScore | null>(null);
     const [verifying, setVerifying] = useState(false);
-    const [complianceSummary, setComplianceSummary] = useState<any>(null);
-    const [industryBenchmarks, setIndustryBenchmarks] = useState<any>(null);
 
     useEffect(() => {
         if (isReady) {
             loadDashboardData();
             loadLastApiEvent();
-            loadComplianceSummary();
-            loadIndustryBenchmarks();
         }
     }, [isReady]);
 
@@ -89,42 +84,22 @@ export default function OperatorDashboardPage() {
             
             const allCompetitions = competitionsData.data || competitionsData.competitions || [];
             
-            // Calculate average compliance score from competitions with scores
-            const competitionsWithScores = allCompetitions.filter((c: any) => c.compliance_score != null);
-            if (competitionsWithScores.length > 0) {
-                const avgScore = Math.round(
-                    competitionsWithScores.reduce((sum: number, c: any) => sum + c.compliance_score, 0) / 
-                    competitionsWithScores.length
-                );
-                const hasFinalScores = competitionsWithScores.some((c: any) => c.compliance_score_detail?.is_final);
-                
-                setAverageComplianceScore({
-                    total_score: avgScore,
-                    grade: avgScore >= 85 ? 'excellent' : avgScore >= 60 ? 'acceptable' : 'poor',
-                    grade_label: avgScore >= 85 ? 'Excellent' : avgScore >= 60 ? 'Acceptable' : 'Poor',
-                    grade_color: avgScore >= 85 ? 'text-green-500' : avgScore >= 60 ? 'text-yellow-500' : 'text-red-500',
-                    is_final: hasFinalScores,
-                    categories: {} as any, // Not needed for dashboard display
-                    calculated_at: new Date().toISOString(),
-                });
-            }
-            
             setDashboardData({
                 user: operatorData.user,
                 operator: operatorData.operator,
                 compliance: operatorData.compliance,
+                recent_competitions: operatorData.recent_competitions || allCompetitions.slice(0, 5),
                 stats: {
+                    // Use backend stats as base
+                    ...operatorData.stats,
+                    // Override with calculated values where needed
                     total_competitions: allCompetitions.length,
                     active_competitions: allCompetitions.filter((c: any) => c.status === 'active').length,
                     total_entries: allCompetitions.reduce((sum: number, c: any) => sum + (c.entries_count || 0), 0),
-                    pending_complaints: operatorData.stats?.pending_complaints || 0,
-                    draws_this_month: operatorData.stats?.draws_this_month || 0,
-                    api_events_total: operatorData.stats?.api_events_total || 0,
-                    active_api_keys: operatorData.stats?.active_api_keys || 0,
                 },
                 system: operatorData.system || {},
             });
-            setCompetitions(allCompetitions);
+            setCompetitions(operatorData.recent_competitions || allCompetitions.slice(0, 5));
         } catch (error: any) {
             handleApiError(error, handleLogout);
         } finally {
@@ -140,24 +115,6 @@ export default function OperatorDashboardPage() {
             }
         } catch (error: any) {
             // Silently fail - this is not critical
-        }
-    };
-
-    const loadComplianceSummary = async () => {
-        try {
-            const response = await operatorApi.getComplianceSummary();
-            setComplianceSummary(response);
-        } catch (error: any) {
-            // Silently fail - compliance data is supplementary
-        }
-    };
-
-    const loadIndustryBenchmarks = async () => {
-        try {
-            const benchmarks = await operatorApi.getIndustryBenchmarks();
-            setIndustryBenchmarks(benchmarks);
-        } catch (error: any) {
-            // Silently fail - will use mock data or hide section
         }
     };
 
@@ -212,18 +169,27 @@ export default function OperatorDashboardPage() {
 
                 {/* Top Metrics Grid - 6 cards */}
                 <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
-                    {/* Overall Compliance Score */}
-                    <ComplianceScoreCard
-                        title="Overall compliance score"
-                        value={complianceSummary?.raffles ? `${calculateOverallScore(complianceSummary.raffles)}%` : 'Calculating...'}
-                        status={complianceSummary?.raffles ? formatComplianceStatus(calculateOverallScore(complianceSummary.raffles)).color as any : 'neutral'}
-                        icon={complianceSummary?.raffles && calculateOverallScore(complianceSummary.raffles) >= 80 ? CheckCircle2 : AlertTriangle}
-                        footer={complianceSummary?.raffles ? `Status: ${formatComplianceStatus(calculateOverallScore(complianceSummary.raffles)).label}` : 'Score becomes available after logging events'}
-                        helpText="A combined score based on all compliance checks. Higher scores mean your competition meets more industry best-practice standards."
+                    {/* Competitions Needing Attention */}
+                    <MetricCard
+                        title="Competitions Needing Attention"
+                        value={dashboardData?.attention?.competitions_needing_attention || 'None'}
+                        status={
+                            !dashboardData?.attention?.competitions_needing_attention || dashboardData.attention.competitions_needing_attention === 0
+                                ? 'good'
+                                : (dashboardData.attention.critical_issues || 0) > 0
+                                    ? 'critical'
+                                    : 'warning'
+                        }
+                        footer={
+                            dashboardData?.attention?.competitions_needing_attention && dashboardData.attention.competitions_needing_attention > 0
+                                ? `${dashboardData.attention.total_issues || 0} total ${(dashboardData.attention.total_issues || 0) === 1 ? 'issue' : 'issues'}`
+                                : `All ${dashboardData?.attention?.total_competitions || 0} competitions healthy`
+                        }
+                        helpText="Shows competitions with overdue draws, unresolved complaints, or missing audits"
                     />
 
                     {/* Chain Integrity Status */}
-                    <ComplianceScoreCard
+                    <MetricCard
                         title="Chain integrity status"
                         value={
                             chainIntegrity?.chain_status === 'valid' 
@@ -235,135 +201,45 @@ export default function OperatorDashboardPage() {
                                         : 'Verifying...'
                         }
                         status={chainIntegrity?.chain_status === 'valid' ? 'good' : chainIntegrity?.chain_status === 'invalid' ? 'critical' : 'neutral'}
-                        icon={chainIntegrity?.chain_status === 'valid' ? CheckCircle2 : AlertTriangle}
                         footer={`${chainIntegrity?.verified_events || 0} of ${chainIntegrity?.total_events || 0} events verified`}
                         helpText="Confirms your competition's audit records are securely linked and can't be changed. This ensures your draw results remain trustworthy."
                     />
 
                     {/* Active Competitions */}
-                    <ComplianceScoreCard
+                    <MetricCard
                         title="Active competitions"
                         value={dashboardData?.stats?.active_competitions || 0}
                         status="neutral"
-                        icon={Trophy}
                         footer={`${dashboardData?.stats?.total_competitions || 0} total competitions`}
+                        helpText="Competitions currently accepting entries. Once the draw date passes, they move to 'awaiting draw' status."
                     />
 
                     {/* Pending Complaints */}
-                    <ComplianceScoreCard
+                    <MetricCard
                         title="Pending complaints"
                         value={dashboardData?.stats?.pending_complaints || 0}
                         status={(dashboardData?.stats?.pending_complaints || 0) > 0 ? 'warning' : 'good'}
-                        icon={AlertTriangle}
                         footer="Requiring response"
+                        helpText="Customer complaints that haven't been resolved yet. Responding quickly helps maintain trust and regulatory compliance."
                     />
 
                     {/* Total Entries */}
-                    <ComplianceScoreCard
+                    <MetricCard
                         title="Total entries"
                         value={(dashboardData?.stats?.total_entries || 0).toLocaleString()}
                         status="neutral"
-                        icon={Ticket}
                         footer="Across all competitions"
+                        helpText="Total number of entries submitted across all your competitions. This includes both paid and free entries."
                     />
 
                     {/* Draws This Month */}
-                    <ComplianceScoreCard
+                    <MetricCard
                         title="Draws this month"
                         value={dashboardData?.stats?.draws_this_month || 0}
                         status="neutral"
-                        icon={Activity}
                         footer="Completed successfully"
+                        helpText="Number of cryptographically-secure draws completed this month. Each draw generates a tamper-proof audit record."
                     />
-                </div>
-
-                {/* Industry Benchmarks */}
-                {industryBenchmarks && complianceSummary?.raffles && (
-                    <div className="px-4 lg:px-6">
-                        <IndustryBenchmarks
-                            comparisons={[
-                                {
-                                    label: 'Compliance score',
-                                    yourValue: calculateOverallScore(complianceSummary.raffles),
-                                    industryValue: industryBenchmarks?.avg_compliance_score || 63,
-                                    unit: '%',
-                                    format: 'percentage',
-                                },
-                                {
-                                    label: 'Response time',
-                                    yourValue: complianceSummary?.complaint_response_time?.average_hours || 0,
-                                    industryValue: industryBenchmarks?.avg_response_time_hours || 24,
-                                    unit: 'hours',
-                                    format: 'time',
-                                },
-                            ]}
-                            ranking={calculateOverallScore(complianceSummary.raffles) >= (industryBenchmarks?.avg_compliance_score || 63) ? 'Above Average' : 'Below Average'}
-                        />
-                    </div>
-                )}
-
-                {/* Exportable Audit Reports */}
-                <div className="px-4 lg:px-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="leading-none font-semibold !text-base">Exportable Audit Reports</CardTitle>
-                            <CardDescription className="text-muted-foreground text-sm">
-                                Download compliance reports for regulatory submission or internal review
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="flex flex-col sm:flex-row gap-3">
-                                <Button 
-                                    variant="outline" 
-                                    className="flex-1"
-                                    onClick={() => alert('PDF report generation coming soon. Use JSON export for now.')}
-                                >
-                                    <Download className="h-4 w-4 mr-2" />
-                                    Full Compliance Report (PDF)
-                                </Button>
-                                <Button 
-                                    variant="outline" 
-                                    className="flex-1"
-                                    onClick={() => alert('Chain integrity proof PDF coming soon.')}
-                                >
-                                    <ShieldCheck className="h-4 w-4 mr-2" />
-                                    Chain Integrity Proof (PDF)
-                                </Button>
-                                <Button 
-                                    variant="outline" 
-                                    className="flex-1"
-                                    onClick={() => {
-                                        if (!complianceSummary) {
-                                            alert('No compliance data available to export');
-                                            return;
-                                        }
-                                        const reportData = generateComplianceReportData(
-                                            { 
-                                                name: dashboardData?.operator?.name || 'Unknown', 
-                                                id: dashboardData?.operator?.id || '' 
-                                            },
-                                            complianceSummary.summary,
-                                            complianceSummary.raffles || [],
-                                            {
-                                                verified: chainIntegrity?.chain_status === 'valid',
-                                                percentage: chainIntegrity?.chain_status === 'valid' ? 100 : 0,
-                                                lastCheck: new Date().toISOString(),
-                                            },
-                                            []
-                                        );
-                                        exportToJSON(reportData, `compliance-report-${new Date().toISOString().split('T')[0]}`);
-                                    }}
-                                    disabled={!complianceSummary}
-                                >
-                                    <FileText className="h-4 w-4 mr-2" />
-                                    Draw Audit Bundle (JSON)
-                                </Button>
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                                PDF reports are formatted for regulatory compliance and include verification signatures.
-                            </p>
-                        </CardContent>
-                    </Card>
                 </div>
 
                 {/* Recent Competitions */}
@@ -390,18 +266,24 @@ export default function OperatorDashboardPage() {
                         <CardContent>
                             {competitions.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                                    <Trophy className="h-12 w-12 text-muted-foreground mb-4" />
-                                    <h3 className="text-lg font-semibold mb-2">No competitions yet</h3>
-                                    <p className="text-sm text-muted-foreground mb-6 max-w-md">
-                                        Once you create competitions via the CAFAAS API, they'll appear here with real-time compliance tracking and audit trails.
+                                    <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                                    <h3 className="text-xl font-semibold mb-2">Ready to run your first competition?</h3>
+                                    <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
+                                        Create your first competition via the CAFAAS API, then we'll automatically track entries, run cryptographically-secure draws, and generate tamper-proof audits.
                                     </p>
-                                    <div className="flex gap-3">
-                                        <Link href="/docs">
-                                            <Button variant="outline">View API Documentation</Button>
-                                        </Link>
-                                        <Link href="/operator/api-keys">
-                                            <Button variant="ghost">Get API Key</Button>
-                                        </Link>
+                                    <div className="flex gap-3 justify-center">
+                                        <Button asChild>
+                                            <a href="/docs/api/competitions/create" target="_blank" rel="noopener noreferrer">
+                                                <FileText className="mr-2 h-4 w-4" />
+                                                View API Example
+                                            </a>
+                                        </Button>
+                                        <Button variant="outline" asChild>
+                                            <Link href="/operator/api-keys">
+                                                <Key className="mr-2 h-4 w-4" />
+                                                Get Your API Key
+                                            </Link>
+                                        </Button>
                                     </div>
                                 </div>
                             ) : (
@@ -414,6 +296,49 @@ export default function OperatorDashboardPage() {
                         </CardContent>
                     </Card>
                 </div>
+            </div>
+
+            {/* Exportable Audit Reports */}
+            <div className="px-4 lg:px-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="leading-none font-semibold !text-base">Exportable Audit Reports</CardTitle>
+                        <CardDescription className="text-muted-foreground text-sm">
+                            Download compliance reports for regulatory submission or internal review
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <Button
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => alert('PDF report generation coming soon. Use JSON export for now.')}
+                            >
+                                <Download className="h-4 w-4 mr-2" />
+                                Full Compliance Report (PDF)
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => alert('Chain integrity proof PDF coming soon.')}
+                            >
+                                <ShieldCheck className="h-4 w-4 mr-2" />
+                                Chain Integrity Proof (PDF)
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => alert('Draw audit bundle export coming soon.')}
+                            >
+                                <FileText className="h-4 w-4 mr-2" />
+                                Draw Audit Bundle (JSON)
+                            </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            PDF reports are formatted for regulatory compliance and include verification signatures.
+                        </p>
+                    </CardContent>
+                </Card>
             </div>
 
             <CompetitionDetailsDialog

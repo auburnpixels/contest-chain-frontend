@@ -30,8 +30,8 @@ import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { useDialog } from '@/hooks/useDialog';
 import { handleApiError } from '@/lib/error-handler';
-import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
-import { CheckCircle2, ShieldCheck as ShieldCheckIcon } from 'lucide-react';
+import { MetricCard } from '@/components/metric-card';
+import { CheckCircle2, ShieldCheck as ShieldCheckIcon, AlertTriangle } from 'lucide-react';
 
 type CompetitionData = OperatorCompetition;
 
@@ -195,58 +195,49 @@ export default function CompetitionsPage() {
 
         {/* Metrics Cards - 4 cards */}
         <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-4">
-          <ComplianceScoreCard
+          <MetricCard
             title="Total competitions"
             value={dashboardStats?.total_competitions || 0}
             status="neutral"
             icon={Trophy}
             footer="All time"
+            helpText="Total number of competitions you've created via the API. Includes active, completed, and closed competitions."
           />
 
-          <ComplianceScoreCard
+          <MetricCard
             title="Active competitions"
             value={dashboardStats?.active_competitions || 0}
             status="neutral"
             icon={Trophy}
             footer="Currently running"
+            helpText="Competitions currently accepting entries. They become 'awaiting draw' once the draw date passes."
           />
 
-          <ComplianceScoreCard
-            title="Draw integrity"
-            value={`${dashboardStats?.competitions_with_compliance_scores || 0} of ${dashboardStats?.total_competitions || 0}`}
+          <MetricCard
+            title="Draw Audits"
+            value={`${dashboardStats?.competitions_with_draw_audits || 0} of ${dashboardStats?.total_competitions || 0}`}
             status={
               dashboardStats?.total_competitions > 0 && 
-              (dashboardStats.competitions_with_compliance_scores / dashboardStats.total_competitions) >= 0.8
+              (dashboardStats.competitions_with_draw_audits / dashboardStats.total_competitions) >= 0.8
                 ? 'good'
-                : dashboardStats?.total_competitions > 0 && 
-                  (dashboardStats.competitions_with_compliance_scores / dashboardStats.total_competitions) >= 0.5
-                  ? 'warning'
-                  : 'neutral'
+                : 'warning'
             }
             icon={ShieldCheckIcon}
-            footer="With compliance scores"
-            helpText="Shows how many of your competitions have fully verified draws and complete audit records."
+            footer="Competitions with verified draws"
+            helpText="Each draw must be recorded with a cryptographic audit trail. This shows how many of your competitions have complete, verified draw records."
           />
 
-          <ComplianceScoreCard
-            title="Average compliance"
-            value={
-              dashboardStats?.average_compliance_score 
-                ? `${Math.round(dashboardStats.average_compliance_score)}%`
-                : 'N/A'
+          <MetricCard
+            title="Needs Attention"
+            value={dashboardStats?.competitions_needing_attention || 'None'}
+            status={dashboardStats?.competitions_needing_attention > 0 ? 'warning' : 'good'}
+            icon={dashboardStats?.competitions_needing_attention > 0 ? AlertTriangle : CheckCircle2}
+            footer={
+              dashboardStats?.competitions_needing_attention > 0
+                ? `${dashboardStats?.total_attention_issues} issues to resolve`
+                : 'All competitions healthy'
             }
-            status={
-              dashboardStats?.average_compliance_score
-                ? dashboardStats.average_compliance_score >= 80
-                  ? 'good'
-                  : dashboardStats.average_compliance_score >= 60
-                    ? 'warning'
-                    : 'critical'
-                : 'neutral'
-            }
-            icon={CheckCircle2}
-            footer="Overall health metric"
-            helpText="Your overall compliance rating across all competitions. Scores over 80% mean you’re performing exceptionally well."
+            helpText="Competitions with overdue draws, unresolved complaints, or data issues."
           />
         </div>
 
@@ -370,21 +361,15 @@ export default function CompetitionsPage() {
                       <Button variant="outline" onClick={handleClearFilters}>Clear Filters</Button>
                     </>
                   ) : (
-                    <div className="flex flex-col items-center">
-                      <Trophy className="h-12 w-12 text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No competitions yet</h3>
-                      <p className="text-sm text-muted-foreground mb-6 max-w-md">
-                        Once you create competitions via the CAFAAS API, they'll appear here with real-time compliance tracking and audit trails.
+                    <>
+                      <h3 className="text-lg font-medium mb-2 text-foreground">No competitions found</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Create your first competition via the API to get started
                       </p>
-                      <div className="flex gap-3">
-                        <Link href="/docs">
-                          <Button variant="outline">View API Documentation</Button>
-                        </Link>
-                        <Link href="/operator/api-keys">
-                          <Button variant="ghost">Get API Key</Button>
-                        </Link>
-                      </div>
-                    </div>
+                      <Link href="/docs">
+                        <Button variant="outline">View API Documentation</Button>
+                      </Link>
+                    </>
                   )}
                 </div>
               )}

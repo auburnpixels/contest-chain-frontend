@@ -1,7 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { OperatorActionsMenu } from '@/components/operator-actions-menu';
-import { Eye, Activity, ShieldCheck, AlertTriangle, Ticket } from 'lucide-react';
+import { Eye, Activity, ShieldCheck, AlertTriangle, AlertCircle, Ticket } from 'lucide-react';
 import Link from 'next/link';
 import {
   formatEntries,
@@ -9,9 +10,9 @@ import {
 } from './competition-details-dialog';
 import { formatDrawDate } from '@/lib/date-utils';
 import { getStatusIndicatorBadge } from '@/lib/competition-status';
-import { ComplianceScoreDisplay } from './compliance-score-display';
-import { DrawIntegrityBadge } from '@/components/draw-integrity-badge';
-import {InfoTooltip} from "@/components/info-tooltip";
+import { getCompetitionAttentionItems, hasCriticalAttention, hasWarningAttention, AttentionIssue } from '@/lib/attention-utils';
+import { InfoTooltip } from '@/components/info-tooltip';
+import { AttentionTooltip } from './attention-tooltip';
 
 interface CompetitionsTableProps {
   competitions: OperatorCompetition[];
@@ -29,31 +30,69 @@ export function CompetitionsTable({
       <TableHeader>
         <TableRow>
             <TableHead>Competition</TableHead>
-            <TableHead>External ID</TableHead>
-          <TableHead>Status</TableHead>
-            <TableHead>Entries</TableHead>
-            <TableHead>Prizes</TableHead>
-          <TableHead>Complaints</TableHead>
-          <TableHead>
+            <TableHead>
               <div className="flex items-center">
-                  <span>Draw integrity</span>
-                  <InfoTooltip>
-                      Displays how many prizes have full, verified audit trails. Green means the draws for this competition has been checked and recorded correctly.
-                  </InfoTooltip>
+                External ID
+                <InfoTooltip>
+                  The unique identifier you use to reference this competition in API calls. Used for creating entries, running draws, etc.
+                </InfoTooltip>
               </div>
+            </TableHead>
+          <TableHead>
+            <div className="flex items-center">
+              Status
+              <InfoTooltip>
+                Competition lifecycle: Active (accepting entries) → Awaiting Draw (entries closed) → Drawn (winner selected) → Completed
+              </InfoTooltip>
+            </div>
           </TableHead>
-          <TableHead>Compliance</TableHead>
-            <TableHead>Draw at</TableHead>
+            <TableHead>
+              <div className="flex items-center">
+                Entries
+                <InfoTooltip>
+                  Total number of entries submitted. Shows paid and free entries separately. More entries = more chances in the draw.
+                </InfoTooltip>
+              </div>
+            </TableHead>
+            <TableHead>
+              <div className="flex items-center">
+                Prizes
+                <InfoTooltip>
+                  Number of prizes available in this competition. Each prize gets its own cryptographically-secure draw.
+                </InfoTooltip>
+              </div>
+            </TableHead>
+          <TableHead>
+            <div className="flex items-center">
+              Issues
+              <InfoTooltip>
+                Highlights competitions with overdue draws, unresolved complaints, or missing audit records. Click the badge for details.
+              </InfoTooltip>
+            </div>
+          </TableHead>
+            <TableHead>
+              <div className="flex items-center">
+                Draw At
+                <InfoTooltip>
+                  Scheduled date and time for the draw. Once this date passes, the competition moves to 'awaiting draw' status.
+                </InfoTooltip>
+              </div>
+            </TableHead>
           {showActions && <TableHead></TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
-        {competitions.map((competition) => (
+        {competitions.map((competition) => {
+          const attentionItems = competition.attention_issues || getCompetitionAttentionItems(competition);
+          const hasCritical = attentionItems.some((item: AttentionIssue) => item.type === 'critical');
+          const hasWarning = attentionItems.some((item: AttentionIssue) => item.type === 'warning');
+
+          return (
           <TableRow key={competition.id}>
               <TableCell className="font-medium text-foreground">
                   {competition.name}
               </TableCell>
-            <TableCell>
+            <TableCell className="font-mono text-sm text-muted-foreground">
                 {competition.external_id}
             </TableCell>
             <TableCell>
@@ -66,27 +105,7 @@ export function CompetitionsTable({
               {competition.prizes?.length || 0}
             </TableCell>
             <TableCell>
-              {(competition.complaints_count || 0) > 0 ? (
-                  <Link href={`/operator/complaints?competition=${competition.id}`}>
-                      <span className=" underline">{competition.complaints_count} complaints</span>
-                  </Link>
-              ) : (
-                <span className="text-muted-foreground">0</span>
-              )}
-            </TableCell>
-            <TableCell>
-              <DrawIntegrityBadge
-                totalPrizes={competition.total_prizes || 0}
-                drawnPrizes={competition.drawn_prizes || 0}
-                hasCompleteIntegrity={competition.has_complete_draw_integrity || false}
-              />
-            </TableCell>
-            <TableCell>
-              {competition.compliance_score_detail ? (
-                <ComplianceScoreDisplay score={competition.compliance_score_detail} size="sm" />
-              ) : (
-                <span className="text-muted-foreground">Pending</span>
-              )}
+              <AttentionTooltip attentionItems={attentionItems} />
             </TableCell>
             <TableCell>
               {formatDrawDate(competition)}
@@ -123,7 +142,8 @@ export function CompetitionsTable({
               </TableCell>
             )}
           </TableRow>
-        ))}
+          );
+        })}
       </TableBody>
     </Table>
   );

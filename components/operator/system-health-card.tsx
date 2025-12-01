@@ -10,7 +10,6 @@ import {Button} from "@/components/ui/button";
 import {CompetitionsTable} from "@/components/operator/competitions-table";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {getStatusIndicatorBadge} from "@/lib/competition-status";
-import {ComplianceScoreDisplay} from "@/components/operator/compliance-score-display";
 import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 import {IndicatorBadge} from "@/components/ui/indicator-badge";
 

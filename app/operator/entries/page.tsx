@@ -10,6 +10,7 @@ import { operatorApi } from '@/lib/api/client';
 import {
     Search,
     X,
+    FileText,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import { Label } from '@/components/ui/label';
@@ -21,7 +22,7 @@ import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { handleApiError } from '@/lib/error-handler';
-import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
+import { MetricCard } from '@/components/metric-card';
 import { CheckCircle2, XCircle, Ticket as TicketIcon } from 'lucide-react';
 
 interface Competition {
@@ -236,7 +237,7 @@ export default function EntriesPage() {
 
         {/* Metrics Cards - 3 cards */}
         <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
-          <ComplianceScoreCard
+          <MetricCard
             title="Total entries"
             value={(dashboardStats?.total_entries || 0).toLocaleString()}
             status="neutral"
@@ -244,11 +245,11 @@ export default function EntriesPage() {
             footer="All competitions"
           />
 
-          <ComplianceScoreCard
+          <MetricCard
             title="Entry eligibility"
             value={
               dashboardStats?.entry_eligibility_percentage
-                ? `${dashboardStats.entry_eligibility_percentage.toFixed(2)}%`
+                ? `${Math.round(dashboardStats.entry_eligibility_percentage)}%`
                 : 'N/A'
             }
             status={
@@ -262,10 +263,9 @@ export default function EntriesPage() {
             }
             icon={CheckCircle2}
             footer={`${dashboardStats?.valid_entries || 0} valid entries`}
-            helpText="Shows what percentage of your entries are valid for the draw. Higher numbers mean better entry quality."
           />
 
-          <ComplianceScoreCard
+          <MetricCard
             title="Voided entries"
             value={dashboardStats?.voided_entries || 0}
             status={
@@ -437,18 +437,21 @@ export default function EntriesPage() {
                       <Button variant="outline" onClick={handleClearFilters}>Clear Filters</Button>
                     </>
                   ) : (
-                    <div className="flex flex-col items-center">
-                      <TicketIcon className="h-12 w-12 text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No entries yet</h3>
-                      <p className="text-sm text-muted-foreground mb-6 max-w-md">
-                        Entries will appear here automatically once users enter your competitions through the API.
+                    <>
+                      <TicketIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                      <h3 className="text-xl font-semibold mb-2">No entries yet</h3>
+                      <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
+                        Entries are automatically recorded when users participate in your competitions via the API. Each entry is cryptographically logged for transparency and fairness.
                       </p>
-                      <Button variant="outline" asChild>
-                        <a href="/docs" target="_blank" rel="noopener noreferrer">
-                          View API Documentation
-                        </a>
-                      </Button>
-                    </div>
+                      <div className="flex gap-3 justify-center">
+                        <Button variant="outline" asChild>
+                          <a href="/docs/api/entries" target="_blank" rel="noopener noreferrer">
+                            <FileText className="mr-2 h-4 w-4" />
+                            How to Submit Entries
+                          </a>
+                        </Button>
+                      </div>
+                    </>
                   )}
                 </div>
               )}

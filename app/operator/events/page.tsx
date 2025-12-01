@@ -10,8 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { operatorApi } from '@/lib/api/client';
 import { Eye, Activity, CheckCircle, X, AlertTriangle } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
-import { DismissibleAlert } from '@/components/dismissible-alert';
-import { InfoTooltip } from '@/components/info-tooltip';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {DashboardHeader} from "@/components/dashboard-header";
@@ -23,9 +21,8 @@ import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { useDialog } from '@/hooks/useDialog';
 import { EventDetailsDialog, DrawEvent } from '@/components/operator/event-details-dialog';
-import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
+import { MetricCard } from '@/components/metric-card';
 import { ShieldCheck } from 'lucide-react';
-import { dateFormatters } from '@/lib/date-utils';
 
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
@@ -68,8 +65,7 @@ export default function EventsPage() {
   const [initialized, setInitialized] = useState(false);
   const [verifyingChain, setVerifyingChain] = useState(false);
   const [chainStatus, setChainStatus] = useState<any>(null);
-  const [chainIntegrity, setChainIntegrity] = useState<any>(null);
-  const [dashboardStats, setDashboardStats] = useState<any>(null);
+  const [chainIntegrity, setChainIntegrity] = useState<any>(null); // Add local state
   const [showChainModal, setShowChainModal] = useState(false);
   const [exportingCsv, setExportingCsv] = useState(false);
   const [exportingJson, setExportingJson] = useState(false);
@@ -148,8 +144,7 @@ export default function EventsPage() {
       ]);
       
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
-      setChainIntegrity(dashboardData?.system?.chain_integrity || null);
-      setDashboardStats(dashboardData?.stats || null);
+      setChainIntegrity(dashboardData?.system?.chain_integrity); // Set integrity data
       setFilterOptions(filtersData);
     } catch (error: any) {
       console.error('Failed to load filter options:', error);
@@ -173,6 +168,7 @@ export default function EventsPage() {
       const eventsData = await operatorApi.getDrawEvents(params);
 
       const events = eventsData.data || [];
+      const paginationData = eventsData.pagination || {};
       
       // Enrich events with competition info if available
       const enrichedEvents = events.map((event: DrawEvent) => ({
@@ -182,14 +178,7 @@ export default function EventsPage() {
       }));
 
       setEvents(enrichedEvents);
-      setPagination({
-        current_page: eventsData.current_page || 1,
-        per_page: eventsData.per_page || 25,
-        total: eventsData.total || 0,
-        last_page: eventsData.last_page || 1,
-        from: eventsData.from || 0,
-        to: eventsData.to || 0,
-      });
+      setPagination(paginationData);
       setLoading(false);
     } catch (error: any) {
       console.error('[Events] Failed to load events:', error);
@@ -393,7 +382,7 @@ export default function EventsPage() {
       onLogout={handleLogout}
     >
       <div className="space-y-6">
-          <DashboardHeader title="Event chain">
+          <DashboardHeader title="Events">
               <div className="flex gap-2">
                   <Button
                       variant="outline"
@@ -446,40 +435,22 @@ export default function EventsPage() {
               </div>
           </DashboardHeader>
 
-          {/* Explainer Banner */}
-          <div className="px-4 lg:px-6">
-            <DismissibleAlert
-              id="events-explainer"
-              title="What are events?"
-              description="Every action in CAFAAS (competitions created, entries added, draws run) is logged as an event. These events are cryptographically linked in a chain to prevent tampering. Think of it as a tamper-proof audit log."
-            />
-          </div>
-
           {/* Metrics Cards - 2 cards */}
           <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2">
-            <ComplianceScoreCard
+            <MetricCard
               title="Total events"
-              value={(dashboardStats?.api_events_total || 0).toLocaleString()}
+              value={(pagination.total || 0).toLocaleString()}
               status="neutral"
               icon={Activity}
               footer="All time"
             />
 
-            <ComplianceScoreCard
+            <MetricCard
               title="Chain integrity"
-              value={
-                chainIntegrity?.chain_status === 'valid' 
-                  ? 'Verified'
-                  : chainIntegrity?.chain_status === 'invalid' 
-                    ? 'Invalid' 
-                    : chainIntegrity?.chain_status === 'building'
-                      ? 'Building...'
-                      : 'Verifying...'
-              }
+              value={chainIntegrity?.chain_status === 'valid' ? '100% Verified' : chainIntegrity?.chain_status === 'invalid' ? 'Invalid' : 'Verifying...'}
               status={chainIntegrity?.chain_status === 'valid' ? 'good' : chainIntegrity?.chain_status === 'invalid' ? 'critical' : 'neutral'}
               icon={ShieldCheck}
               footer={`${chainIntegrity?.verified_events || 0} of ${chainIntegrity?.total_events || 0} events verified`}
-              helpText="Confirms your competition's audit records are securely linked and can't be changed. This ensures your draw results remain trustworthy."
             />
           </div>
 
@@ -628,26 +599,12 @@ export default function EventsPage() {
                                   <Table>
                                       <TableHeader>
                                           <TableRow>
-                                              <TableHead>
-                                                  <div className="flex items-center">
-                                                      <span>Chain Position</span>
-                                                      <InfoTooltip>
-                                                          Shows when this event happened in the overall audit timeline. Earlier numbers mean earlier events. This ensures the order can’t be altered.
-                                                      </InfoTooltip>
-                                                  </div>
-                                              </TableHead>
+                                              <TableHead>Chain Position</TableHead>
                                               <TableHead>Event Type</TableHead>
                                               <TableHead>Competition</TableHead>
                                               <TableHead>Actor</TableHead>
                                               <TableHead>Timestamp</TableHead>
-                                              <TableHead>
-                                                  <div className="flex items-center">
-                                                      <span>Integrity</span>
-                                                      <InfoTooltip>
-                                                          Valid means the event is securely chained and cannot be altered. Pending means it's still waiting to be added.
-                                                      </InfoTooltip>
-                                                  </div>
-                                              </TableHead>
+                                              <TableHead>Integrity</TableHead>
                                               <TableHead></TableHead>
                                           </TableRow>
                                       </TableHeader>
@@ -675,7 +632,7 @@ export default function EventsPage() {
                                                       </Badge>
                                                   </TableCell>
                                                   <TableCell>
-                                                      {dateFormatters.shortDateTime(event.created_at)}
+                                                      {new Date(event.created_at).toLocaleString()}
                                                   </TableCell>
                                                   <TableCell>
                                                       <IndicatorBadge
@@ -688,6 +645,7 @@ export default function EventsPage() {
                                                           actions={[
                                                               {
                                                                   label: 'Details',
+                                                                  icon: Eye,
                                                                   onSelect: () => eventDialog.open(event),
                                                               },
                                                           ]}

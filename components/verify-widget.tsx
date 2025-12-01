@@ -23,8 +23,9 @@ export function VerifyWidget({ className, variant = "default", ...props }: Verif
     setIsLoading(true)
     // Simulate network delay for effect
     setTimeout(() => {
-      router.push(`/audit/${encodeURIComponent(query)}`)
-    }, 800)
+      // Route to the verify search page
+      router.push(`/verify`)
+    }, 400)
   }
 
   return (

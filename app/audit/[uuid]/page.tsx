@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { publicApi } from '@/lib/api/client';
 import { CheckCircle2, Shield, Clock, Hash, Link as LinkIcon, ArrowLeft, AlertCircle } from 'lucide-react';
+import { ComplaintDialog } from '@/components/public/complaint-dialog';
 
 export default function AuditPage() {
   const params = useParams();
@@ -86,12 +87,20 @@ export default function AuditPage() {
               </p>
             </div>
           </div>
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-full">
-              <ArrowLeft className="mr-2 h-4 w-4" /> 
-              Back to Home
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            {audit && (
+              <ComplaintDialog 
+                competitionId={audit.raffle_id}
+                competitionName={`Audit ${audit.raffle_id}`}
+              />
+            )}
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-full">
+                <ArrowLeft className="mr-2 h-4 w-4" /> 
+                Back to Home
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 

@@ -29,7 +29,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { publicApi } from '@/lib/api/client';
-import { Download, Shield, ChevronLeft, ChevronRight, Copy, Check, X, Filter as FilterIcon } from 'lucide-react';
+import { Download, Shield, ChevronLeft, ChevronRight, Copy, Check, X, Filter as FilterIcon, List, GitBranch } from 'lucide-react';
 
 interface DrawAudit {
   id: number;
@@ -88,6 +88,7 @@ export default function DrawAuditsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'table' | 'chain'>('table');
 
   // Initialize from URL params
   useEffect(() => {
@@ -263,391 +264,253 @@ export default function DrawAuditsPage() {
   const activeFilterCount = [selectedOperator !== 'all', selectedCompetition !== 'all', selectedPrize !== 'all'].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
       <SiteHeader />
       
       <main className="pt-16">
         {/* Hero Section */}
-        <section className="py-20 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        <section className="py-24 bg-zinc-900/30 border-b border-white/5 relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-cobalt/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="container mx-auto px-6 max-w-7xl relative z-10">
             <div className="text-center max-w-3xl mx-auto">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-zinc-900 dark:text-white tracking-tight">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">
                 Draw Audit Log
               </h1>
-              <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Complete transparency log of all competition draws with cryptographic verification.
-                Every draw is recorded with a tamper-evident signature and linked in an unbreakable chain.
+              <p className="text-xl text-zinc-400 leading-relaxed mb-8">
+                Complete transparency log of all competition draws. <br/>
+                Every draw is cryptographically signed and linked in an unbreakable chain.
               </p>
+              
+              <div className="flex items-center justify-center gap-4">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-black/40 border border-white/10 rounded-full text-sm text-zinc-400">
+                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                      Live Feed
+                  </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Educational Content */}
-        <section className="py-16 bg-white dark:bg-black transition-colors duration-300">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <Card className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-zinc-900 dark:text-white">
-                  <Shield className="h-5 w-5 text-brand-cobalt" />
-                  Why We Do This
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-zinc-600 dark:text-zinc-400">
-                <p>
-                  Every draw is recorded here the moment it happens. Once recorded, it&apos;s locked in forever
-                  - we can&apos;t change the winner, the time, or who was eligible. It&apos;s like a receipt that
-                  proves everything was fair. Use the filters below to view audits by specific operator, competition, or prize.
-                </p>
-
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="table-explained" className="border-zinc-200 dark:border-zinc-800">
-                    <AccordionTrigger className="text-zinc-900 dark:text-white hover:text-brand-cobalt dark:hover:text-brand-cobalt">
-                      What you&apos;ll see in the table
-                    </AccordionTrigger>
-                    <AccordionContent className="text-zinc-600 dark:text-zinc-400 space-y-2">
-                      <ul className="list-disc list-inside space-y-1">
-                        <li><strong>Pool Hash</strong> - A unique fingerprint of all tickets that were eligible to win</li>
-                        <li><strong>Signature</strong> - A tamper-proof seal that locks everything together (if we changed anything, this would break)</li>
-                        <li><strong>Previous Signature</strong> - Links this draw to the previous one, forming an unbreakable chain</li>
-                        <li><strong>Draw ID</strong> - A unique reference number for this specific draw</li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="cant-change" className="border-zinc-200 dark:border-zinc-800">
-                    <AccordionTrigger className="text-zinc-900 dark:text-white hover:text-brand-cobalt dark:hover:text-brand-cobalt">
-                      Can&apos;t Cafaas just change this data?
-                    </AccordionTrigger>
-                    <AccordionContent className="text-zinc-600 dark:text-zinc-400 space-y-2">
-                      <p>
-                        Technically yes - but you&apos;d catch us immediately. If your ticket was in the draw,
-                        you can verify it&apos;s in the Pool Hash. If we changed the winner or timestamp, the
-                        Signature would break. Each draw also links to the previous one through the Previous
-                        Signature field - forming a chain like blockchain. You can&apos;t insert, remove, or alter
-                        any draw without breaking the entire chain.
-                      </p>
-                      <p>
-                        Plus, this page is public the moment the draw happens - anyone can screenshot it,
-                        archive it, or check it in real-time. Changing it would be obvious and destroy our
-                        entire business.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="verify" className="border-zinc-200 dark:border-zinc-800">
-                    <AccordionTrigger className="text-zinc-900 dark:text-white hover:text-brand-cobalt dark:hover:text-brand-cobalt">
-                      How can I verify this myself? (Technical users)
-                    </AccordionTrigger>
-                    <AccordionContent className="text-zinc-600 dark:text-zinc-400 space-y-4">
-                      <p className="text-sm italic">
-                        Most people will never need these steps — but we make them public so anyone can
-                        check the math.
-                      </p>
-
-                      <div>
-                        <h4 className="font-semibold text-zinc-900 dark:text-white mb-1">Step 1: Check your ticket was eligible</h4>
-                        <p className="text-sm">
-                          Contact us with the Draw ID and your ticket number. We&apos;ll provide a list of all
-                          eligible ticket numbers and a mapping showing which ticket ID corresponds to your
-                          ticket number.
-                        </p>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-zinc-900 dark:text-white mb-1">Step 2: Verify the Pool Hash</h4>
-                        <p className="text-sm">
-                          The Pool Hash is calculated from ticket IDs (not the visible numbers). Once you have
-                          your ticket&apos;s ID from the mapping:
-                        </p>
-                        <ul className="list-disc list-inside text-sm space-y-1 mt-2">
-                          <li>Take all the ticket IDs from the eligible list</li>
-                          <li>Sort them and join with commas: 1,2,3,4,5...</li>
-                          <li>Calculate SHA256 hash - it should match the Pool Hash shown</li>
-                        </ul>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-zinc-900 dark:text-white mb-1">Step 3: Verify the signature</h4>
-                        <p className="text-sm">
-                          Copy the data from the table: Competition UUID, Draw ID, timestamp, total entries,
-                          winner ticket ID (not number), Pool Hash, and Previous Signature (if any). Combine
-                          them with pipes (|) and calculate a SHA256 hash. It should match the Signature shown.
-                        </p>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-zinc-900 dark:text-white mb-1">Step 4: Verify the chain</h4>
-                        <p className="text-sm">
-                          Each audit&apos;s Previous Signature should match the Signature of the draw before it.
-                          This creates an unbreakable chain - if any draw is altered, inserted, or removed,
-                          the chain breaks and verification fails.
-                        </p>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-zinc-900 dark:text-white mb-1">Step 5: Download the JSON</h4>
-                        <p className="text-sm">
-                          Click &quot;Download JSON&quot; below to get machine-readable data you can verify
-                          programmatically.
-                        </p>
-                      </div>
-
-                      <p className="text-sm font-semibold text-brand-cobalt mt-4">
-                        Bottom line: You don&apos;t have to take our word that draws are fair - the numbers prove it.
-                        That&apos;s our commitment to transparency.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
         {/* Filters Section */}
-        <section className="py-8 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <Card className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FilterIcon className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
-                    <CardTitle className="text-base text-zinc-900 dark:text-white">Filters</CardTitle>
-                    {hasActiveFilters && (
-                      <Badge variant="secondary" className="ml-2 bg-brand-cobalt/10 text-brand-cobalt border-brand-cobalt/20">
-                        {activeFilterCount} active
-                      </Badge>
-                    )}
-                  </div>
-                  {hasActiveFilters && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleClearFilters}
-                      className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white h-8"
-                    >
-                      <X className="mr-1 h-3 w-3" />
-                      Clear All
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Operator</label>
+        <section className="py-8 bg-black sticky top-16 z-30 border-b border-white/5 shadow-xl">
+          <div className="container mx-auto px-6 max-w-7xl">
+             <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+                
+                {/* Filters */}
+                <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                     <Select value={selectedOperator} onValueChange={handleOperatorChange}>
-                      <SelectTrigger className="bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white">
+                      <SelectTrigger className="w-full sm:w-[200px] bg-zinc-900 border-white/10 text-white focus:ring-brand-cobalt/50 h-10">
                         <SelectValue placeholder="All Operators" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
+                      <SelectContent className="bg-zinc-900 border-white/10 text-white">
                         <SelectItem value="all">All Operators</SelectItem>
                         {operators.map((op) => (
-                          <SelectItem key={op.uuid} value={op.uuid}>
+                          <SelectItem key={op.uuid} value={op.uuid} className="focus:bg-zinc-800 cursor-pointer">
                             {op.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Competition</label>
                     <Select 
                       value={selectedCompetition} 
                       onValueChange={handleCompetitionChange}
                       disabled={selectedOperator === 'all' || loadingCompetitions}
                     >
-                      <SelectTrigger className="bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white disabled:opacity-50">
-                        <SelectValue placeholder={
-                          selectedOperator === 'all' 
-                            ? 'Select operator first' 
-                            : loadingCompetitions 
-                            ? 'Loading...' 
-                            : 'All Competitions'
-                        } />
+                      <SelectTrigger className="w-full sm:w-[200px] bg-zinc-900 border-white/10 text-white focus:ring-brand-cobalt/50 h-10 disabled:opacity-50">
+                        <SelectValue placeholder="All Competitions" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
+                      <SelectContent className="bg-zinc-900 border-white/10 text-white">
                         <SelectItem value="all">All Competitions</SelectItem>
                         {competitions.map((comp) => (
-                          <SelectItem key={comp.uuid} value={comp.uuid}>
+                          <SelectItem key={comp.uuid} value={comp.uuid} className="focus:bg-zinc-800 cursor-pointer">
                             {comp.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Prize</label>
-                    <Select 
-                      value={selectedPrize} 
-                      onValueChange={handlePrizeChange}
-                      disabled={selectedOperator === 'all' || loadingPrizes}
-                    >
-                      <SelectTrigger className="bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white disabled:opacity-50">
-                        <SelectValue placeholder={
-                          selectedOperator === 'all'
-                            ? 'Select operator first'
-                            : loadingPrizes
-                            ? 'Loading...'
-                            : 'All Prizes'
-                        } />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
-                        <SelectItem value="all">All Prizes</SelectItem>
-                        {prizes.map((prize) => (
-                          <SelectItem key={prize.id} value={prize.id}>
-                            {prize.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <Button onClick={handleDownloadJson} className="bg-brand-cobalt hover:bg-brand-cobalt/90 text-white">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download JSON
-                  </Button>
+                {/* View Toggles & Actions */}
+                <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+                     <div className="flex items-center bg-zinc-900 rounded-lg p-1 border border-white/10">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setViewMode('table')}
+                          className={`h-8 px-3 rounded-md transition-all ${viewMode === 'table' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-500 hover:text-white'}`}
+                        >
+                          <List className="mr-2 h-4 w-4" />
+                          Table
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setViewMode('chain')}
+                          className={`h-8 px-3 rounded-md transition-all ${viewMode === 'chain' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-500 hover:text-white'}`}
+                        >
+                          <GitBranch className="mr-2 h-4 w-4" />
+                          Chain
+                        </Button>
+                     </div>
+                     
+                    {hasActiveFilters && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleClearFilters}
+                          className="text-zinc-500 hover:text-white h-9"
+                        >
+                          <X className="mr-1 h-3 w-3" />
+                          Clear
+                        </Button>
+                    )}
                 </div>
-              </CardContent>
-            </Card>
+             </div>
           </div>
         </section>
 
-        {/* Data Table Section */}
-        <section className="py-8 bg-white dark:bg-black transition-colors duration-300">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <Card className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
-              <CardContent className="p-0">
+        {/* Chain View */}
+        {viewMode === 'chain' && (
+          <section className="py-12 bg-black min-h-[60vh]">
+            <div className="container mx-auto px-6 max-w-4xl">
+              {loading ? (
+                <div className="flex items-center justify-center py-24">
+                  <Loader2 className="h-10 w-10 animate-spin text-brand-cobalt" />
+                </div>
+              ) : audits.length === 0 ? (
+                <div className="text-center py-24 border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/20">
+                    <p className="text-zinc-500">No audits found matching your filters.</p>
+                </div>
+              ) : (
+                <div className="space-y-0 relative pl-8 border-l-2 border-zinc-800 ml-4 md:ml-0">
+                  {audits.map((audit, index) => {
+                    const isLinked = audit.previous_signature_hash && 
+                                     index < audits.length - 1 && 
+                                     audits[index + 1].signature_hash === audit.previous_signature_hash;
+                    
+                    return (
+                      <div key={audit.id} className="relative pb-12 last:pb-0 group">
+                        {/* Dot on timeline */}
+                        <div className="absolute -left-[41px] top-0 h-5 w-5 rounded-full bg-black border-4 border-zinc-800 group-hover:border-brand-cobalt transition-colors z-10" />
+                        
+                        <div className="bg-zinc-900/50 border border-white/10 rounded-xl p-6 hover:bg-zinc-900 transition-colors">
+                           <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
+                                <div>
+                                    <h3 className="text-xl font-bold text-white mb-1">{audit.competition?.name || 'Unknown Competition'}</h3>
+                                    <p className="text-zinc-400 text-sm">
+                                        by <span className="text-zinc-300">{audit.operator?.name}</span> • Draw #{audit.draw_id}
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-zinc-300 font-mono text-sm">{new Date(audit.drawn_at_utc).toLocaleString()}</p>
+                                    <Badge variant="outline" className="mt-2 border-green-500/20 text-green-500 bg-green-500/10">
+                                        <Shield className="h-3 w-3 mr-1" /> Verified
+                                    </Badge>
+                                </div>
+                           </div>
+
+                           <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-black/40 rounded-lg border border-white/5">
+                                <div>
+                                    <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Entries</p>
+                                    <p className="font-mono text-white text-lg">{audit.total_entries.toLocaleString()}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Winning Ticket</p>
+                                    <p className="font-mono text-green-500 text-lg">#{audit.winning_ticket}</p>
+                                </div>
+                           </div>
+
+                           <div className="space-y-3 font-mono text-xs">
+                                <div>
+                                    <p className="text-zinc-600 mb-1">Signature Hash (This Event)</p>
+                                    <div className="flex items-center gap-2 bg-black/60 p-2 rounded border border-white/5 text-zinc-400 break-all">
+                                        <div className="h-2 w-2 rounded-full bg-brand-cobalt shrink-0" />
+                                        {audit.signature_hash}
+                                        <Button variant="ghost" size="icon" className="h-4 w-4 ml-auto hover:text-white" onClick={() => copyToClipboard(audit.signature_hash, `sig-${audit.id}`)}>
+                                            <Copy className="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                </div>
+                                {audit.previous_signature_hash && (
+                                <div>
+                                    <p className="text-zinc-600 mb-1">Linked Previous Hash</p>
+                                    <div className="flex items-center gap-2 bg-black/60 p-2 rounded border border-white/5 text-zinc-500 break-all">
+                                        <div className="h-2 w-2 rounded-full bg-green-500 shrink-0" />
+                                        {audit.previous_signature_hash}
+                                    </div>
+                                </div>
+                                )}
+                           </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Table View */}
+        {viewMode === 'table' && (
+        <section className="py-12 bg-black min-h-[60vh]">
+          <div className="container mx-auto px-6 max-w-7xl">
+            <div className="border border-white/10 rounded-xl overflow-hidden bg-zinc-900/30">
                 {loading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cobalt"></div>
+                  <div className="flex items-center justify-center py-24">
+                    <Loader2 className="h-10 w-10 animate-spin text-brand-cobalt" />
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
-                      <TableHeader>
-                        <TableRow className="border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                          <TableHead className="text-zinc-600 dark:text-zinc-400">Operator</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400">Competition</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400">Prize</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400">Draw ID</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400">Drawn At</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400 text-right">Entries</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400 text-right">Winner</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400 font-mono">Pool Hash</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400 font-mono">Signature</TableHead>
-                          <TableHead className="text-zinc-600 dark:text-zinc-400 font-mono">Prev Signature</TableHead>
+                      <TableHeader className="bg-zinc-900/80">
+                        <TableRow className="border-white/5 hover:bg-transparent">
+                          <TableHead className="text-zinc-400 font-medium">Operator</TableHead>
+                          <TableHead className="text-zinc-400 font-medium">Competition</TableHead>
+                          <TableHead className="text-zinc-400 font-medium">Draw ID</TableHead>
+                          <TableHead className="text-zinc-400 font-medium">Drawn At</TableHead>
+                          <TableHead className="text-zinc-400 font-medium text-right">Entries</TableHead>
+                          <TableHead className="text-zinc-400 font-medium text-right">Winner</TableHead>
+                          <TableHead className="text-zinc-400 font-medium font-mono text-xs">Pool Hash</TableHead>
+                          <TableHead className="text-zinc-400 font-medium font-mono text-xs">Signature</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {audits.length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={10} className="text-center text-zinc-500 dark:text-zinc-400 py-12">
+                            <TableCell colSpan={8} className="text-center text-zinc-500 py-12">
                               No draw audits found
                             </TableCell>
                           </TableRow>
                         ) : (
                           audits.map((audit) => (
-                            <TableRow key={audit.id} className="border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                              <TableCell className="font-medium text-zinc-900 dark:text-white">
-                                {audit.operator ? (
-                                  audit.operator.url ? (
-                                    <a
-                                      href={audit.operator.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-brand-cobalt hover:text-brand-cobalt/80"
-                                    >
-                                      {audit.operator.name}
-                                    </a>
-                                  ) : (
-                                    audit.operator.name
-                                  )
-                                ) : (
-                                  <span className="text-zinc-400 dark:text-zinc-600">N/A</span>
-                                )}
+                            <TableRow key={audit.id} className="border-white/5 hover:bg-white/5 transition-colors">
+                              <TableCell className="font-medium text-white">
+                                {audit.operator?.name || 'N/A'}
                               </TableCell>
-                              <TableCell className="text-zinc-700 dark:text-zinc-300">{audit.competition?.name || 'N/A'}</TableCell>
-                              <TableCell className="text-zinc-700 dark:text-zinc-300">{audit.prize_name || 'N/A'}</TableCell>
-                              <TableCell className="font-mono text-xs text-zinc-700 dark:text-zinc-300">{audit.draw_id}</TableCell>
-                              <TableCell className="text-sm text-zinc-700 dark:text-zinc-300">
-                                {new Date(audit.drawn_at_utc).toLocaleString()}
+                              <TableCell className="text-zinc-300">{audit.competition?.name || 'N/A'}</TableCell>
+                              <TableCell className="font-mono text-xs text-zinc-500">{audit.draw_id}</TableCell>
+                              <TableCell className="text-sm text-zinc-300">
+                                {new Date(audit.drawn_at_utc).toLocaleDateString()}
                               </TableCell>
-                              <TableCell className="text-right text-zinc-700 dark:text-zinc-300">
+                              <TableCell className="text-right text-zinc-300">
                                 {audit.total_entries.toLocaleString()}
                               </TableCell>
-                              <TableCell className="text-right text-green-600 dark:text-green-500 font-mono">
-                                {audit.winning_ticket}
+                              <TableCell className="text-right text-green-500 font-mono font-bold">
+                                #{audit.winning_ticket}
                               </TableCell>
-                              <TableCell className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
-                                <div className="flex items-center gap-2">
-                                  <span title={audit.pool_hash}>{truncateHash(audit.pool_hash)}</span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                                    onClick={() => copyToClipboard(audit.pool_hash, `pool-${audit.id}`)}
-                                  >
-                                    {copiedHash === `pool-${audit.id}` ? (
-                                      <Check className="h-3 w-3 text-green-600 dark:text-green-500" />
-                                    ) : (
-                                      <Copy className="h-3 w-3 text-zinc-400" />
-                                    )}
-                                  </Button>
+                              <TableCell className="font-mono text-xs text-zinc-600">
+                                <div className="flex items-center gap-2 group cursor-pointer" onClick={() => copyToClipboard(audit.pool_hash, `pool-${audit.id}`)}>
+                                  {truncateHash(audit.pool_hash)}
+                                  <Copy className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
                               </TableCell>
                               <TableCell className="font-mono text-xs text-brand-cobalt">
-                                <div className="flex items-center gap-2">
-                                  <span title={audit.signature_hash}>
-                                    {truncateHash(audit.signature_hash)}
-                                  </span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                                    onClick={() =>
-                                      copyToClipboard(audit.signature_hash, `sig-${audit.id}`)
-                                    }
-                                  >
-                                    {copiedHash === `sig-${audit.id}` ? (
-                                      <Check className="h-3 w-3 text-green-600 dark:text-green-500" />
-                                    ) : (
-                                      <Copy className="h-3 w-3 text-zinc-400" />
-                                    )}
-                                  </Button>
+                                <div className="flex items-center gap-2 group cursor-pointer" onClick={() => copyToClipboard(audit.signature_hash, `sig-${audit.id}`)}>
+                                  {truncateHash(audit.signature_hash)}
+                                  <Copy className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
-                              </TableCell>
-                              <TableCell className="font-mono text-xs text-zinc-400 dark:text-zinc-600">
-                                {audit.previous_signature_hash ? (
-                                  <div className="flex items-center gap-2">
-                                    <span title={audit.previous_signature_hash}>
-                                      {truncateHash(audit.previous_signature_hash)}
-                                    </span>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-6 w-6 p-0 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                                      onClick={() =>
-                                        copyToClipboard(
-                                          audit.previous_signature_hash!,
-                                          `prev-${audit.id}`
-                                        )
-                                      }
-                                    >
-                                      {copiedHash === `prev-${audit.id}` ? (
-                                        <Check className="h-3 w-3 text-green-600 dark:text-green-500" />
-                                      ) : (
-                                        <Copy className="h-3 w-3 text-zinc-400" />
-                                      )}
-                                    </Button>
-                                  </div>
-                                ) : (
-                                  <span className="text-zinc-400 dark:text-zinc-700">Genesis</span>
-                                )}
                               </TableCell>
                             </TableRow>
                           ))
@@ -656,11 +519,12 @@ export default function DrawAuditsPage() {
                     </Table>
                   </div>
                 )}
+            </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 px-6 py-4">
-                    <div className="text-sm text-zinc-500 dark:text-zinc-400">
+             {/* Pagination */}
+             {totalPages > 1 && (
+                  <div className="flex items-center justify-between border-t border-white/10 pt-6 mt-6">
+                    <div className="text-sm text-zinc-500">
                       Page {currentPage} of {totalPages}
                     </div>
                     <div className="flex gap-2">
@@ -669,7 +533,7 @@ export default function DrawAuditsPage() {
                         size="sm"
                         onClick={() => setCurrentPage(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="border-zinc-200 dark:border-zinc-800"
+                        className="border-white/10 bg-transparent hover:bg-white/5 text-white"
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
@@ -678,25 +542,16 @@ export default function DrawAuditsPage() {
                         size="sm"
                         onClick={() => setCurrentPage(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="border-zinc-200 dark:border-zinc-800"
+                        className="border-white/10 bg-transparent hover:bg-white/5 text-white"
                       >
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Footer Notice */}
-            <div className="mt-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
-              <p>
-                Showing {audits.length} of {totalItems.toLocaleString()} total audits
-                {hasActiveFilters && ` (${activeFilterCount} filter${activeFilterCount > 1 ? 's' : ''} applied)`}
-              </p>
-            </div>
+            )}
           </div>
         </section>
+        )}
       </main>
 
       <SiteFooter />

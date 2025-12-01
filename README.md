@@ -27,7 +27,9 @@ next.js/
 │   ├── (public)/          # Public pages (marketing, docs)
 │   ├── operator/          # Operator dashboard
 │   ├── regulator/         # Regulator dashboard
-│   └── audit/[uuid]/      # Public audit viewer
+│   ├── audit/[uuid]/      # Public audit viewer
+│   ├── verify/            # Ticket verification
+│   └── chain-status/      # Chain integrity status
 ├── components/
 │   ├── ui/                # shadcn/ui components
 │   └── ...                # Custom components
@@ -44,10 +46,15 @@ next.js/
 - **Homepage**: Platform overview and features
 - **Documentation**: API reference and integration guide
 - **Audit Viewer**: Public audit verification pages
+- **Ticket Verification**: `/verify` - Public ticket verification status
+- **Chain Integrity**: `/chain-status` - Real-time cryptographic chain verification
+- **Competition Pages**: Public pages for each competition and its audits
+- **Operator Profiles**: Public trust profiles for operators
 
 ### Operator Dashboard
-- **Dashboard**: Compliance summary and metrics
+- **Dashboard**: "Needs Attention" system (draws overdue, complaints)
 - **Competitions**: List and manage competitions
+- **Draw Audits**: Cryptographic proofs of fair draws
 - **API Keys**: Generate and manage API keys
 - **Webhooks**: Configure webhook subscriptions
 

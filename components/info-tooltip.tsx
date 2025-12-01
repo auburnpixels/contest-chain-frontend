@@ -1,29 +1,35 @@
+'use client';
+
 import { HelpCircle } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ReactNode } from 'react';
 
 interface InfoTooltipProps {
-  children: React.ReactNode;
-  side?: 'top' | 'bottom' | 'left' | 'right';
+  children: ReactNode;
+  side?: 'top' | 'right' | 'bottom' | 'left';
   className?: string;
 }
 
 export function InfoTooltip({ children, side = 'top', className }: InfoTooltipProps) {
   return (
-    <Tooltip delayDuration={10}>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          className={`inline-flex items-center justify-center ml-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm ${className || ''}`}
-        >
-          <HelpCircle 
-            className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-help transition-colors"
-          />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent side={side} className="max-w-xs z-50">
-        <p className="text-xs leading-relaxed">{children}</p>
-      </TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            className={`ml-1 inline-flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors ${className}`}
+            onClick={(e) => e.preventDefault()}
+          >
+            <HelpCircle className="h-4 w-4" />
+            <span className="sr-only">More information</span>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side={side} className="max-w-xs">
+          <p className="text-sm">{children}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
+
 

@@ -19,9 +19,8 @@ import { getComplaintStatusBadge, getComplaintCountByStatus, formatComplaintCate
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
-import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
+import { MetricCard } from '@/components/metric-card';
 import { Clock, CheckCircle2 } from 'lucide-react';
-import { dateFormatters } from '@/lib/date-utils';
 
 export default function OperatorComplaintsPage() {
   const router = useRouter();
@@ -198,7 +197,7 @@ export default function OperatorComplaintsPage() {
         onLogout={handleLogout}
       >
         <div className="space-y-8">
-            <DashboardHeader title="Consumer complaints" tagline="These are consumer-submitted complaints via your CAFAAS public audit pages or API.">
+            <DashboardHeader title="Complaints" tagline="These are consumer-submitted complaints via your CAFAAS public audit pages or API.">
                 <Badge variant="outline" className="px-3 py-1">
                     {getComplaintCountByStatus(complaints, 'pending')} Pending
                 </Badge>
@@ -206,15 +205,15 @@ export default function OperatorComplaintsPage() {
 
           {/* Metrics Cards - 3 cards */}
           <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
-            <ComplianceScoreCard
+            <MetricCard
               title="Total complaints"
               value={dashboardStats?.total_complaints || 0}
               status={(dashboardStats?.pending_complaints || 0) > 5 ? 'warning' : 'neutral'}
               icon={MessageSquare}
-              footer={`${dashboardStats?.pending_complaints || 0} pending`}
+              footer={`${dashboardStats?.pending_complaints || 0} unresolved`}
             />
 
-            <ComplianceScoreCard
+            <MetricCard
               title="Response time"
               value={
                 dashboardStats?.average_response_time_hours
@@ -236,7 +235,7 @@ export default function OperatorComplaintsPage() {
               footer={`Average response time`}
             />
 
-            <ComplianceScoreCard
+            <MetricCard
               title="Resolved this month"
               value={dashboardStats?.resolved_complaints_this_month || 0}
               status="neutral"
@@ -293,7 +292,7 @@ export default function OperatorComplaintsPage() {
                       <SelectContent>
                         <SelectItem value="all">All competitions</SelectItem>
                         {competitions.map((competition) => (
-                          <SelectItem key={competition.id} value={competition.id}>
+                          <SelectItem key={competition.uuid} value={competition.uuid}>
                             {competition.name}
                           </SelectItem>
                         ))}
@@ -367,7 +366,11 @@ export default function OperatorComplaintsPage() {
                               {getComplaintStatusBadge(complaint)}
                             </TableCell>
                             <TableCell className="text-sm text-muted-foreground">
-                              {dateFormatters.shortDateTime(complaint.created_at)}
+                              {new Date(complaint.created_at).toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                              })}
                             </TableCell>
                             <TableCell className="text-right">
                               <OperatorActionsMenu

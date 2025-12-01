@@ -34,10 +34,8 @@ import { DrawAuditDetailsDialog } from '@/components/operator/draw-audit-details
 import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { Eye } from 'lucide-react';
 import { useDialog } from '@/hooks/useDialog';
-import { ComplianceScoreCard } from '@/components/compliance/compliance-score-card';
+import { MetricCard } from '@/components/metric-card';
 import { Calendar } from 'lucide-react';
-import { dateFormatters } from '@/lib/date-utils';
-import {InfoTooltip} from "@/components/info-tooltip";
 
 // Format chain position with commas
 const formatChainPosition = (sequence: number): string => {
@@ -125,14 +123,20 @@ export default function OperatorDrawsPage() {
   const loadDrawAudits = async () => {
     try {
       setLoading(true);
+      console.log('[Draws] Fetching draw audits...');
       const [auditsData, dashboardData, competitionsData] = await Promise.all([
         operatorApi.getDrawAudits({ per_page: 1000 }),
         operatorApi.getDashboard(),
         operatorApi.getCompetitions({ per_page: 1000 }),
       ]);
 
+      console.log('[Draws] Raw API response:', auditsData);
+      console.log('[Draws] Number of audits received:', auditsData.data?.length || 0);
+
       // Sort by sequence (chain position) in descending order
       const sortedAudits = (auditsData.data || []).sort((a: DrawAudit, b: DrawAudit) => b.sequence - a.sequence);
+      
+      console.log('[Draws] Sorted audits count:', sortedAudits.length);
       
       setAllDrawAudits(sortedAudits);
       setCompetitions(competitionsData.data || []);
@@ -233,7 +237,7 @@ export default function OperatorDrawsPage() {
       onLogout={handleLogout}
     >
       <div className="space-y-8">
-        <DashboardHeader title="Draws & winners">
+        <DashboardHeader title="Draw Audits">
           <Badge variant="outline" className="px-3 py-1">
             {allDrawAudits.length} Total
           </Badge>
@@ -241,7 +245,7 @@ export default function OperatorDrawsPage() {
 
         {/* Metrics Cards - 3 cards */}
         <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
-          <ComplianceScoreCard
+          <MetricCard
             title="Total draws"
             value={dashboardStats?.total_draws || 0}
             status="neutral"
@@ -249,7 +253,7 @@ export default function OperatorDrawsPage() {
             footer="All time"
           />
 
-          <ComplianceScoreCard
+          <MetricCard
             title="Chain verified"
             value={
               dashboardStats?.total_draws > 0
@@ -269,10 +273,9 @@ export default function OperatorDrawsPage() {
             }
             icon={ShieldCheck}
             footer="With valid signatures"
-            helpText="Shows how many of your prize draws have been fully verified and securely added to the audit chain."
           />
 
-          <ComplianceScoreCard
+          <MetricCard
             title="Recent draws (7 days)"
             value={dashboardStats?.draws_last_7_days || 0}
             status="neutral"
@@ -344,27 +347,13 @@ export default function OperatorDrawsPage() {
                     <TableHeader>
                       <TableRow>
                           <TableHead>ID</TableHead>
-                          <TableHead>
-                              <div className="flex items-center">
-                                  <span>Chain Position</span>
-                                  <InfoTooltip>
-                                      Shows when this event happened in the overall audit timeline. Earlier numbers mean earlier events. This ensures the order can’t be altered.
-                                  </InfoTooltip>
-                              </div>
-                          </TableHead>
+                          <TableHead>Chain Position</TableHead>
                           <TableHead>Competition</TableHead>
                           <TableHead>Prize</TableHead>
                           <TableHead>Draw Date</TableHead>
                           <TableHead>Entries</TableHead>
                           <TableHead>Winner</TableHead>
-                          <TableHead>
-                              <div className="flex items-center">
-                                  <span>Integrity</span>
-                                  <InfoTooltip>
-                                      Valid means the event is securely chained and cannot be altered. Pending means it's still waiting to be added.
-                                  </InfoTooltip>
-                              </div>
-                          </TableHead>
+                          <TableHead>Integrity</TableHead>
                           <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -393,7 +382,13 @@ export default function OperatorDrawsPage() {
                           </TableCell>
 
                           <TableCell className="text-sm">
-                              {dateFormatters.shortDateTime(audit.drawn_at_utc)}
+                              {new Date(audit.drawn_at_utc).toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: 'short',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                              })}
                           </TableCell>
 
                         <TableCell>
@@ -407,7 +402,7 @@ export default function OperatorDrawsPage() {
                           )}
                         </TableCell>
                         <TableCell>
-                          <IndicatorBadge color="green" text="Valid" />
+                          <IndicatorBadge color="green" text="Verified" />
                         </TableCell>
                         <TableCell>
                           <OperatorActionsMenu
@@ -434,12 +429,20 @@ export default function OperatorDrawsPage() {
                 />
               </>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Dices className="h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No draw audits yet</h3>
-                  <p className="text-sm text-muted-foreground mb-6 max-w-md">
-                    Draw audits will appear here automatically once you conduct draws for your competitions. Each draw is cryptographically verified and added to the audit chain.
+                <div className="text-center py-12">
+                  <Dices className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                  <h3 className="text-xl font-semibold mb-2">No draw audits yet</h3>
+                  <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
+                    Draw audits are cryptographic proofs of fair, tamper-proof draws. They'll appear here automatically once you run draws for your competitions via the API.
                   </p>
+                  <div className="flex gap-3 justify-center">
+                    <Button variant="outline" asChild>
+                      <a href="/docs/api/draws" target="_blank" rel="noopener noreferrer">
+                        <FileText className="mr-2 h-4 w-4" />
+                        How to Run a Draw
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               )}
             </CardContent>

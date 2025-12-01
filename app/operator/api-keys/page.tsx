@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { operatorApi } from '@/lib/api/client';
-import { Key, Copy, Trash2, Plus, Eye, EyeOff, Calendar, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Key, Copy, Trash2, Plus, Eye, EyeOff, Calendar, AlertCircle, AlertTriangle, FileText, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardShell } from '@/components/dashboard-shell';
 import {DashboardHeader} from "@/components/dashboard-header";
@@ -17,8 +17,6 @@ import {IndicatorBadge} from "@/components/ui/indicator-badge";
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
-import { dateFormatters } from '@/lib/date-utils';
-import { DismissibleAlert } from '@/components/dismissible-alert';
 
 export default function ApiKeysPage() {
   const { isReady, handleLogout } = useOperatorAuth();
@@ -48,6 +46,7 @@ export default function ApiKeysPage() {
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
       setLoading(false);
     } catch (error: any) {
+      console.error('[API Keys] Failed to load API keys:', error);
       if (error.status === 401) {
         await handleLogout();
       }
@@ -230,14 +229,6 @@ export default function ApiKeysPage() {
               </Dialog>
           </DashboardHeader>
 
-          {/* Info Banner */}
-          <div className="px-4 lg:px-6">
-            <DismissibleAlert
-              id="api-keys-explainer"
-              title="What are API keys?"
-              description="API keys allow you to securely integrate CAFAAS into your website, app, or backend systems. Use them to create competitions, submit entries, and run draws programmatically."
-            />
-          </div>
 
           <div className="px-4 lg:px-6">
               <Card>
@@ -301,7 +292,11 @@ export default function ApiKeysPage() {
                                               <TableCell>
                                                   {apiKey.last_used_at ? (
                                                       <div>
-                                                          {dateFormatters.shortDateTime(apiKey.last_used_at)}
+                                                          {new Date(apiKey.last_used_at).toLocaleDateString('en-GB', {
+                                                              day: '2-digit',
+                                                              month: 'short',
+                                                              year: 'numeric',
+                                                          })}
                                                       </div>
                                                   ) : (
                                                       <span>Never</span>
@@ -309,7 +304,11 @@ export default function ApiKeysPage() {
                                               </TableCell>
                                               <TableCell>
                                                   <div>
-                                                      {dateFormatters.shortDateTime(apiKey.created_at)}
+                                                      {new Date(apiKey.created_at).toLocaleDateString('en-GB', {
+                                                          day: '2-digit',
+                                                          month: 'short',
+                                                          year: 'numeric',
+                                                      })}
                                                   </div>
                                               </TableCell>
                                               <TableCell>
@@ -346,19 +345,24 @@ export default function ApiKeysPage() {
                               </TableBody>
                           </Table>
                       ) : (
-                          <div className="flex flex-col items-center justify-center py-12 text-center">
-                              <Key className="h-12 w-12 text-muted-foreground mb-4" />
-                              <h3 className="text-lg font-semibold mb-2">No API keys yet</h3>
-                              <p className="text-sm text-muted-foreground mb-6 max-w-md">
-                                  Create your first API key to start integrating CAFAAS into your systems. Keys allow you to manage competitions, entries, and draws programmatically.
+                          <div className="text-center py-12">
+                              <Key className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                              <h3 className="text-xl font-semibold mb-2">Create your first API key</h3>
+                              <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
+                                  API keys let your applications securely connect to CAFAAS. Create one now to start managing competitions, entries, and draws programmatically.
                               </p>
-                              <Button
-                                  variant="outline"
-                                  onClick={() => setIsCreateDialogOpen(true)}
-                              >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Create Your First API Key
-                              </Button>
+                              <div className="flex gap-3 justify-center">
+                                  <Button onClick={() => setIsCreateDialogOpen(true)}>
+                                      <Plus className="mr-2 h-4 w-4" />
+                                      Create API Key
+                                  </Button>
+                                  <Button variant="outline" asChild>
+                                      <a href="/docs/api" target="_blank" rel="noopener noreferrer">
+                                          <FileText className="mr-2 h-4 w-4" />
+                                          API Documentation
+                                      </a>
+                                  </Button>
+                              </div>
                           </div>
                       )}
                   </CardContent>
@@ -394,7 +398,7 @@ export default function ApiKeysPage() {
               </pre>
                       </div>
                       <div>
-                          <h4 className=" mb-2 text-sm">2. Store securely</h4>
+                          <h4 className=" mb-2 text-sm">3. Rotate keys periodically</h4>
                           <p className="text-sm text-muted-foreground">
                               For security best practices, create a new key and revoke the old one periodically.
                           </p>
