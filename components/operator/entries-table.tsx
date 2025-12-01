@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { isEntryEligible } from '@/lib/utils';
 import { dateFormatters } from '@/lib/date-utils';
 import { CheckCircle2, XCircle, Clock } from 'lucide-react';
+import {IndicatorBadge} from "@/components/ui/indicator-badge";
 
 export interface Entry {
   id: string;
@@ -38,7 +39,7 @@ export function EntriesTable({ entries, showCompetitionName = false }: EntriesTa
           {showCompetitionName && <TableHead>Competition</TableHead>}
           <TableHead>Type</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Submitted</TableHead>
+          <TableHead>Issued At</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -47,8 +48,8 @@ export function EntriesTable({ entries, showCompetitionName = false }: EntriesTa
           
           return (
             <TableRow key={entry.id}>
-              <TableCell className="font-mono text-xs">
-                {entry.ticket_number}
+              <TableCell>
+                {entry.external_id}
               </TableCell>
               {showCompetitionName && (
                 <TableCell className="max-w-[200px] truncate">
@@ -61,22 +62,10 @@ export function EntriesTable({ entries, showCompetitionName = false }: EntriesTa
                 </Badge>
               </TableCell>
               <TableCell>
-                {entry.deleted_at ? (
-                  <Badge variant="destructive" className="flex w-fit items-center gap-1">
-                    <XCircle className="h-3 w-3" />
-                    Voided
-                  </Badge>
-                ) : isEligible ? (
-                  <Badge variant="success" className="flex w-fit items-center gap-1">
-                    <CheckCircle2 className="h-3 w-3" />
-                    Eligible
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="flex w-fit items-center gap-1">
-                    <XCircle className="h-3 w-3" />
-                    Ineligible
-                  </Badge>
-                )}
+                  <IndicatorBadge
+                      text={entry.deleted_at ? 'Voided' : isEligible ? 'Correct answer' : 'Incorrect answer'}
+                      color={entry.deleted_at || !isEligible ? 'red' : 'green'}
+                  />
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {dateFormatters.shortDateTime(entry.created_at)}

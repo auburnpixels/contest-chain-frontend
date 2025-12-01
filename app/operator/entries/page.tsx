@@ -262,6 +262,7 @@ export default function EntriesPage() {
                 : 'neutral'
             }
             icon={CheckCircle2}
+            useIndicatorBadge={true}
             footer={`${dashboardStats?.valid_entries || 0} valid entries`}
           />
 

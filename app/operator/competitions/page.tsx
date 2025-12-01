@@ -12,7 +12,7 @@ import {
     Search,
     X,
     ChevronLeft,
-    ChevronRight,
+    ChevronRight, FileText, Key,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import { Input } from '@/components/ui/input';
@@ -34,6 +34,13 @@ import { MetricCard } from '@/components/metric-card';
 import { CheckCircle2, ShieldCheck as ShieldCheckIcon, AlertTriangle } from 'lucide-react';
 
 type CompetitionData = OperatorCompetition;
+type AttentionSummary = {
+  total_competitions: number;
+  competitions_needing_attention: number;
+  total_issues: number;
+  critical_issues: number;
+  warning_issues: number;
+};
 
 export default function CompetitionsPage() {
   const router = useRouter();
@@ -45,6 +52,7 @@ export default function CompetitionsPage() {
   const dialog = useDialog<CompetitionData>();
   const [initialized, setInitialized] = useState(false);
   const [dashboardStats, setDashboardStats] = useState<any>(null);
+  const [attentionSummary, setAttentionSummary] = useState<AttentionSummary | null>(null);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -135,6 +143,7 @@ export default function CompetitionsPage() {
       });
       setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
       setDashboardStats(dashboardData?.stats || null);
+      setAttentionSummary(dashboardData?.attention || null);
       setLoading(false);
     } catch (error: any) {
       handleApiError(error, handleLogout);
@@ -201,7 +210,7 @@ export default function CompetitionsPage() {
             status="neutral"
             icon={Trophy}
             footer="All time"
-            helpText="Total number of competitions you've created via the API. Includes active, completed, and closed competitions."
+            helpText="Total number of competitions you’ve created through the API — including active, completed, and closed."
           />
 
           <MetricCard
@@ -210,7 +219,7 @@ export default function CompetitionsPage() {
             status="neutral"
             icon={Trophy}
             footer="Currently running"
-            helpText="Competitions currently accepting entries. They become 'awaiting draw' once the draw date passes."
+            helpText="Competitions that are open for entries. After you have closed them, they move to ‘Awaiting Draw’."
           />
 
           <MetricCard
@@ -223,21 +232,31 @@ export default function CompetitionsPage() {
                 : 'warning'
             }
             icon={ShieldCheckIcon}
+            useIndicatorBadge={true}
             footer="Competitions with verified draws"
-            helpText="Each draw must be recorded with a cryptographic audit trail. This shows how many of your competitions have complete, verified draw records."
+            helpText="Shows how many of your competitions have fully verified draw audits. Every draw is recorded with a cryptographic audit trail."
           />
 
           <MetricCard
             title="Needs Attention"
-            value={dashboardStats?.competitions_needing_attention || 'None'}
-            status={dashboardStats?.competitions_needing_attention > 0 ? 'warning' : 'good'}
-            icon={dashboardStats?.competitions_needing_attention > 0 ? AlertTriangle : CheckCircle2}
+            value={attentionSummary?.competitions_needing_attention ?? 'None'}
+            status={
+              attentionSummary && attentionSummary.competitions_needing_attention > 0
+                ? 'warning'
+                : 'good'
+            }
+            icon={
+              attentionSummary && attentionSummary.competitions_needing_attention > 0
+                ? AlertTriangle
+                : CheckCircle2
+            }
             footer={
-              dashboardStats?.competitions_needing_attention > 0
-                ? `${dashboardStats?.total_attention_issues} issues to resolve`
+              attentionSummary && attentionSummary.competitions_needing_attention > 0
+                ? `${attentionSummary.total_issues} issues to resolve`
                 : 'All competitions healthy'
             }
-            helpText="Competitions with overdue draws, unresolved complaints, or data issues."
+            useIndicatorBadge={true}
+            helpText="Competitions that need attention — overdue draws, open complaints, or missing data."
           />
         </div>
 
@@ -362,13 +381,24 @@ export default function CompetitionsPage() {
                     </>
                   ) : (
                     <>
-                      <h3 className="text-lg font-medium mb-2 text-foreground">No competitions found</h3>
+                      <h3 className="text-lg font-medium mb-2 text-foreground">Ready to run your first competition?</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Create your first competition via the API to get started
+                          Create your first competition using the CAFAAS API. Once it's live, we'll automatically track entries, run secure draws, and generate tamper-proof audit records
                       </p>
-                      <Link href="/docs">
-                        <Button variant="outline">View API Documentation</Button>
-                      </Link>
+                        <div className="flex gap-3 justify-center">
+                            <Button asChild>
+                                <a href="/docs/api/competitions/create" target="_blank" rel="noopener noreferrer">
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    View API Example
+                                </a>
+                            </Button>
+                            <Button variant="outline" asChild>
+                                <Link href="/operator/api-keys">
+                                    <Key className="mr-2 h-4 w-4" />
+                                    Get Your API Key
+                                </Link>
+                            </Button>
+                        </div>
                     </>
                   )}
                 </div>

@@ -17,6 +17,7 @@ import {IndicatorBadge} from "@/components/ui/indicator-badge";
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
+import {dateFormatters} from "@/lib/date-utils";
 
 export default function ApiKeysPage() {
   const { isReady, handleLogout } = useOperatorAuth();
@@ -292,11 +293,7 @@ export default function ApiKeysPage() {
                                               <TableCell>
                                                   {apiKey.last_used_at ? (
                                                       <div>
-                                                          {new Date(apiKey.last_used_at).toLocaleDateString('en-GB', {
-                                                              day: '2-digit',
-                                                              month: 'short',
-                                                              year: 'numeric',
-                                                          })}
+                                                          {dateFormatters.shortDateTime(apiKey.last_used_at)}
                                                       </div>
                                                   ) : (
                                                       <span>Never</span>
@@ -304,11 +301,7 @@ export default function ApiKeysPage() {
                                               </TableCell>
                                               <TableCell>
                                                   <div>
-                                                      {new Date(apiKey.created_at).toLocaleDateString('en-GB', {
-                                                          day: '2-digit',
-                                                          month: 'short',
-                                                          year: 'numeric',
-                                                      })}
+                                                      {dateFormatters.shortDateTime(apiKey.created_at)}
                                                   </div>
                                               </TableCell>
                                               <TableCell>

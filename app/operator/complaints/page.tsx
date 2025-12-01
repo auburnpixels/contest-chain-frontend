@@ -21,6 +21,7 @@ import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { MetricCard } from '@/components/metric-card';
 import { Clock, CheckCircle2 } from 'lucide-react';
+import {dateFormatters} from "@/lib/date-utils";
 
 export default function OperatorComplaintsPage() {
   const router = useRouter();
@@ -366,11 +367,7 @@ export default function OperatorComplaintsPage() {
                               {getComplaintStatusBadge(complaint)}
                             </TableCell>
                             <TableCell className="text-sm text-muted-foreground">
-                              {new Date(complaint.created_at).toLocaleDateString('en-GB', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric'
-                              })}
+                                {dateFormatters.shortDateTime(complaint.created_at)}
                             </TableCell>
                             <TableCell className="text-right">
                               <OperatorActionsMenu
@@ -453,7 +450,9 @@ export default function OperatorComplaintsPage() {
 
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-1">Submitted:</p>
-                <p className="text-sm">{new Date(selectedComplaint.created_at).toLocaleString()}</p>
+                <p className="text-sm">
+                    {dateFormatters.shortDateTime(selectedComplaint.created_at)}
+                </p>
               </div>
 
               {selectedComplaint.status === 'pending' && (

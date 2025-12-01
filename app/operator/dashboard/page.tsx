@@ -88,6 +88,7 @@ export default function OperatorDashboardPage() {
                 user: operatorData.user,
                 operator: operatorData.operator,
                 compliance: operatorData.compliance,
+                attention: operatorData.attention,
                 recent_competitions: operatorData.recent_competitions || allCompetitions.slice(0, 5),
                 stats: {
                     // Use backend stats as base
@@ -180,12 +181,13 @@ export default function OperatorDashboardPage() {
                                     ? 'critical'
                                     : 'warning'
                         }
+                        useIndicatorBadge={true}
                         footer={
                             dashboardData?.attention?.competitions_needing_attention && dashboardData.attention.competitions_needing_attention > 0
                                 ? `${dashboardData.attention.total_issues || 0} total ${(dashboardData.attention.total_issues || 0) === 1 ? 'issue' : 'issues'}`
                                 : `All ${dashboardData?.attention?.total_competitions || 0} competitions healthy`
                         }
-                        helpText="Shows competitions with overdue draws, unresolved complaints, or missing audits"
+                        helpText="Displays competitions that need attention — such as overdue draws, open complaints, or missing audit records."
                     />
 
                     {/* Chain Integrity Status */}
@@ -200,9 +202,10 @@ export default function OperatorDashboardPage() {
                                         ? 'Building...'
                                         : 'Verifying...'
                         }
+                        useIndicatorBadge={true}
                         status={chainIntegrity?.chain_status === 'valid' ? 'good' : chainIntegrity?.chain_status === 'invalid' ? 'critical' : 'neutral'}
                         footer={`${chainIntegrity?.verified_events || 0} of ${chainIntegrity?.total_events || 0} events verified`}
-                        helpText="Confirms your competition's audit records are securely linked and can't be changed. This ensures your draw results remain trustworthy."
+                        helpText="Verifies that your competition's audit records are securely chained and tamper-proof, ensuring your draw results stay trustworthy."
                     />
 
                     {/* Active Competitions */}
@@ -211,7 +214,7 @@ export default function OperatorDashboardPage() {
                         value={dashboardData?.stats?.active_competitions || 0}
                         status="neutral"
                         footer={`${dashboardData?.stats?.total_competitions || 0} total competitions`}
-                        helpText="Competitions currently accepting entries. Once the draw date passes, they move to 'awaiting draw' status."
+                        helpText="Competitions that are open for entries. Once you close the competition, they automatically switch to ‘Awaiting Draw'."
                     />
 
                     {/* Pending Complaints */}
@@ -220,7 +223,8 @@ export default function OperatorDashboardPage() {
                         value={dashboardData?.stats?.pending_complaints || 0}
                         status={(dashboardData?.stats?.pending_complaints || 0) > 0 ? 'warning' : 'good'}
                         footer="Requiring response"
-                        helpText="Customer complaints that haven't been resolved yet. Responding quickly helps maintain trust and regulatory compliance."
+                        useIndicatorBadge={true}
+                        helpText="Unresolved customer complaints. Addressing these promptly helps strengthen trust and support compliance."
                     />
 
                     {/* Total Entries */}
@@ -229,7 +233,7 @@ export default function OperatorDashboardPage() {
                         value={(dashboardData?.stats?.total_entries || 0).toLocaleString()}
                         status="neutral"
                         footer="Across all competitions"
-                        helpText="Total number of entries submitted across all your competitions. This includes both paid and free entries."
+                        helpText="The total number of entries submitted across all your competitions — including both paid and free entries."
                     />
 
                     {/* Draws This Month */}
@@ -238,7 +242,7 @@ export default function OperatorDashboardPage() {
                         value={dashboardData?.stats?.draws_this_month || 0}
                         status="neutral"
                         footer="Completed successfully"
-                        helpText="Number of cryptographically-secure draws completed this month. Each draw generates a tamper-proof audit record."
+                        helpText="Shows how many secure draws you've completed this month. Each draw creates a tamper-proof audit record."
                     />
                 </div>
 
@@ -266,10 +270,9 @@ export default function OperatorDashboardPage() {
                         <CardContent>
                             {competitions.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                                    <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
                                     <h3 className="text-xl font-semibold mb-2">Ready to run your first competition?</h3>
                                     <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
-                                        Create your first competition via the CAFAAS API, then we'll automatically track entries, run cryptographically-secure draws, and generate tamper-proof audits.
+                                        Create your first competition using the CAFAAS API. Once it's live, we'll automatically track entries, run secure draws, and generate tamper-proof audit records
                                     </p>
                                     <div className="flex gap-3 justify-center">
                                         <Button asChild>

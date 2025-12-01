@@ -36,6 +36,7 @@ import { Eye } from 'lucide-react';
 import { useDialog } from '@/hooks/useDialog';
 import { MetricCard } from '@/components/metric-card';
 import { Calendar } from 'lucide-react';
+import {dateFormatters} from "@/lib/date-utils";
 
 // Format chain position with commas
 const formatChainPosition = (sequence: number): string => {
@@ -272,6 +273,7 @@ export default function OperatorDrawsPage() {
                     : 'neutral'
             }
             icon={ShieldCheck}
+            useIndicatorBadge={true}
             footer="With valid signatures"
           />
 
@@ -382,13 +384,7 @@ export default function OperatorDrawsPage() {
                           </TableCell>
 
                           <TableCell className="text-sm">
-                              {new Date(audit.drawn_at_utc).toLocaleDateString('en-GB', {
-                                  day: '2-digit',
-                                  month: 'short',
-                                  year: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                              })}
+                              {dateFormatters.shortDateTime(audit.drawn_at_utc)}
                           </TableCell>
 
                         <TableCell>

@@ -817,7 +817,7 @@ export default function EventsPage() {
                   <div>
                     <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Timestamp</label>
                     <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
-                      {new Date(selectedEvent.created_at).toLocaleString()}
+                        {dateFormatters.shortDateTime(selectedEvent.created_at)}
                     </p>
                   </div>
                   {selectedEvent.ip_address && (
@@ -908,7 +908,7 @@ export default function EventsPage() {
                       </div>
                     )}
                     <span className="text-sm text-muted-foreground">
-                      Verified at {new Date(chainStatus.verified_at).toLocaleString()}
+                        Verified at {dateFormatters.shortDateTime(chainStatus.verified_at)}
                     </span>
                   </div>
                 </div>

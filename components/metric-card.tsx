@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/info-tooltip';
+import {IndicatorBadge} from "@/components/ui/indicator-badge";
 
 interface MetricCardProps {
   title: string;
@@ -14,6 +15,7 @@ interface MetricCardProps {
   footer?: string;
   badge?: string;
   helpText?: string;
+    useIndicatorBadge?: boolean;
   className?: string;
 }
 
@@ -25,6 +27,7 @@ export function MetricCard({
   footer,
   badge,
   helpText,
+    useIndicatorBadge,
   className,
 }: MetricCardProps) {
   // Status color mappings
@@ -41,6 +44,13 @@ export function MetricCard({
     critical: 'bg-red-50 dark:bg-red-950/20',
     neutral: 'bg-muted/50',
   };
+
+    const indicatorBadgeColor = {
+        good: 'green',
+        warning: 'yellow',
+        critical: 'red',
+        neutral: 'gray',
+    };
 
   const getBadgeVariant = () => {
     switch (status) {
@@ -69,9 +79,15 @@ export function MetricCard({
             <span>{title}</span>
             {helpText && <InfoTooltip>{helpText}</InfoTooltip>}
         </CardDescription>
-          <CardTitle className={cn('text-2xl', statusColors[status])}>
-              {value}
-          </CardTitle>
+          {useIndicatorBadge ? (
+              <CardTitle>
+                  <IndicatorBadge color={indicatorBadgeColor[status]} text={value} size="xl" className="text-4xl" />
+              </CardTitle>
+          ) : (
+              <CardTitle className={cn('text-2xl', statusColors[status])}>
+                  {value}
+              </CardTitle>
+          )}
       </CardHeader>
 
       {(footer || badge) && (

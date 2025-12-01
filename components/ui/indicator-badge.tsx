@@ -35,22 +35,41 @@ const indicatorBadgeVariants = cva(
   }
 )
 
+const indicatorBadgeSizes = cva(
+    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs text-muted-foreground transition-colors border",
+    {
+        variants: {
+            size: {
+                xs: "text-xs",
+                lg: "text-lg",
+                xl: "text-xl",
+            }
+        },
+        defaultVariants: {
+            size: "xs",
+        },
+
+    }
+)
+
 export interface IndicatorBadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof indicatorBadgeVariants> {
   text: string
   color?: "green" | "yellow" | "blue" | "red" | "white" | "gray" | "purple" | "orange"
+    size: 'xs' | 'lg' | 'xl'
 }
 
 function IndicatorBadge({ 
   className, 
   color, 
   text,
+  size = 'xs',
   ...props
 }: IndicatorBadgeProps) {
   return (
     <div 
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 p-0.5 text-xs text-muted-foreground transition-colors border"
+      className={cn(indicatorBadgeSizes({ size }))}
       {...props}
     >
       <div className={cn(indicatorBadgeVariants({ color }), className)} >

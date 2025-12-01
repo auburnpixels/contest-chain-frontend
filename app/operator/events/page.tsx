@@ -23,6 +23,7 @@ import { useDialog } from '@/hooks/useDialog';
 import { EventDetailsDialog, DrawEvent } from '@/components/operator/event-details-dialog';
 import { MetricCard } from '@/components/metric-card';
 import { ShieldCheck } from 'lucide-react';
+import {dateFormatters} from "@/lib/date-utils";
 
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
@@ -450,6 +451,7 @@ export default function EventsPage() {
               value={chainIntegrity?.chain_status === 'valid' ? '100% Verified' : chainIntegrity?.chain_status === 'invalid' ? 'Invalid' : 'Verifying...'}
               status={chainIntegrity?.chain_status === 'valid' ? 'good' : chainIntegrity?.chain_status === 'invalid' ? 'critical' : 'neutral'}
               icon={ShieldCheck}
+              useIndicatorBadge={true}
               footer={`${chainIntegrity?.verified_events || 0} of ${chainIntegrity?.total_events || 0} events verified`}
             />
           </div>
@@ -632,7 +634,7 @@ export default function EventsPage() {
                                                       </Badge>
                                                   </TableCell>
                                                   <TableCell>
-                                                      {new Date(event.created_at).toLocaleString()}
+                                                      {dateFormatters.shortDateTime(event.created_at)}
                                                   </TableCell>
                                                   <TableCell>
                                                       <IndicatorBadge
@@ -712,7 +714,7 @@ export default function EventsPage() {
                       </div>
                     )}
                     <span className="text-sm text-muted-foreground">
-                      Verified at {new Date(chainStatus.verified_at).toLocaleString()}
+                        Verified at {dateFormatters.shortDateTime(chainStatus.verified_at)}
                     </span>
                   </div>
                 </div>
