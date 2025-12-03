@@ -1,4 +1,5 @@
 import { API_BASE_URL, API_TIMEOUT } from '../config';
+import type { MetricResponse } from '@/types/metrics';
 
 export interface ApiError {
   code: string;
@@ -396,6 +397,16 @@ export const authApi = {
  */
 export const operatorApi = {
   getDashboard: () => apiClient.get<any>('/internal/operator/me'),
+
+  // Metric endpoints
+  getMetrics: {
+    attention: () => apiClient.get<MetricResponse>('/internal/operator/metrics/attention'),
+    chainIntegrity: () => apiClient.get<MetricResponse>('/internal/operator/metrics/chain-integrity'),
+    competitions: () => apiClient.get<MetricResponse>('/internal/operator/metrics/competitions'),
+    complaints: () => apiClient.get<MetricResponse>('/internal/operator/metrics/complaints'),
+    entries: () => apiClient.get<MetricResponse>('/internal/operator/metrics/entries'),
+    draws: () => apiClient.get<MetricResponse>('/internal/operator/metrics/draws'),
+  },
 
   updateDetails: (name: string, url?: string) =>
     apiClient.put<any>('/internal/operator/details', { name, url }),

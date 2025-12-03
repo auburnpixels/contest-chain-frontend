@@ -179,7 +179,7 @@ export default function PublicCompetitionPage() {
                   <div className="flex items-center gap-3">
                     <Calendar className="h-8 w-8 text-brand-cobalt" />
                     <div>
-                      <p className="text-sm font-semibold">Draw Date</p>
+                      <p className="text-sm font-semibold">Draw At</p>
                       <p className="text-xs text-muted-foreground">
                         {comp.draw_at ? dateFormatters.shortDate(comp.draw_at) : 'TBD'}
                       </p>
@@ -394,7 +394,7 @@ export default function PublicCompetitionPage() {
                 </div>
                 {comp.draw_at && (
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Draw Date</span>
+                    <span className="text-muted-foreground">Draw At</span>
                     <span>{dateFormatters.shortDateTime(comp.draw_at)}</span>
                   </div>
                 )}

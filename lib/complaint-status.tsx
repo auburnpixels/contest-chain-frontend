@@ -7,8 +7,8 @@ export interface Complaint {
   id: string;
   competition?: string;
   competition_id?: string;
-  reporter_name?: string;
-  reporter_email?: string;
+  name?: string;
+  email?: string;
   category?: string;
   message?: string;
   status: string;

@@ -20,8 +20,11 @@ import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { MetricCard } from '@/components/metric-card';
+import { AsyncMetricCard } from '@/components/async-metric-card';
 import { Clock, CheckCircle2 } from 'lucide-react';
+import type { MetricResponse } from '@/types/metrics';
 import {dateFormatters} from "@/lib/date-utils";
+import {Separator} from "@/components/ui/separator";
 
 export default function OperatorComplaintsPage() {
   const router = useRouter();
@@ -34,7 +37,6 @@ export default function OperatorComplaintsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [competitions, setCompetitions] = useState<any[]>([]);
-  const [dashboardStats, setDashboardStats] = useState<any>(null);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -117,7 +119,7 @@ export default function OperatorComplaintsPage() {
   const loadComplaints = async () => {
     setLoading(true);
     try {
-      const [dashboardData, complaintsData] = await Promise.all([
+      const [operatorData, complaintsData] = await Promise.all([
         operatorApi.getDashboard(),
         operatorApi.getComplaints({
           page,
@@ -127,9 +129,8 @@ export default function OperatorComplaintsPage() {
         }),
       ]);
       
-      setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
+      setOperatorName(operatorData?.operator?.name || operatorData?.user?.name || '');
       setComplaints(complaintsData.data || []);
-      setDashboardStats(dashboardData?.stats || null);
       
       // Update pagination data if available from API
       if (complaintsData.current_page !== undefined) {
@@ -198,7 +199,7 @@ export default function OperatorComplaintsPage() {
         onLogout={handleLogout}
       >
         <div className="space-y-8">
-            <DashboardHeader title="Complaints" tagline="These are consumer-submitted complaints via your CAFAAS public audit pages or API.">
+            <DashboardHeader title="Consumer Complaints">
                 <Badge variant="outline" className="px-3 py-1">
                     {getComplaintCountByStatus(complaints, 'pending')} Pending
                 </Badge>
@@ -206,42 +207,35 @@ export default function OperatorComplaintsPage() {
 
           {/* Metrics Cards - 3 cards */}
           <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
-            <MetricCard
+            <AsyncMetricCard
               title="Total complaints"
-              value={dashboardStats?.total_complaints || 0}
-              status={(dashboardStats?.pending_complaints || 0) > 5 ? 'warning' : 'neutral'}
+              fetchData={operatorApi.getMetrics.complaints}
               icon={MessageSquare}
-              footer={`${dashboardStats?.pending_complaints || 0} unresolved`}
+              useIndicatorBadge={true}
+              renderValue={(data) => data.metadata?.total_complaints || 0}
+              renderFooter={(data) => `${data.metadata?.pending_complaints || 0} unresolved`}
             />
 
-            <MetricCard
+            <AsyncMetricCard
               title="Response time"
-              value={
-                dashboardStats?.average_response_time_hours
-                  ? dashboardStats.average_response_time_hours < 24 
-                    ? `${Math.round(dashboardStats.average_response_time_hours)}h` 
-                    : `${Math.round(dashboardStats.average_response_time_hours / 24)}d`
-                  : 'N/A'
-              }
-              status={
-                dashboardStats?.average_response_time_hours
-                  ? dashboardStats.average_response_time_hours < 24 
-                    ? 'good' 
-                    : dashboardStats.average_response_time_hours < 48 
-                      ? 'warning' 
-                      : 'critical'
-                  : 'neutral'
-              }
+              fetchData={operatorApi.getMetrics.complaints}
               icon={Clock}
-              footer={`Average response time`}
+              useIndicatorBadge={true}
+              renderValue={(data) => {
+                const avgMinutes = data.metadata?.average_response_time_minutes;
+                if (!avgMinutes) return 'N/A';
+                return `${Math.round(avgMinutes)} minutes`;
+              }}
+              renderFooter={() => "Average response time"}
             />
 
-            <MetricCard
+            <AsyncMetricCard
               title="Resolved this month"
-              value={dashboardStats?.resolved_complaints_this_month || 0}
-              status="neutral"
+              fetchData={operatorApi.getMetrics.complaints}
               icon={CheckCircle2}
-              footer="This month"
+              useIndicatorBadge={true}
+              renderValue={(data) => data.metadata?.resolved_complaints_this_month || 0}
+              renderFooter={() => "This month"}
             />
           </div>
 
@@ -250,35 +244,9 @@ export default function OperatorComplaintsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="leading-none font-semibold !text-base">Filters</CardTitle>
-                <CardDescription className="text-muted-foreground text-sm">
-                  Filter complaints by status or competition
-                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="status" className="text-sm font-medium">
-                      Status
-                    </Label>
-                    <Select
-                      value={filters.status || 'all'}
-                      onValueChange={(value) => handleFilterChange('status', value)}
-                    >
-                      <SelectTrigger id="status" className="w-full">
-                        <SelectValue placeholder="All statuses" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All statuses</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="investigating">Investigating</SelectItem>
-                        <SelectItem value="resolved">Resolved</SelectItem>
-                        <SelectItem value="dismissed">Dismissed</SelectItem>
-                        <SelectItem value="escalated">Escalated</SelectItem>
-                        <SelectItem value="on_hold">On Hold</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
                   <div className="flex flex-col gap-1.5">
                     <Label htmlFor="competition" className="text-sm font-medium">
                       Competition
@@ -292,14 +260,35 @@ export default function OperatorComplaintsPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All competitions</SelectItem>
-                        {competitions.map((competition) => (
-                          <SelectItem key={competition.uuid} value={competition.uuid}>
+                        {competitions
+                          .filter((competition) => competition.uuid || competition.id)
+                          .map((competition) => (
+                          <SelectItem key={competition.uuid || competition.id} value={competition.uuid || competition.id}>
                             {competition.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
+
+                    <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="status" className="text-sm font-medium">
+                            Status
+                        </Label>
+                        <Select
+                            value={filters.status || 'all'}
+                            onValueChange={(value) => handleFilterChange('status', value)}
+                        >
+                            <SelectTrigger id="status" className="w-full">
+                                <SelectValue placeholder="All statuses" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All statuses</SelectItem>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="resolved">Resolved</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
 
                   <div className="space-y-2 flex items-end">
                     {hasActiveFilters && (
@@ -356,7 +345,7 @@ export default function OperatorComplaintsPage() {
                               {complaint.competition}
                             </TableCell>
                             <TableCell>
-                              {complaint.reporter_name}
+                              {complaint.name} ({complaint.email})
                             </TableCell>
                             <TableCell>
                               <Badge variant="outline">
@@ -395,7 +384,6 @@ export default function OperatorComplaintsPage() {
                   </>
                 ) : (
                   <div className="text-center py-12">
-                    <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                     <h3 className="text-lg font-medium mb-2 text-foreground">No complaints</h3>
                     <p className="text-sm text-muted-foreground">
                       {hasActiveFilters 
@@ -414,54 +402,54 @@ export default function OperatorComplaintsPage() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Complaint Details</DialogTitle>
-            <DialogDescription>
-              Full complaint information and resolution status
-            </DialogDescription>
+             <DialogTitle className="border-b pb-4">
+                Complaint details
+            </DialogTitle>
           </DialogHeader>
           {selectedComplaint && (
-            <div className="space-y-4">
+          <div className="space-y-4 text-sm">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Complaint ID:</p>
-                  <p className="text-sm font-semibold">#{selectedComplaint.id}</p>
-                </div>
-                <div>
+                  <div className="flex flex-col gap-1">
+                      <h3 className="text-sm font-medium text-muted-foreground">Competition</h3>
+                      {selectedComplaint.competition}
+                  </div>
+
+                  <div className="flex flex-col gap-1 items-start">
                   <p className="text-sm font-medium text-muted-foreground mb-1">Status:</p>
                   {getComplaintStatusBadge(selectedComplaint)}
                 </div>
               </div>
 
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Competition:</p>
-                <p className="text-sm font-semibold">{selectedComplaint.competition}</p>
-                <p className="text-xs text-muted-foreground font-mono">{selectedComplaint.competition_id}</p>
+              <Separator />
+
+              <div className="grid grid-cols-2 gap-4">
+
+                  <div className="flex flex-col gap-1">
+                      <h3 className="text-sm font-medium text-muted-foreground mb-2">User reference</h3>
+                      {selectedComplaint.name} ({selectedComplaint.email})
+                  </div>
+
+                  <div className="flex flex-col gap-1 items-start">
+                      <p className="text-sm font-medium text-muted-foreground mb-1">Category:</p>
+                      <Badge variant="outline">{formatComplaintCategory(selectedComplaint.category || '')}</Badge>
+                  </div>
               </div>
 
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Category:</p>
-                <Badge variant="secondary">{formatComplaintCategory(selectedComplaint.category || '')}</Badge>
+              <Separator />
+
+              <div className="grid grid-cols-2 gap-4">
+                  <div>
+                      <h3 className="text-sm font-medium text-muted-foreground mb-2">Created at</h3>
+                      {dateFormatters.shortDateTime(selectedComplaint.created_at)}
+                  </div>
+
+                  <div>
+                      <h3 className="text-sm font-medium text-muted-foreground mb-2">Resolved at</h3>
+                      {selectedComplaint.resolved_at ? dateFormatters.shortDateTime(selectedComplaint.resolved_at) : '-'}
+                  </div>
+
               </div>
 
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Description:</p>
-                <div className="text-sm bg-muted p-3 rounded">{selectedComplaint.message}</div>
-              </div>
-
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Submitted:</p>
-                <p className="text-sm">
-                    {dateFormatters.shortDateTime(selectedComplaint.created_at)}
-                </p>
-              </div>
-
-              {selectedComplaint.status === 'pending' && (
-                <div className="flex gap-2 pt-4">
-                  <Button className="flex-1 bg-blue-600 hover:bg-blue-500">
-                    Respond
-                  </Button>
-                </div>
-              )}
             </div>
           )}
         </DialogContent>

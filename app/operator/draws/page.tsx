@@ -35,7 +35,9 @@ import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { Eye } from 'lucide-react';
 import { useDialog } from '@/hooks/useDialog';
 import { MetricCard } from '@/components/metric-card';
+import { AsyncMetricCard } from '@/components/async-metric-card';
 import { Calendar } from 'lucide-react';
+import type { MetricResponse } from '@/types/metrics';
 import {dateFormatters} from "@/lib/date-utils";
 
 // Format chain position with commas
@@ -82,7 +84,6 @@ export default function OperatorDrawsPage() {
   const [pageSize, setPageSize] = useState(10);
   const [initialized, setInitialized] = useState(false);
   const dialog = useDialog<DrawAudit>();
-  const [dashboardStats, setDashboardStats] = useState<any>(null);
 
   // Filter options
   const [competitions, setCompetitions] = useState<any[]>([]);
@@ -125,7 +126,7 @@ export default function OperatorDrawsPage() {
     try {
       setLoading(true);
       console.log('[Draws] Fetching draw audits...');
-      const [auditsData, dashboardData, competitionsData] = await Promise.all([
+      const [auditsData, operatorData, competitionsData] = await Promise.all([
         operatorApi.getDrawAudits({ per_page: 1000 }),
         operatorApi.getDashboard(),
         operatorApi.getCompetitions({ per_page: 1000 }),
@@ -141,8 +142,7 @@ export default function OperatorDrawsPage() {
       
       setAllDrawAudits(sortedAudits);
       setCompetitions(competitionsData.data || []);
-      setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
-      setDashboardStats(dashboardData?.stats || null);
+      setOperatorName(operatorData?.operator?.name || operatorData?.user?.name || '');
       
       // Apply filters with the new data
       let filtered = [...sortedAudits];
@@ -246,43 +246,33 @@ export default function OperatorDrawsPage() {
 
         {/* Metrics Cards - 3 cards */}
         <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
-          <MetricCard
+          <AsyncMetricCard
             title="Total draws"
-            value={dashboardStats?.total_draws || 0}
-            status="neutral"
+            fetchData={operatorApi.getMetrics.draws}
             icon={Dices}
-            footer="All time"
+            renderValue={(data) => data.metadata?.total_draws || 0}
+            renderFooter={() => "All time"}
           />
 
-          <MetricCard
+          <AsyncMetricCard
             title="Chain verified"
-            value={
-              dashboardStats?.total_draws > 0
-                ? `${dashboardStats.draws_with_valid_signatures || 0} of ${dashboardStats.total_draws}`
-                : '0 of 0'
-            }
-            status={
-              dashboardStats?.total_draws > 0 && 
-              (dashboardStats.draws_with_valid_signatures / dashboardStats.total_draws) >= 0.95
-                ? 'good'
-                : dashboardStats?.total_draws > 0 && 
-                  (dashboardStats.draws_with_valid_signatures / dashboardStats.total_draws) >= 0.8
-                  ? 'warning'
-                  : dashboardStats?.total_draws > 0
-                    ? 'critical'
-                    : 'neutral'
-            }
+            fetchData={operatorApi.getMetrics.draws}
             icon={ShieldCheck}
             useIndicatorBadge={true}
-            footer="With valid signatures"
+            renderValue={(data) => {
+              const total = data.metadata?.total_draws || 0;
+              const verified = data.metadata?.draws_with_valid_signatures || 0;
+              return total > 0 ? `${verified} of ${total}` : '0 of 0';
+            }}
+            renderFooter={() => "With valid signatures"}
           />
 
-          <MetricCard
+          <AsyncMetricCard
             title="Recent draws (7 days)"
-            value={dashboardStats?.draws_last_7_days || 0}
-            status="neutral"
+            fetchData={operatorApi.getMetrics.draws}
             icon={Calendar}
-            footer="Last 7 days"
+            renderValue={(data) => data.metadata?.draws_last_7_days || 0}
+            renderFooter={() => "Last 7 days"}
           />
         </div>
 
@@ -354,7 +344,7 @@ export default function OperatorDrawsPage() {
                           <TableHead>Prize</TableHead>
                           <TableHead>Draw Date</TableHead>
                           <TableHead>Entries</TableHead>
-                          <TableHead>Winner</TableHead>
+                          <TableHead>Winning ticket</TableHead>
                           <TableHead>Integrity</TableHead>
                           <TableHead></TableHead>
                       </TableRow>
@@ -426,15 +416,13 @@ export default function OperatorDrawsPage() {
               </>
               ) : (
                 <div className="text-center py-12">
-                  <Dices className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
                   <h3 className="text-xl font-semibold mb-2">No draw audits yet</h3>
                   <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
-                    Draw audits are cryptographic proofs of fair, tamper-proof draws. They'll appear here automatically once you run draws for your competitions via the API.
+                      Draw audits are cryptographic proofs of fair, tamper-proof draws. They’ll appear here automatically when you run draws through the API.
                   </p>
                   <div className="flex gap-3 justify-center">
                     <Button variant="outline" asChild>
                       <a href="/docs/api/draws" target="_blank" rel="noopener noreferrer">
-                        <FileText className="mr-2 h-4 w-4" />
                         How to Run a Draw
                       </a>
                     </Button>

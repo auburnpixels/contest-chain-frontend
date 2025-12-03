@@ -21,6 +21,12 @@ export interface AttentionSummary {
  */
 export function getCompetitionAttentionItems(competition: any): AttentionIssue[] {
   const items: AttentionIssue[] = [];
+  const drawAuditsCount = competition.draw_audits_count ?? 0;
+  const entriesCount = competition.entries_count ?? competition.tickets_count ?? 0;
+
+  if (entriesCount === 0) {
+    return [];
+  }
 
   // Critical: Draw overdue
   if (competition.status === 'awaiting_draw' && competition.draw_at) {
@@ -47,7 +53,7 @@ export function getCompetitionAttentionItems(competition: any): AttentionIssue[]
   }
 
   // Critical: Missing audit after completion
-  if (competition.status === 'completed' && competition.draw_audits_count === 0) {
+  if (competition.status === 'completed' && drawAuditsCount === 0 && entriesCount > 0) {
     items.push({
       type: 'critical',
       message: 'Draw completed but no audit recorded',
@@ -56,7 +62,7 @@ export function getCompetitionAttentionItems(competition: any): AttentionIssue[]
   }
 
   // Warning: No entries before draw
-  if (competition.status === 'awaiting_draw' && competition.entries_count === 0) {
+  if (competition.status === 'awaiting_draw' && entriesCount === 0) {
     items.push({
       type: 'warning',
       message: 'Cannot draw with zero entries',

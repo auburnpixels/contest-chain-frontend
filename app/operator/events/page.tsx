@@ -24,6 +24,7 @@ import { EventDetailsDialog, DrawEvent } from '@/components/operator/event-detai
 import { MetricCard } from '@/components/metric-card';
 import { ShieldCheck } from 'lucide-react';
 import {dateFormatters} from "@/lib/date-utils";
+import {AsyncMetricCard} from "@/components/async-metric-card";
 
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
@@ -36,6 +37,7 @@ const getEventDisplayName = (eventType: string): string => {
     'competition.published': 'Competition Published',
     'competition.closed': 'Competition Closed',
     'competition.updated': 'Competition Updated',
+    'complaint.resolved': 'Complaint Resolved',
     'entry.created': 'Entry Added',
     'entry.deleted': 'Entry Removed',
     'draw.started': 'Draw Started',
@@ -43,6 +45,7 @@ const getEventDisplayName = (eventType: string): string => {
     'draw.seed_generated': 'Draw Seed Generated',
     'draw.randomization_run': 'Randomization Run',
     'draw.audit_created': 'Draw Audit Created',
+      'draw.skipped_no_entries': 'Draw Skipped No Entries',
     'complaint.submitted': 'Complaint Submitted',
     'prize.created': 'Prize Created',
     'prize.deleted': 'Prize Deleted',
@@ -103,7 +106,7 @@ export default function EventsPage() {
   useEffect(() => {
     if (searchParams) {
       const urlPage = parseInt(searchParams.get('page') || '1');
-      const urlPageSize = parseInt(searchParams.get('pageSize') || '25');
+      const urlPageSize = parseInt(searchParams.get('per_page') || '25');
       const urlFilters = {
         event_type: searchParams.get('event') || '',
         competition_id: searchParams.get('competition') || '',
@@ -169,7 +172,6 @@ export default function EventsPage() {
       const eventsData = await operatorApi.getDrawEvents(params);
 
       const events = eventsData.data || [];
-      const paginationData = eventsData.pagination || {};
       
       // Enrich events with competition info if available
       const enrichedEvents = events.map((event: DrawEvent) => ({
@@ -179,7 +181,19 @@ export default function EventsPage() {
       }));
 
       setEvents(enrichedEvents);
-      setPagination(paginationData);
+      
+      // Update pagination data if available from API
+      if (eventsData.current_page !== undefined) {
+        setPagination({
+          current_page: eventsData.current_page,
+          per_page: eventsData.per_page,
+          total: eventsData.total,
+          last_page: eventsData.last_page,
+          from: eventsData.from,
+          to: eventsData.to,
+        });
+      }
+      
       setLoading(false);
     } catch (error: any) {
       console.error('[Events] Failed to load events:', error);
@@ -193,7 +207,7 @@ export default function EventsPage() {
   const updateURL = () => {
     const params = new URLSearchParams();
     if (page > 1) params.set('page', page.toString());
-    if (pageSize !== 25) params.set('pageSize', pageSize.toString());
+    if (pageSize !== 25) params.set('per_page', pageSize.toString());
     if (filters.event_type) params.set('event', filters.event_type);
     if (filters.competition_id) params.set('competition', filters.competition_id);
     if (filters.actor_type) params.set('actor', filters.actor_type);
@@ -446,14 +460,24 @@ export default function EventsPage() {
               footer="All time"
             />
 
-            <MetricCard
-              title="Chain integrity"
-              value={chainIntegrity?.chain_status === 'valid' ? '100% Verified' : chainIntegrity?.chain_status === 'invalid' ? 'Invalid' : 'Verifying...'}
-              status={chainIntegrity?.chain_status === 'valid' ? 'good' : chainIntegrity?.chain_status === 'invalid' ? 'critical' : 'neutral'}
-              icon={ShieldCheck}
-              useIndicatorBadge={true}
-              footer={`${chainIntegrity?.verified_events || 0} of ${chainIntegrity?.total_events || 0} events verified`}
-            />
+              <AsyncMetricCard
+                  title="Chain integrity status"
+                  fetchData={operatorApi.getMetrics.chainIntegrity}
+                  useIndicatorBadge={true}
+                  helpText="Verifies that your competition's audit records are securely chained and tamper-proof, ensuring your draw results stay trustworthy."
+                  renderValue={(data) => {
+                      const chainStatus = data.metadata?.chain_status;
+                      if (chainStatus === 'valid') return 'Verified';
+                      if (chainStatus === 'invalid') return 'Invalid';
+                      if (chainStatus === 'building') return 'Building...';
+                      return 'Verifying...';
+                  }}
+                  renderFooter={(data) => {
+                      const verified = data.metadata?.verified_events || 0;
+                      const total = Number(data.metadata?.total_events || 0).toLocaleString();
+                      return `${verified} of ${total} events verified`;
+                  }}
+              />
           </div>
 
           <div className="px-4 lg:px-6">
@@ -673,7 +697,7 @@ export default function EventsPage() {
                           <div className="text-center py-12">
                               <h3 className="text-lg font-medium mb-2 text-foreground">No events found</h3>
                               <p className="text-sm text-muted-foreground">
-                                  {hasActiveFilters ? 'Try adjusting your filters' : 'Events will appear here once your competitions become active.'}
+                                  {hasActiveFilters ? 'Try adjusting your filters' : 'Events will appear here once you start creating competitions.'}
                               </p>
                           </div>
                       )}

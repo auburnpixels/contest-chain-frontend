@@ -339,19 +339,16 @@ export default function ApiKeysPage() {
                           </Table>
                       ) : (
                           <div className="text-center py-12">
-                              <Key className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
                               <h3 className="text-xl font-semibold mb-2">Create your first API key</h3>
                               <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
-                                  API keys let your applications securely connect to CAFAAS. Create one now to start managing competitions, entries, and draws programmatically.
+                                  API keys allow your systems to securely connect to CAFAAS. Create a key to start managing competitions, entries, and draws through your application.
                               </p>
                               <div className="flex gap-3 justify-center">
                                   <Button onClick={() => setIsCreateDialogOpen(true)}>
-                                      <Plus className="mr-2 h-4 w-4" />
                                       Create API Key
                                   </Button>
                                   <Button variant="outline" asChild>
                                       <a href="/docs/api" target="_blank" rel="noopener noreferrer">
-                                          <FileText className="mr-2 h-4 w-4" />
                                           API Documentation
                                       </a>
                                   </Button>

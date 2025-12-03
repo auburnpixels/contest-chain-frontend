@@ -42,7 +42,7 @@ export function CompetitionsTable({
             <div className="flex items-center">
               Status
               <InfoTooltip>
-                Competition lifecycle: Active (accepting entries) → Awaiting Draw (entries closed) → Drawn (winner selected) → Completed
+                Competition lifecycle: Active (accepting entries) → Awaiting Draw (entries closed) → Completed
               </InfoTooltip>
             </div>
           </TableHead>
@@ -99,7 +99,7 @@ export function CompetitionsTable({
               {getStatusIndicatorBadge(competition)}
             </TableCell>
               <TableCell>
-                  {competition.entries_count} <span className="text-muted-foreground">({competition.free_entries_count} free)</span>
+                  {Number(competition.entries_count).toLocaleString()} <span className="text-muted-foreground">({Number(competition.free_entries_count).toLocaleString()} free)</span>
               </TableCell>
             <TableCell>
               {competition.prizes?.length || 0}

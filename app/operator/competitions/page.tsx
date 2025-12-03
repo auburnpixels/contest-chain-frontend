@@ -31,7 +31,9 @@ import { DashboardLoading } from '@/components/dashboard-loading';
 import { useDialog } from '@/hooks/useDialog';
 import { handleApiError } from '@/lib/error-handler';
 import { MetricCard } from '@/components/metric-card';
+import { AsyncMetricCard } from '@/components/async-metric-card';
 import { CheckCircle2, ShieldCheck as ShieldCheckIcon, AlertTriangle } from 'lucide-react';
+import type { MetricResponse } from '@/types/metrics';
 
 type CompetitionData = OperatorCompetition;
 type AttentionSummary = {
@@ -51,8 +53,6 @@ export default function CompetitionsPage() {
   const [operatorName, setOperatorName] = useState('');
   const dialog = useDialog<CompetitionData>();
   const [initialized, setInitialized] = useState(false);
-  const [dashboardStats, setDashboardStats] = useState<any>(null);
-  const [attentionSummary, setAttentionSummary] = useState<AttentionSummary | null>(null);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -127,7 +127,7 @@ export default function CompetitionsPage() {
       if (filters.name) params.name = filters.name;
       if (filters.status) params.status = filters.status;
 
-      const [competitionsData, dashboardData] = await Promise.all([
+      const [competitionsData, operatorData] = await Promise.all([
         operatorApi.getCompetitions(params),
         operatorApi.getDashboard(),
       ]);
@@ -141,9 +141,7 @@ export default function CompetitionsPage() {
         from: competitionsData.from || 0,
         to: competitionsData.to || 0,
       });
-      setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
-      setDashboardStats(dashboardData?.stats || null);
-      setAttentionSummary(dashboardData?.attention || null);
+      setOperatorName(operatorData?.operator?.name || operatorData?.user?.name || '');
       setLoading(false);
     } catch (error: any) {
       handleApiError(error, handleLogout);
@@ -204,59 +202,52 @@ export default function CompetitionsPage() {
 
         {/* Metrics Cards - 4 cards */}
         <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard
+          <AsyncMetricCard
             title="Total competitions"
-            value={dashboardStats?.total_competitions || 0}
-            status="neutral"
+            fetchData={operatorApi.getMetrics.competitions}
             icon={Trophy}
-            footer="All time"
-            helpText="Total number of competitions you’ve created through the API — including active, completed, and closed."
+            helpText="Total number of competitions you've created through the API — including active, completed, and closed."
+            renderValue={(data) => data.metadata?.total_competitions || 0}
+            renderFooter={() => "All time"}
           />
 
-          <MetricCard
+          <AsyncMetricCard
             title="Active competitions"
-            value={dashboardStats?.active_competitions || 0}
-            status="neutral"
+            fetchData={operatorApi.getMetrics.competitions}
             icon={Trophy}
-            footer="Currently running"
-            helpText="Competitions that are open for entries. After you have closed them, they move to ‘Awaiting Draw’."
+            helpText="Competitions that are open for entries. After you have closed them, they move to 'Awaiting Draw'."
+            renderValue={(data) => data.metadata?.active_competitions || 0}
+            renderFooter={() => "Currently running"}
           />
 
-          <MetricCard
-            title="Draw Audits"
-            value={`${dashboardStats?.competitions_with_draw_audits || 0} of ${dashboardStats?.total_competitions || 0}`}
-            status={
-              dashboardStats?.total_competitions > 0 && 
-              (dashboardStats.competitions_with_draw_audits / dashboardStats.total_competitions) >= 0.8
-                ? 'good'
-                : 'warning'
-            }
+          <AsyncMetricCard
+            title="Draw audits"
+            fetchData={operatorApi.getMetrics.competitions}
             icon={ShieldCheckIcon}
             useIndicatorBadge={true}
-            footer="Competitions with verified draws"
-            helpText="Shows how many of your competitions have fully verified draw audits. Every draw is recorded with a cryptographic audit trail."
+            helpText="Shows how many competitions with at least one entry have verified draw audits. Every draw is recorded with a secure audit trail for complete transparency."
+            renderValue={(data) => {
+              const withAudits = data.metadata?.competitions_with_draw_audits || 0;
+              const total = data.metadata?.total_competitions_with_entries || 0;
+              return `${withAudits} of ${total}`;
+            }}
+            renderFooter={() => "Competitions with verified draws"}
           />
 
-          <MetricCard
-            title="Needs Attention"
-            value={attentionSummary?.competitions_needing_attention ?? 'None'}
-            status={
-              attentionSummary && attentionSummary.competitions_needing_attention > 0
-                ? 'warning'
-                : 'good'
-            }
-            icon={
-              attentionSummary && attentionSummary.competitions_needing_attention > 0
-                ? AlertTriangle
-                : CheckCircle2
-            }
-            footer={
-              attentionSummary && attentionSummary.competitions_needing_attention > 0
-                ? `${attentionSummary.total_issues} issues to resolve`
-                : 'All competitions healthy'
-            }
+          <AsyncMetricCard
+            title="Needs attention"
+            fetchData={operatorApi.getMetrics.attention}
+            icon={AlertTriangle}
             useIndicatorBadge={true}
             helpText="Competitions that need attention — overdue draws, open complaints, or missing data."
+            renderValue={(data) => data.metadata?.competitions_needing_attention || 'None'}
+            renderFooter={(data) => {
+              const needingAttention = data.metadata?.competitions_needing_attention || 0;
+              const totalIssues = data.metadata?.total_issues || 0;
+              return needingAttention > 0 
+                ? `${Number(totalIssues).toLocaleString()} issues to resolve`
+                : 'All competitions healthy';
+            }}
           />
         </div>
 
@@ -380,26 +371,24 @@ export default function CompetitionsPage() {
                       <Button variant="outline" onClick={handleClearFilters}>Clear Filters</Button>
                     </>
                   ) : (
-                    <>
+                    <div className="flex flex-col items-center">
                       <h3 className="text-lg font-medium mb-2 text-foreground">Ready to run your first competition?</h3>
-                      <p className="text-sm text-muted-foreground mb-4">
+                      <p className="text-sm text-muted-foreground mb-4 max-w-lg">
                           Create your first competition using the CAFAAS API. Once it's live, we'll automatically track entries, run secure draws, and generate tamper-proof audit records
                       </p>
                         <div className="flex gap-3 justify-center">
                             <Button asChild>
                                 <a href="/docs/api/competitions/create" target="_blank" rel="noopener noreferrer">
-                                    <FileText className="mr-2 h-4 w-4" />
                                     View API Example
                                 </a>
                             </Button>
                             <Button variant="outline" asChild>
                                 <Link href="/operator/api-keys">
-                                    <Key className="mr-2 h-4 w-4" />
                                     Get Your API Key
                                 </Link>
                             </Button>
                         </div>
-                    </>
+                    </div>
                   )}
                 </div>
               )}

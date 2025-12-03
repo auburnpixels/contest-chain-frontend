@@ -77,7 +77,7 @@ export function PaginationControls({
     <div className="flex items-center justify-between mt-6 pt-4 border-t">
       <div className="text-sm text-muted-foreground">
         {pagination.total > 0 
-          ? `Showing ${pagination.from} to ${pagination.to} of ${pagination.total} results`
+          ? `Showing ${Number(pagination.from).toLocaleString()} to ${Number(pagination.to).toLocaleString()} of ${Number(pagination.total).toLocaleString()} results`
           : 'No results'}
       </div>
 
@@ -122,7 +122,7 @@ export function PaginationControls({
               }
               return (
                 <Button
-                  key={pageNum}
+                  key={`page-${pageNum}`}
                   variant={page === pageNum ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => onPageChange(pageNum as number)}

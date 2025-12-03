@@ -30,34 +30,38 @@ interface EntriesTableProps {
   showCompetitionName?: boolean;
 }
 
-export function EntriesTable({ entries, showCompetitionName = false }: EntriesTableProps) {
+export function EntriesTable({ entries, showCompetitionName = true }: EntriesTableProps) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Ticket</TableHead>
-          {showCompetitionName && <TableHead>Competition</TableHead>}
+          <TableHead>External ID</TableHead>
+          <TableHead>User Reference</TableHead>
+            {showCompetitionName && <TableHead>Competition</TableHead>}
           <TableHead>Type</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Eligibility</TableHead>
           <TableHead>Issued At</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {entries.map((entry) => {
-          const isEligible = isEntryEligible(entry.is_free, entry.correct_answer || false, entry.deleted_at);
+          const isEligible = isEntryEligible(entry.is_free, entry.question_answered_correctly || false, entry.deleted_at);
           
           return (
             <TableRow key={entry.id}>
               <TableCell>
                 {entry.external_id}
               </TableCell>
-              {showCompetitionName && (
-                <TableCell className="max-w-[200px] truncate">
-                  {entry.competition?.name || 'Unknown'}
+                <TableCell>
+                    {entry.user_reference}
                 </TableCell>
-              )}
+                {showCompetitionName && (
+                    <TableCell className="max-w-[200px] truncate">
+                        {entry.competition?.name || 'Unknown'}
+                    </TableCell>
+                )}
               <TableCell>
-                <Badge variant={entry.is_free ? 'outline' : 'default'}>
+                <Badge variant="outline">
                   {entry.is_free ? 'Free' : 'Paid'}
                 </Badge>
               </TableCell>

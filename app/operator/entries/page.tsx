@@ -23,7 +23,9 @@ import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { handleApiError } from '@/lib/error-handler';
 import { MetricCard } from '@/components/metric-card';
+import { AsyncMetricCard } from '@/components/async-metric-card';
 import { CheckCircle2, XCircle, Ticket as TicketIcon } from 'lucide-react';
+import type { MetricResponse } from '@/types/metrics';
 
 interface Competition {
   id: string;
@@ -40,7 +42,6 @@ export default function EntriesPage() {
   const [operatorName, setOperatorName] = useState('');
   const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [initialized, setInitialized] = useState(false);
-  const [dashboardStats, setDashboardStats] = useState<any>(null);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -146,14 +147,13 @@ export default function EntriesPage() {
 
   const loadCompetitions = async () => {
     try {
-      const [competitionsData, dashboardData] = await Promise.all([
+      const [competitionsData, operatorData] = await Promise.all([
         operatorApi.getCompetitions({ per_page: 1000 }),
         operatorApi.getDashboard(),
       ]);
 
       setCompetitions(competitionsData.data || []);
-      setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
-      setDashboardStats(dashboardData?.stats || null);
+      setOperatorName(operatorData?.operator?.name || operatorData?.user?.name || '');
     } catch (error: any) {
       handleApiError(error, handleLogout);
     }
@@ -237,45 +237,35 @@ export default function EntriesPage() {
 
         {/* Metrics Cards - 3 cards */}
         <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
-          <MetricCard
+          <AsyncMetricCard
             title="Total entries"
-            value={(dashboardStats?.total_entries || 0).toLocaleString()}
-            status="neutral"
+            fetchData={operatorApi.getMetrics.entries}
             icon={TicketIcon}
-            footer="All competitions"
+            renderValue={(data) => {
+              const total = data.metadata?.total_entries || 0;
+              return total.toLocaleString();
+            }}
+            renderFooter={() => "All competitions"}
           />
 
-          <MetricCard
+          <AsyncMetricCard
             title="Entry eligibility"
-            value={
-              dashboardStats?.entry_eligibility_percentage
-                ? `${Math.round(dashboardStats.entry_eligibility_percentage)}%`
-                : 'N/A'
-            }
-            status={
-              dashboardStats?.entry_eligibility_percentage
-                ? dashboardStats.entry_eligibility_percentage >= 95
-                  ? 'good'
-                  : dashboardStats.entry_eligibility_percentage >= 90
-                    ? 'warning'
-                    : 'critical'
-                : 'neutral'
-            }
+            fetchData={operatorApi.getMetrics.entries}
             icon={CheckCircle2}
             useIndicatorBadge={true}
-            footer={`${dashboardStats?.valid_entries || 0} valid entries`}
+            renderValue={(data) => {
+              const pct = data.metadata?.entry_eligibility_percentage;
+              return pct ? `${Math.round(pct)}%` : 'N/A';
+            }}
+            renderFooter={(data) => `${data.metadata?.valid_entries || 0} valid entries`}
           />
 
-          <MetricCard
+          <AsyncMetricCard
             title="Voided entries"
-            value={dashboardStats?.voided_entries || 0}
-            status={
-              dashboardStats?.total_entries > 0 && (dashboardStats.voided_entries / dashboardStats.total_entries) > 0.05
-                ? 'warning'
-                : 'neutral'
-            }
+            fetchData={operatorApi.getMetrics.entries}
             icon={XCircle}
-            footer="Deleted or invalid"
+            renderValue={(data) => data.metadata?.voided_entries || 0}
+            renderFooter={() => "Deleted or invalid"}
           />
         </div>
 
@@ -287,6 +277,33 @@ export default function EntriesPage() {
               </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="external_id" className="text-sm font-medium">
+                          External ID
+                      </Label>
+                      <Input
+                          id="external_id"
+                          type="text"
+                          placeholder="Search by External ID..."
+                          value={filters.external_id}
+                          onChange={(e) => handleFilterChange('external_id', e.target.value)}
+                          className="w-full"
+                      />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="user_reference" className="text-sm font-medium">
+                          User Reference
+                      </Label>
+                      <Input
+                          id="user_reference"
+                          type="text"
+                          placeholder="Search by User Reference..."
+                          value={filters.user_reference}
+                          onChange={(e) => handleFilterChange('user_reference', e.target.value)}
+                          className="w-full"
+                      />
+                  </div>
               <div className="flex flex-col gap-1.5">
                   <Label htmlFor="competition_id" className="text-sm font-medium">
                     Competition
@@ -311,7 +328,7 @@ export default function EntriesPage() {
 
               <div className="flex flex-col gap-1.5">
                   <Label htmlFor="entry_type" className="text-sm font-medium">
-                    Entry Type
+                    Type
                   </Label>
                   <Select
                     value={filters.entry_type || 'all'}
@@ -343,37 +360,9 @@ export default function EntriesPage() {
                       <SelectItem value="all">All</SelectItem>
                       <SelectItem value="correct">Correct answer</SelectItem>
                       <SelectItem value="incorrect">Incorrect answer</SelectItem>
-                      <SelectItem value="deleted">Deleted</SelectItem>
+                      <SelectItem value="deleted">Voided</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-
-              <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="external_id" className="text-sm font-medium">
-                    External ID
-                  </Label>
-                  <Input
-                    id="external_id"
-                    type="text"
-                    placeholder="Search by External ID..."
-                    value={filters.external_id}
-                    onChange={(e) => handleFilterChange('external_id', e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-
-              <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="user_reference" className="text-sm font-medium">
-                    User Reference
-                  </Label>
-                  <Input
-                    id="user_reference"
-                    type="text"
-                    placeholder="Search by User Reference..."
-                    value={filters.user_reference}
-                    onChange={(e) => handleFilterChange('user_reference', e.target.value)}
-                    className="w-full"
-                  />
                 </div>
 
                 <div className="space-y-2 flex items-end">
@@ -439,15 +428,13 @@ export default function EntriesPage() {
                     </>
                   ) : (
                     <>
-                      <TicketIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
                       <h3 className="text-xl font-semibold mb-2">No entries yet</h3>
                       <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
-                        Entries are automatically recorded when users participate in your competitions via the API. Each entry is cryptographically logged for transparency and fairness.
+                          Entries are automatically recorded when users enter your competitions through the API. Each one is securely logged to ensure full transparency and fairness.
                       </p>
                       <div className="flex gap-3 justify-center">
                         <Button variant="outline" asChild>
                           <a href="/docs/api/entries" target="_blank" rel="noopener noreferrer">
-                            <FileText className="mr-2 h-4 w-4" />
                             How to Submit Entries
                           </a>
                         </Button>

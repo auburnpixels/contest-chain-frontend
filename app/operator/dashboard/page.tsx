@@ -22,8 +22,10 @@ import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { handleApiError } from '@/lib/error-handler';
 import { Activity, ShieldCheck, Trophy, TrendingUp, AlertTriangle, FileText, Download, CheckCircle2, Ticket, Info, Key } from 'lucide-react';
 import { MetricCard } from '@/components/metric-card';
+import { AsyncMetricCard } from '@/components/async-metric-card';
 import { exportToJSON } from '@/lib/export-utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import type { MetricResponse } from '@/types/metrics';
 
 interface DashboardData {
     user: any;
@@ -64,7 +66,6 @@ export default function OperatorDashboardPage() {
     const [selectedCompetition, setSelectedCompetition] = useState<CompetitionData | null>(null);
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [lastApiEvent, setLastApiEvent] = useState<string | null>(null);
-    const [verifying, setVerifying] = useState(false);
 
     useEffect(() => {
         if (isReady) {
@@ -77,30 +78,15 @@ export default function OperatorDashboardPage() {
         try {
             setLoading(true);
             
-            const [operatorData, competitionsData] = await Promise.all([
-                operatorApi.getDashboard(),
-                operatorApi.getCompetitions({ per_page: 5 }),
-            ]);
-            
-            const allCompetitions = competitionsData.data || competitionsData.competitions || [];
+            // Only load lightweight user/operator data and recent competitions
+            const operatorData = await operatorApi.getDashboard();
             
             setDashboardData({
                 user: operatorData.user,
                 operator: operatorData.operator,
-                compliance: operatorData.compliance,
-                attention: operatorData.attention,
-                recent_competitions: operatorData.recent_competitions || allCompetitions.slice(0, 5),
-                stats: {
-                    // Use backend stats as base
-                    ...operatorData.stats,
-                    // Override with calculated values where needed
-                    total_competitions: allCompetitions.length,
-                    active_competitions: allCompetitions.filter((c: any) => c.status === 'active').length,
-                    total_entries: allCompetitions.reduce((sum: number, c: any) => sum + (c.entries_count || 0), 0),
-                },
-                system: operatorData.system || {},
+                recent_competitions: operatorData.recent_competitions || [],
             });
-            setCompetitions(operatorData.recent_competitions || allCompetitions.slice(0, 5));
+            setCompetitions(operatorData.recent_competitions || []);
         } catch (error: any) {
             handleApiError(error, handleLogout);
         } finally {
@@ -124,31 +110,9 @@ export default function OperatorDashboardPage() {
         setViewDialogOpen(true);
     };
 
-    const handleRunVerification = async () => {
-        try {
-            setVerifying(true);
-            await operatorApi.verifyChain();
-            // Reload dashboard to show updated chain status
-            await loadDashboardData();
-        } catch (error: any) {
-            handleApiError(error, handleLogout);
-        } finally {
-            setVerifying(false);
-        }
-    };
-
-    const shouldShowVerifyButton = (chainData?: ChainIntegrityData): boolean => {
-        if (!chainData) return true;
-        if (chainData.chain_status === 'invalid') return true;
-        if ((chainData.verified_events ?? 0) < (chainData.total_events ?? 0)) return true;
-        return false;
-    };
-
     if (!isReady || loading) {
         return <DashboardLoading message="Loading dashboard..." />;
     }
-
-    const chainIntegrity = dashboardData?.system?.chain_integrity;
 
     return (
         <DashboardShell
@@ -171,77 +135,70 @@ export default function OperatorDashboardPage() {
                 {/* Top Metrics Grid - 6 cards */}
                 <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
                     {/* Competitions Needing Attention */}
-                    <MetricCard
-                        title="Competitions Needing Attention"
-                        value={dashboardData?.attention?.competitions_needing_attention || 'None'}
-                        status={
-                            !dashboardData?.attention?.competitions_needing_attention || dashboardData.attention.competitions_needing_attention === 0
-                                ? 'good'
-                                : (dashboardData.attention.critical_issues || 0) > 0
-                                    ? 'critical'
-                                    : 'warning'
-                        }
+                    <AsyncMetricCard
+                        title="Competitions needing attention"
+                        fetchData={operatorApi.getMetrics.attention}
                         useIndicatorBadge={true}
-                        footer={
-                            dashboardData?.attention?.competitions_needing_attention && dashboardData.attention.competitions_needing_attention > 0
-                                ? `${dashboardData.attention.total_issues || 0} total ${(dashboardData.attention.total_issues || 0) === 1 ? 'issue' : 'issues'}`
-                                : `All ${dashboardData?.attention?.total_competitions || 0} competitions healthy`
-                        }
                         helpText="Displays competitions that need attention — such as overdue draws, open complaints, or missing audit records."
+                        renderValue={(data) => data.value === 0 ? 'None' : data.value}
+                        renderFooter={(data) => {
+                            const needingAttention = data.metadata?.competitions_needing_attention || 0;
+                            const totalIssues = data.metadata?.total_issues || 0;
+                            const totalCompetitions = data.metadata?.total_competitions || 0;
+                            return needingAttention > 0
+                                ? `${Number(totalIssues || 0).toLocaleString()} total ${totalIssues === 1 ? 'issue' : 'issues'}`
+                                : `All ${totalCompetitions} competitions healthy`;
+                        }}
                     />
 
                     {/* Chain Integrity Status */}
-                    <MetricCard
+                    <AsyncMetricCard
                         title="Chain integrity status"
-                        value={
-                            chainIntegrity?.chain_status === 'valid' 
-                                ? 'Verified'
-                                : chainIntegrity?.chain_status === 'invalid' 
-                                    ? 'Invalid' 
-                                    : chainIntegrity?.chain_status === 'building'
-                                        ? 'Building...'
-                                        : 'Verifying...'
-                        }
+                        fetchData={operatorApi.getMetrics.chainIntegrity}
                         useIndicatorBadge={true}
-                        status={chainIntegrity?.chain_status === 'valid' ? 'good' : chainIntegrity?.chain_status === 'invalid' ? 'critical' : 'neutral'}
-                        footer={`${chainIntegrity?.verified_events || 0} of ${chainIntegrity?.total_events || 0} events verified`}
                         helpText="Verifies that your competition's audit records are securely chained and tamper-proof, ensuring your draw results stay trustworthy."
+                        renderValue={(data) => {
+                            const chainStatus = data.metadata?.chain_status;
+                            if (chainStatus === 'valid') return 'Verified';
+                            if (chainStatus === 'invalid') return 'Invalid';
+                            if (chainStatus === 'building') return 'Building...';
+                            return 'Verifying...';
+                        }}
+                        renderFooter={(data) => {
+                            const verified = data.metadata?.verified_events || 0;
+                            const total = Number(data.metadata?.total_events || 0).toLocaleString();
+                            return `${verified} of ${total} events verified`;
+                        }}
                     />
 
                     {/* Active Competitions */}
-                    <MetricCard
+                    <AsyncMetricCard
                         title="Active competitions"
-                        value={dashboardData?.stats?.active_competitions || 0}
-                        status="neutral"
-                        footer={`${dashboardData?.stats?.total_competitions || 0} total competitions`}
-                        helpText="Competitions that are open for entries. Once you close the competition, they automatically switch to ‘Awaiting Draw'."
+                        fetchData={operatorApi.getMetrics.competitions}
+                        helpText="Competitions that are open for entries. Once you close the competition, they automatically switch to 'Awaiting Draw'."
+                        renderFooter={(data) => `${Number(data.metadata?.total_competitions || 0).toLocaleString()} total competitions`}
                     />
 
                     {/* Pending Complaints */}
-                    <MetricCard
+                    <AsyncMetricCard
                         title="Pending complaints"
-                        value={dashboardData?.stats?.pending_complaints || 0}
-                        status={(dashboardData?.stats?.pending_complaints || 0) > 0 ? 'warning' : 'good'}
-                        footer="Requiring response"
+                        fetchData={operatorApi.getMetrics.complaints}
                         useIndicatorBadge={true}
                         helpText="Unresolved customer complaints. Addressing these promptly helps strengthen trust and support compliance."
                     />
 
                     {/* Total Entries */}
-                    <MetricCard
+                    <AsyncMetricCard
                         title="Total entries"
-                        value={(dashboardData?.stats?.total_entries || 0).toLocaleString()}
-                        status="neutral"
-                        footer="Across all competitions"
+                        fetchData={operatorApi.getMetrics.entries}
                         helpText="The total number of entries submitted across all your competitions — including both paid and free entries."
+                        renderValue={(data) => typeof data.value === 'number' ? data.value.toLocaleString() : data.value}
                     />
 
                     {/* Draws This Month */}
-                    <MetricCard
+                    <AsyncMetricCard
                         title="Draws this month"
-                        value={dashboardData?.stats?.draws_this_month || 0}
-                        status="neutral"
-                        footer="Completed successfully"
+                        fetchData={operatorApi.getMetrics.draws}
                         helpText="Shows how many secure draws you've completed this month. Each draw creates a tamper-proof audit record."
                     />
                 </div>
@@ -277,13 +234,11 @@ export default function OperatorDashboardPage() {
                                     <div className="flex gap-3 justify-center">
                                         <Button asChild>
                                             <a href="/docs/api/competitions/create" target="_blank" rel="noopener noreferrer">
-                                                <FileText className="mr-2 h-4 w-4" />
                                                 View API Example
                                             </a>
                                         </Button>
                                         <Button variant="outline" asChild>
                                             <Link href="/operator/api-keys">
-                                                <Key className="mr-2 h-4 w-4" />
                                                 Get Your API Key
                                             </Link>
                                         </Button>

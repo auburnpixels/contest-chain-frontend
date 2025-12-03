@@ -69,37 +69,37 @@ export function DrawAuditDetailsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Draw Audit Details</DialogTitle>
-          <DialogDescription>
-            Cryptographically verified draw information
-          </DialogDescription>
+            <DialogTitle className="border-b pb-4">
+              Draw audit details
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+          <div className="space-y-4 text-sm">
           {/* Chain Position */}
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">Chain Position</h3>
-            <Badge variant="outline" className="font-mono text-base">
-              {formatChainPosition(audit.sequence)}
-            </Badge>
+          <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1 items-start">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">ID</h3>
+                  <span className="text-muted-foreground">{audit.draw_id}</span>
+              </div>
+
+              <div className="flex flex-col gap-1 items-start">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Chain Position</h3>
+                  <Badge variant="outline" className="font-mono ">
+                      {formatChainPosition(audit.sequence)}
+                  </Badge>
+              </div>
           </div>
 
           <Separator />
 
           {/* Competition & Prize */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
+              <div className="flex flex-col gap-1 items-start">
               <h3 className="text-sm font-medium text-muted-foreground mb-2">Competition</h3>
-              <p className="text-sm font-medium">
-                {audit.competition?.name || 'N/A'}
-              </p>
-              {audit.competition?.external_id && (
-                <Badge variant="outline" className="mt-1">
-                  {audit.competition.external_id}
-                </Badge>
-              )}
+              <p className="text-sm font-medium">{audit.competition?.name || 'N/A'}</p>
             </div>
-            <div>
+
+              <div className="flex flex-col gap-1 items-start">
               <h3 className="text-sm font-medium text-muted-foreground mb-2">Prize</h3>
               <p className="text-sm font-medium">{audit.prize?.name || 'N/A'}</p>
             </div>
@@ -109,52 +109,38 @@ export function DrawAuditDetailsDialog({
 
           {/* Draw Information */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">Draw ID</h3>
-              <div className="flex items-center gap-2">
-                <p className="text-sm font-mono break-all">{audit.draw_id}</p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0"
-                  onClick={() => copyToClipboard(audit.draw_id, 'draw_id')}
-                >
-                  {copiedField === 'draw_id' ? (
-                    <Check className="h-3 w-3 text-green-500" />
-                  ) : (
-                    <Copy className="h-3 w-3" />
-                  )}
-                </Button>
+              <div className="flex flex-col gap-1 items-start">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Draw At</h3>
+                  <p className="text-sm">
+                      {new Date(audit.drawn_at_utc).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                      })}
+                  </p>
               </div>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">Draw Date</h3>
-              <p className="text-sm">
-                {new Date(audit.drawn_at_utc).toLocaleDateString('en-GB', {
-                  day: '2-digit',
-                  month: 'short',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </p>
-            </div>
+
+              <div className="flex flex-col gap-1 items-start">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Entries</h3>
+                  <p className="text-sm font-medium">{audit.total_entries.toLocaleString()}</p>
+              </div>
           </div>
 
           <Separator />
 
-          {/* Entries & Winner */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Entries</h3>
-              <p className="text-sm font-medium">{audit.total_entries.toLocaleString()}</p>
+              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1 items-start">
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">Winning ticket</h3>
+            <p className="text-sm font-mono break-all">{audit.selected_entry ? `${audit.selected_entry.external_id}` : 'N/A'}</p>
             </div>
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">Winner Entry</h3>
-              <p className="text-sm font-medium">
-                {audit.selected_entry ? `#${audit.selected_entry.number}` : 'N/A'}
-              </p>
-            </div>
+
+              <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Integrity Status</h3>
+                  <IndicatorBadge color="green" text="Verified" />
+              </div>
+
           </div>
 
           <Separator />
@@ -268,14 +254,6 @@ export function DrawAuditDetailsDialog({
                 </div>
               </div>
             )}
-          </div>
-
-          <Separator />
-
-          {/* Integrity Status */}
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">Integrity Status</h3>
-            <IndicatorBadge color="green" text="Verified" />
           </div>
         </div>
       </DialogContent>

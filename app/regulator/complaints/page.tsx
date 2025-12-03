@@ -205,9 +205,6 @@ export default function ComplaintsPage() {
           <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle>Filters</CardTitle>
-              <CardDescription className="mt-1">
-                Filter complaints by status or competition
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
