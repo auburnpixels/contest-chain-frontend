@@ -135,6 +135,32 @@ export interface PublicOperator {
   }>;
 }
 
+export interface DrawAuditDetail {
+  id: string;
+  sequence: number;
+  draw_id: string;
+  drawn_at_utc: string;
+  total_entries: number;
+  winning_ticket: string | null;
+  signature_hash: string;
+  previous_signature_hash: string | null;
+  pool_hash: string | null;
+  rng_seed_or_hash: string;
+  created_at: string;
+  competition: {
+    id: string;
+    name: string;
+    external_id?: string;
+  } | null;
+  operator: {
+    uuid: string | null;
+    name: string;
+    slug: string;
+    url: string | null;
+  } | null;
+  prize_name: string | null;
+}
+
 /**
  * API client for CaaS platform
  */
@@ -559,6 +585,9 @@ export const regulatorApi = {
 export const publicApi = {
   getAudit: (uuid: string) =>
     fetch(`${API_BASE_URL}/api/v1/raffles/${uuid}/audit`).then((r) => r.json()),
+
+  getDrawAudit: (uuid: string) =>
+    fetch(`${API_BASE_URL}/api/public/draw-audits/${uuid}`).then((r) => r.json()),
 
   getStats: (uuid: string) =>
     fetch(`${API_BASE_URL}/api/v1/raffles/${uuid}/entries/stats`).then((r) =>
