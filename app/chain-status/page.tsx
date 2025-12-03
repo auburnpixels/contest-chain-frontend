@@ -4,8 +4,8 @@ import { Metadata } from 'next';
 import ChainStatusClient from '@/components/chain-status-client'; // We will create this
 
 export const metadata: Metadata = {
-  title: 'Chain Integrity Status - Cafaas',
-  description: 'Real-time verification of the Cafaas cryptographic chain. View system health and audit logs.',
+  title: 'Draw Audit Integrity - Cafaas',
+  description: 'Real-time verification of all competition draw audits. View the cryptographic chain status of public draw results.',
 };
 
 export default function ChainStatusPage() {

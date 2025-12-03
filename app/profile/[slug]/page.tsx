@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { publicApi } from '@/lib/api/client';
-import { OperatorProfileClient } from './audit-client';
+import { OperatorProfileClient } from './profile-client';
 
 type Props = {
   params: { slug: string };

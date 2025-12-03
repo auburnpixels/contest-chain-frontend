@@ -23,7 +23,7 @@ interface AsyncMetricCardProps {
 
 // Simple in-memory cache with TTL
 const metricCache = new Map<string, { data: MetricResponse; timestamp: number }>();
-const CACHE_TTL = 30000; // 30 seconds
+const CACHE_TTL = 60000; // 60 seconds (increased from 30s for better performance)
 
 export function AsyncMetricCard({
   title,

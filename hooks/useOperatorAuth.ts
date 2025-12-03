@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
@@ -16,6 +16,7 @@ interface UseOperatorAuthReturn {
   logout: () => Promise<void>;
   handleLogout: () => Promise<void>;
   isReady: boolean;
+  operatorName: string | null;
 }
 
 /**
@@ -26,7 +27,8 @@ export function useOperatorAuth(
   options: UseOperatorAuthOptions = { redirectIfUnauthenticated: true }
 ): UseOperatorAuthReturn {
   const router = useRouter();
-  const { user, loading: authLoading, isInitialized, logout: authLogout } = useAuth();
+  const { user, loading: authLoading, isInitialized, logout: authLogout, operatorName } = useAuth();
+  const redirectAttemptedRef = useRef(false);
 
   useEffect(() => {
     if (!options.redirectIfUnauthenticated) return;
@@ -37,9 +39,21 @@ export function useOperatorAuth(
     }
 
     // If initialized but no user, redirect to login
-    if (!user) {
+    if (!user && !redirectAttemptedRef.current) {
+      redirectAttemptedRef.current = true;
       console.log('[useOperatorAuth] No user found, redirecting to login...');
+      
+      // Try Next.js router first (preferred method)
       router.push('/operator/login');
+      
+      // Fallback: If router.push doesn't work (SSR/hydration issues), use window.location
+      // This ensures redirect always happens even if Next.js routing fails
+      setTimeout(() => {
+        if (typeof window !== 'undefined' && window.location.pathname !== '/operator/login') {
+          console.log('[useOperatorAuth] Router redirect failed, using window.location fallback');
+          window.location.href = '/operator/login';
+        }
+      }, 100);
     }
   }, [isInitialized, user, router, options.redirectIfUnauthenticated]);
 
@@ -59,6 +73,7 @@ export function useOperatorAuth(
     logout: authLogout,
     handleLogout,
     isReady,
+    operatorName,
   };
 }
 

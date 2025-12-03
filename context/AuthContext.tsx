@@ -9,6 +9,12 @@ interface User {
   email: string;
   role: string;
   operator_id?: number;
+  operator?: {
+    id: string;
+    name: string;
+    slug: string;
+    url?: string;
+  };
 }
 
 interface AuthContextType {
@@ -18,6 +24,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
+  operatorName: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +38,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Compute operator name from user data
+  const operatorName = user?.operator?.name || user?.name || null;
 
   const refresh = useCallback(async () => {
     try {
@@ -172,7 +182,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    initializeAuth();
+    // CRITICAL: Only run once on app mount, not on every component mount
+    if (!isInitialized) {
+      initializeAuth();
+    }
 
     // Cleanup interval on unmount
     return () => {
@@ -180,10 +193,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         clearInterval(refreshTimerRef.current);
       }
     };
-  }, [refresh, logout]);
+  }, []); // Empty deps - run once only
 
   return (
-    <AuthContext.Provider value={{ user, loading, isInitialized, login, logout, refresh }}>
+    <AuthContext.Provider value={{ user, loading, isInitialized, login, logout, refresh, operatorName }}>
       {children}
     </AuthContext.Provider>
   );

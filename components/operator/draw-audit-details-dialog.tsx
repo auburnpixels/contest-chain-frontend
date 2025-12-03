@@ -12,44 +12,20 @@ import { Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import { IndicatorBadge } from '@/components/ui/indicator-badge';
 import { InfoTooltip } from '@/components/info-tooltip';
-
-interface DrawAudit {
-  id: string;
-  sequence: number;
-  competition: {
-    id: string;
-    name: string;
-    external_id: string;
-  } | null;
-  prize: {
-    id: string;
-    name: string;
-  } | null;
-  draw_id: string;
-  drawn_at_utc: string;
-  total_entries: number;
-  selected_entry: {
-    id: string;
-    external_id: string;
-    number: number;
-  } | null;
-  signature_hash: string;
-  previous_signature_hash: string | null;
-  pool_hash: string | null;
-  rng_seed_or_hash: string;
-  created_at: string;
-}
+import { DrawAudit } from './draw-audits-table';
 
 interface DrawAuditDetailsDialogProps {
   audit: DrawAudit | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  showOperator?: boolean;
 }
 
 export function DrawAuditDetailsDialog({
   audit,
   open,
   onOpenChange,
+  showOperator = false,
 }: DrawAuditDetailsDialogProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
@@ -85,7 +61,7 @@ export function DrawAuditDetailsDialog({
               <div className="flex flex-col gap-1 items-start">
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">Chain Position</h3>
                   <Badge variant="outline" className="font-mono ">
-                      {formatChainPosition(audit.sequence)}
+                      {formatChainPosition(audit.sequence || 0)}
                   </Badge>
               </div>
           </div>
@@ -97,11 +73,14 @@ export function DrawAuditDetailsDialog({
               <div className="flex flex-col gap-1 items-start">
               <h3 className="text-sm font-medium text-muted-foreground mb-2">Competition</h3>
               <p className="text-sm font-medium">{audit.competition?.name || 'N/A'}</p>
+              {showOperator && audit.operator && (
+                <p className="text-xs text-muted-foreground">{audit.operator.name}</p>
+              )}
             </div>
 
               <div className="flex flex-col gap-1 items-start">
               <h3 className="text-sm font-medium text-muted-foreground mb-2">Prize</h3>
-              <p className="text-sm font-medium">{audit.prize?.name || 'N/A'}</p>
+              <p className="text-sm font-medium">{audit.prize?.name || audit.prize_name || 'N/A'}</p>
             </div>
           </div>
 
@@ -138,7 +117,7 @@ export function DrawAuditDetailsDialog({
 
               <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">Integrity Status</h3>
-                  <IndicatorBadge color="green" text="Verified" />
+                  <IndicatorBadge color="green" text="Verified" size="xs" />
               </div>
 
           </div>
@@ -210,13 +189,14 @@ export function DrawAuditDetailsDialog({
               </h3>
               <div className="flex items-start gap-2">
                 <p className="text-xs font-mono break-all bg-muted p-2 rounded flex-1">
-                  {audit.rng_seed_or_hash}
+                  {audit.rng_seed_or_hash || 'N/A'}
                 </p>
                 <Button
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0 shrink-0"
-                  onClick={() => copyToClipboard(audit.rng_seed_or_hash, 'rng_seed_or_hash')}
+                  onClick={() => copyToClipboard(audit.rng_seed_or_hash || '', 'rng_seed_or_hash')}
+                  disabled={!audit.rng_seed_or_hash}
                 >
                   {copiedField === 'rng_seed_or_hash' ? (
                     <Check className="h-4 w-4 text-green-500" />

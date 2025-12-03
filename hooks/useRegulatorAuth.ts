@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
@@ -27,6 +27,7 @@ export function useRegulatorAuth(
 ): UseRegulatorAuthReturn {
   const router = useRouter();
   const { user, loading: authLoading, isInitialized, logout: authLogout } = useAuth();
+  const redirectAttemptedRef = useRef(false);
 
   useEffect(() => {
     if (!options.redirectIfUnauthenticated) return;
@@ -37,9 +38,21 @@ export function useRegulatorAuth(
     }
 
     // If initialized but no user, redirect to login
-    if (!user) {
+    if (!user && !redirectAttemptedRef.current) {
+      redirectAttemptedRef.current = true;
       console.log('[useRegulatorAuth] No user found, redirecting to login...');
+      
+      // Try Next.js router first (preferred method)
       router.push('/regulator/login');
+      
+      // Fallback: If router.push doesn't work (SSR/hydration issues), use window.location
+      // This ensures redirect always happens even if Next.js routing fails
+      setTimeout(() => {
+        if (typeof window !== 'undefined' && window.location.pathname !== '/regulator/login') {
+          console.log('[useRegulatorAuth] Router redirect failed, using window.location fallback');
+          window.location.href = '/regulator/login';
+        }
+      }, 100);
     }
   }, [isInitialized, user, router, options.redirectIfUnauthenticated]);
 

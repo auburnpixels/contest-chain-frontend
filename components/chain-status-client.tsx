@@ -69,7 +69,7 @@ export default function ChainStatusClient() {
         <main className="container mx-auto px-4 py-16">
           <div className="flex flex-col items-center justify-center gap-4 min-h-[60vh]">
             <Loader2 className="h-12 w-12 animate-spin text-brand-cobalt" />
-            <p className="text-muted-foreground">Verifying chain integrity...</p>
+            <p className="text-muted-foreground">Verifying draw audit integrity...</p>
           </div>
         </main>
         <SiteFooter />
@@ -85,7 +85,7 @@ export default function ChainStatusClient() {
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              {error || 'Failed to load chain verification status'}
+              {error || 'Failed to load draw audit verification status'}
             </AlertDescription>
           </Alert>
         </main>
@@ -95,6 +95,7 @@ export default function ChainStatusClient() {
   }
 
   const isValid = chainData.chain_status === 'valid';
+  console.log(chainData)
   const integrityPercentage = getIntegrityPercentage();
 
   return (
@@ -114,11 +115,11 @@ export default function ChainStatusClient() {
                     <CheckCircle2 className="h-12 w-12 text-green-500" />
                 </div>
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-                  Chain Integrity: <span className="text-green-500">VERIFIED</span>
+                  All Draws <span className="text-green-500">VERIFIED</span>
                 </h1>
                 <p className="text-xl text-zinc-400 mb-2 max-w-2xl mx-auto">
-                  All draw audits are cryptographically secure and tamper-proof.
-                  The chain is unbroken.
+                  All competition draw audits are cryptographically secure and tamper-proof.
+                  The public draw audit chain is unbroken.
                 </p>
               </>
             ) : (
@@ -127,10 +128,10 @@ export default function ChainStatusClient() {
                     <XCircle className="h-12 w-12 text-red-500" />
                 </div>
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-                  Chain Integrity: <span className="text-red-500">ISSUES DETECTED</span>
+                  Draw Integrity: <span className="text-red-500">ISSUES DETECTED</span>
                 </h1>
                 <p className="text-xl text-zinc-400 mb-2 max-w-2xl mx-auto">
-                  Potential integrity issues have been detected. Verification failed.
+                  Potential integrity issues have been detected in the draw audit chain.
                 </p>
               </>
             )}
@@ -172,27 +173,27 @@ export default function ChainStatusClient() {
                  <div className="absolute top-0 right-0 p-8 opacity-50 group-hover:opacity-100 transition-opacity">
                     <Shield className="h-8 w-8 text-brand-cobalt" />
                  </div>
-                 <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Total Draw Audits</p>
+                 <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Competition Draws</p>
                  <div className="text-5xl font-bold text-white mb-2">{chainData.total_events.toLocaleString()}</div>
-                 <p className="text-sm text-zinc-400">Recorded in the ledger</p>
+                 <p className="text-sm text-zinc-400">Recorded in the public ledger</p>
               </div>
 
-              {/* Verified Events */}
+              {/* Verified Draws */}
               <div className="bg-zinc-900/50 border border-white/10 p-8 rounded-2xl relative overflow-hidden group hover:border-green-500/30 transition-colors">
                  <div className="absolute top-0 right-0 p-8 opacity-50 group-hover:opacity-100 transition-opacity">
                     <CheckCircle2 className="h-8 w-8 text-green-500" />
                  </div>
-                 <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Verified Events</p>
+                 <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Verified Draws</p>
                  <div className="text-5xl font-bold text-white mb-2">{chainData.verified_events.toLocaleString()}</div>
                  <p className="text-sm text-zinc-400">Cryptographically confirmed</p>
               </div>
 
-              {/* Chain Integrity */}
+              {/* Audit Chain Health */}
               <div className="bg-zinc-900/50 border border-white/10 p-8 rounded-2xl relative overflow-hidden group hover:border-brand-cobalt/30 transition-colors">
                  <div className="absolute top-0 right-0 p-8 opacity-50 group-hover:opacity-100 transition-opacity">
                     <Activity className="h-8 w-8 text-brand-cobalt" />
                  </div>
-                 <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Chain Health</p>
+                 <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Audit Chain Health</p>
                  <div className="text-5xl font-bold text-white mb-2">{integrityPercentage}%</div>
                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-500/10 text-green-500 text-xs font-medium border border-green-500/20">
                     <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -218,15 +219,27 @@ export default function ChainStatusClient() {
                       <AlertTriangle className="h-5 w-5 text-amber-500 mt-1" />
                       <div>
                         <p className="font-bold text-amber-500">
-                          Unchained Events: {chainData.unchained_events}
+                          Pending Draws: {chainData.unchained_events}
                         </p>
                         <p className="text-sm text-amber-200/70">
-                          Some events are not properly linked in the cryptographic chain
+                          Some draw audits are still being processed and linked to the chain
                         </p>
                       </div>
                     </div>
                   )}
-                  {/* ... other error states kept simple ... */}
+                  {chainData.failed_events > 0 && (
+                    <div className="flex items-start gap-4 p-4 bg-red-500/10 rounded-lg border border-red-500/20">
+                      <XCircle className="h-5 w-5 text-red-500 mt-1" />
+                      <div>
+                        <p className="font-bold text-red-500">
+                          Failed Verifications: {chainData.failed_events}
+                        </p>
+                        <p className="text-sm text-red-200/70">
+                          Some draw audits failed cryptographic verification checks
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -236,22 +249,23 @@ export default function ChainStatusClient() {
         {/* Explanation Section */}
         <section className="py-24 bg-black border-t border-white/5">
           <div className="container mx-auto px-6 max-w-4xl">
-            <h2 className="text-3xl font-bold mb-12 text-white text-center">What is Chain Integrity?</h2>
+            <h2 className="text-3xl font-bold mb-12 text-white text-center">What is Draw Audit Integrity?</h2>
             
             <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
                  <div>
                     <p className="text-xl text-zinc-300 leading-relaxed mb-6">
-                        CAFAAS uses a <strong className="text-white">cryptographic chain</strong> to ensure 
-                        every draw audit is tamper-proof.
+                        CAFAAS maintains a <strong className="text-white">public blockchain-style ledger</strong> of 
+                        all competition draw results.
                     </p>
                     <p className="text-zinc-400 leading-relaxed mb-8">
-                        Each audit contains a cryptographic hash that includes the hash of the previous audit. 
-                        This creates an unbreakable chain of proof — just like a blockchain.
+                        Each draw audit contains a cryptographic hash that includes the hash of the previous draw. 
+                        This creates an unbreakable chain of proof — if any past draw result is altered, 
+                        the chain breaks and everyone can see it.
                     </p>
                     <div className="flex gap-4">
                         <Button asChild className="bg-brand-cobalt hover:bg-brand-cobalt/90 text-white">
                             <Link href="/audits">
-                            View Audit Log <ExternalLink className="ml-2 h-4 w-4" />
+                            View All Draws <ExternalLink className="ml-2 h-4 w-4" />
                             </Link>
                         </Button>
                         <Button variant="outline" asChild className="border-white/10 text-zinc-300 hover:bg-white/5 hover:text-white">
@@ -266,23 +280,23 @@ export default function ChainStatusClient() {
                     <div className="p-6 bg-zinc-900/50 rounded-xl border border-white/5">
                         <h4 className="text-white font-bold mb-2 flex items-center gap-2">
                             <div className="h-2 w-2 rounded-full bg-brand-cobalt" />
-                            1. Unique Hash
+                            1. Unique Fingerprint
                         </h4>
-                        <p className="text-sm text-zinc-400">Each draw creates a unique fingerprint (SHA-256).</p>
+                        <p className="text-sm text-zinc-400">Each competition draw creates a unique cryptographic signature (SHA-256).</p>
                     </div>
                     <div className="p-6 bg-zinc-900/50 rounded-xl border border-white/5">
                         <h4 className="text-white font-bold mb-2 flex items-center gap-2">
                             <div className="h-2 w-2 rounded-full bg-brand-cobalt" />
-                            2. Linked History
+                            2. Linked to Previous
                         </h4>
-                        <p className="text-sm text-zinc-400">The hash includes the previous audit's hash.</p>
+                        <p className="text-sm text-zinc-400">Each draw's signature includes the previous draw's signature, creating a chain.</p>
                     </div>
                     <div className="p-6 bg-zinc-900/50 rounded-xl border border-white/5">
                         <h4 className="text-white font-bold mb-2 flex items-center gap-2">
                             <div className="h-2 w-2 rounded-full bg-brand-cobalt" />
-                            3. Tamper Proof
+                            3. Tamper-Proof
                         </h4>
-                        <p className="text-sm text-zinc-400">Any change to past data breaks the chain instantly.</p>
+                        <p className="text-sm text-zinc-400">Changing any past draw result would break the entire chain instantly.</p>
                     </div>
                  </div>
             </div>
@@ -294,7 +308,7 @@ export default function ChainStatusClient() {
           <div className="container mx-auto px-6 text-center">
             <p className="text-xs text-zinc-500 font-mono">
               <Activity className="inline h-3 w-3 mr-2" />
-              SYSTEM STATUS AUTO-REFRESHES EVERY 30 SECONDS
+              DRAW AUDIT STATUS AUTO-REFRESHES EVERY 30 SECONDS
             </p>
           </div>
         </section>

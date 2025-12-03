@@ -6,65 +6,35 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge';
 import { operatorApi } from '@/lib/api/client';
 import { DashboardShell } from '@/components/dashboard-shell';
-import { Operator } from '@/lib/api';
-import Link from 'next/link';
-import { DashboardLoading } from '@/components/dashboard-loading';
-import { DashboardHeader } from '@/components/dashboard-header';
 import {
     CompetitionDetailsDialog,
     OperatorCompetition
 } from "@/components/operator/competition-details-dialog";
-import { CompetitionsTable } from "@/components/operator/competitions-table";
 import { SystemHealthCard } from "@/components/operator/system-health-card";
 import { ChainIntegrityBadge } from "@/components/operator/chain-integrity-badge";
+import { CompetitionsWidget } from '@/components/competitions-widget';
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
-import { handleApiError } from '@/lib/error-handler';
 import { Activity, ShieldCheck, Trophy, TrendingUp, AlertTriangle, FileText, Download, CheckCircle2, Ticket, Info, Key } from 'lucide-react';
 import { MetricCard } from '@/components/metric-card';
 import { AsyncMetricCard } from '@/components/async-metric-card';
 import { exportToJSON } from '@/lib/export-utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { MetricResponse } from '@/types/metrics';
+import Link from 'next/link';
+import { DashboardLoading } from '@/components/dashboard-loading';
+import { DashboardHeader } from '@/components/dashboard-header';
+import { Operator } from '@/lib/api';
 
 interface DashboardData {
     user: any;
     operator: Operator;
-    compliance: any;
-    recent_competitions?: CompetitionData[];
-    attention?: {
-        total_competitions: number;
-        competitions_needing_attention: number;
-        total_issues: number;
-        critical_issues: number;
-        warning_issues: number;
-    };
-    stats?: {
-        total_competitions?: number;
-        active_competitions?: number;
-        total_entries?: number;
-        total_complaints?: number;
-        pending_complaints?: number;
-        draws_this_month?: number;
-        api_events_total?: number;
-        active_api_keys?: number;
-        competitions_with_draw_audits?: number;
-    };
-    system?: {
-        rng_version?: string;
-        chain_integrity?: ChainIntegrityData;
-    };
 }
-
-type CompetitionData = OperatorCompetition;
 
 export default function OperatorDashboardPage() {
     const { isReady, handleLogout } = useOperatorAuth();
     const [loading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-    const [competitions, setCompetitions] = useState<CompetitionData[]>([]);
-    const [selectedCompetition, setSelectedCompetition] = useState<CompetitionData | null>(null);
-    const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [lastApiEvent, setLastApiEvent] = useState<string | null>(null);
 
     useEffect(() => {
@@ -78,17 +48,15 @@ export default function OperatorDashboardPage() {
         try {
             setLoading(true);
             
-            // Only load lightweight user/operator data and recent competitions
+            // Only load lightweight user/operator data
             const operatorData = await operatorApi.getDashboard();
             
             setDashboardData({
                 user: operatorData.user,
                 operator: operatorData.operator,
-                recent_competitions: operatorData.recent_competitions || [],
             });
-            setCompetitions(operatorData.recent_competitions || []);
         } catch (error: any) {
-            handleApiError(error, handleLogout);
+            console.error('Failed to load dashboard:', error);
         } finally {
             setLoading(false);
         }
@@ -100,14 +68,9 @@ export default function OperatorDashboardPage() {
             if (response?.data && response.data.length > 0) {
                 setLastApiEvent(response.data[0].created_at);
             }
-        } catch (error: any) {
-            // Silently fail - this is not critical
+        } catch (error) {
+            console.error('Failed to load last API event:', error);
         }
-    };
-
-    const handleOpenCompetition = (competition: CompetitionData) => {
-        setSelectedCompetition(competition);
-        setViewDialogOpen(true);
     };
 
     if (!isReady || loading) {
@@ -205,54 +168,22 @@ export default function OperatorDashboardPage() {
 
                 {/* Recent Competitions */}
                 <div className="px-4 lg:px-6">
-                    <Card className="bg-card border-border">
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <div className="flex flex-col gap-1.5">
-                                    <CardTitle className="leading-none font-semibold !text-base">Recent competitions</CardTitle>
-                                    <CardDescription className="text-muted-foreground text-sm">
-                                        Your 5 most recent competitions
-                                    </CardDescription>
-                                </div>
+                    <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-lg font-semibold">Recent Competitions</h2>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/operator/competitions">
+                                View All
+                            </Link>
+                        </Button>
+                    </div>
 
-                                {competitions.length > 0 && (
-                                    <Link href="/operator/competitions">
-                                        <Button variant="outline" size="sm">
-                                            View All
-                                        </Button>
-                                    </Link>
-                                )}
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            {competitions.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-12 text-center">
-                                    <h3 className="text-xl font-semibold mb-2">Ready to run your first competition?</h3>
-                                    <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
-                                        Create your first competition using the CAFAAS API. Once it's live, we'll automatically track entries, run secure draws, and generate tamper-proof audit records
-                                    </p>
-                                    <div className="flex gap-3 justify-center">
-                                        <Button asChild>
-                                            <a href="/docs/api/competitions/create" target="_blank" rel="noopener noreferrer">
-                                                View API Example
-                                            </a>
-                                        </Button>
-                                        <Button variant="outline" asChild>
-                                            <Link href="/operator/api-keys">
-                                                Get Your API Key
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <CompetitionsTable 
-                                    competitions={competitions}
-                                    showActions={true}
-                                    onViewDetails={handleOpenCompetition}
-                                />
-                            )}
-                        </CardContent>
-                    </Card>
+                    <CompetitionsWidget
+                        showFilters={false}
+                        showTitle={false}
+                        maxItems={5}
+                        pageSize={5}
+                        onLogout={handleLogout}
+                    />
                 </div>
             </div>
 
@@ -298,12 +229,6 @@ export default function OperatorDashboardPage() {
                     </CardContent>
                 </Card>
             </div>
-
-            <CompetitionDetailsDialog
-                competition={selectedCompetition}
-                open={viewDialogOpen}
-                onOpenChange={setViewDialogOpen}
-            />
         </DashboardShell>
     );
 }

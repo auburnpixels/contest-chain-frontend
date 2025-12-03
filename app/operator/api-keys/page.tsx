@@ -20,10 +20,9 @@ import { DashboardLoading } from '@/components/dashboard-loading';
 import {dateFormatters} from "@/lib/date-utils";
 
 export default function ApiKeysPage() {
-  const { isReady, handleLogout } = useOperatorAuth();
+  const { isReady, handleLogout, operatorName } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [apiKeys, setApiKeys] = useState<any[]>([]);
-  const [operatorName, setOperatorName] = useState('');
   const [creatingKey, setCreatingKey] = useState(false);
   const [visibleKeys, setVisibleKeys] = useState<Set<number>>(new Set());
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -39,12 +38,9 @@ export default function ApiKeysPage() {
   const loadApiKeys = async () => {
     try {
       setLoading(true);
-      const [keysData, dashboardData] = await Promise.all([
-        operatorApi.getApiKeys(),
-        operatorApi.getDashboard(),
-      ]);
+      const keysData = await operatorApi.getApiKeys();
+      
       setApiKeys(keysData.data || keysData || []);
-      setOperatorName(dashboardData?.operator?.name || dashboardData?.user?.name || '');
       setLoading(false);
     } catch (error: any) {
       console.error('[API Keys] Failed to load API keys:', error);

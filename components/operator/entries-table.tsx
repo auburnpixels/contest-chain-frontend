@@ -7,26 +7,22 @@ import { dateFormatters } from '@/lib/date-utils';
 import { CheckCircle2, XCircle, Clock } from 'lucide-react';
 import {IndicatorBadge} from "@/components/ui/indicator-badge";
 
-export interface Entry {
+export interface OperatorEntry {
   id: string;
+  external_id: string;
+  user_reference: string;
   competition_id: string;
-  user_id: string;
-  ticket_number: string;
   is_free: boolean;
-  created_at: string;
-  correct_answer?: boolean;
+  question_answered_correctly?: boolean;
   deleted_at?: string | null;
+  created_at: string;
   competition?: {
     name: string;
-  };
-  user?: {
-    name: string;
-    email: string;
   };
 }
 
 interface EntriesTableProps {
-  entries: Entry[];
+  entries: OperatorEntry[];
   showCompetitionName?: boolean;
 }
 
@@ -69,6 +65,7 @@ export function EntriesTable({ entries, showCompetitionName = true }: EntriesTab
                   <IndicatorBadge
                       text={entry.deleted_at ? 'Voided' : isEligible ? 'Correct answer' : 'Incorrect answer'}
                       color={entry.deleted_at || !isEligible ? 'red' : 'green'}
+                      size="xs"
                   />
               </TableCell>
               <TableCell className="text-muted-foreground">

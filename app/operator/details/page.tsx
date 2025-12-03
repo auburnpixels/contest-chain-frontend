@@ -22,7 +22,7 @@ interface OperatorData {
 }
 
 export default function OperatorDetailsPage() {
-  const { isReady, handleLogout } = useOperatorAuth();
+  const { isReady, handleLogout, operatorName } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [operatorData, setOperatorData] = useState<OperatorData | null>(null);
@@ -137,7 +137,7 @@ export default function OperatorDetailsPage() {
     <DashboardShell
       navItems={operatorNavItems}
       userRole="operator"
-      userName={operatorData?.name}
+      userName={operatorData?.name || operatorName || ''}
       onLogout={handleLogout}
     >
       <div className="space-y-8">

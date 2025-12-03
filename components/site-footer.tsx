@@ -36,7 +36,7 @@ export function SiteFooter() {
               <li><Link href="/features" className="hover:text-brand-cobalt transition-colors">Features</Link></li>
               <li><Link href="/operators" className="hover:text-brand-cobalt transition-colors">For Operators</Link></li>
               <li><Link href="/regulators" className="hover:text-brand-cobalt transition-colors">For Regulators</Link></li>
-              <li><Link href="/public" className="hover:text-brand-cobalt transition-colors">Audit Explorer</Link></li>
+              <li><Link href="/audits" className="hover:text-brand-cobalt transition-colors">Audit Explorer</Link></li>
               <li><Link href="/pricing" className="hover:text-brand-cobalt transition-colors">Pricing</Link></li>
             </ul>
           </div>

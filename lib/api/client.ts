@@ -589,6 +589,9 @@ export const publicApi = {
     return fetch(`${API_BASE_URL}/api/public/draw-audits/download${queryString ? `?${queryString}` : ''}`).then((r) => r.json());
   },
 
+  getDrawAuditOperators: () =>
+    fetch(`${API_BASE_URL}/api/public/operators`).then((r) => r.json()),
+
   getPublicCompetitions: (operatorUuid?: string) => {
     const params = new URLSearchParams();
     if (operatorUuid) params.append('operator', operatorUuid);

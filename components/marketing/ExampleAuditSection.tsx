@@ -36,7 +36,7 @@ export function ExampleAuditSection() {
                      <div className="w-3 h-3 rounded-full bg-green-400/80" />
                  </div>
                  <div className="flex-1 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded px-3 py-1.5 text-xs text-center text-green-600 dark:text-green-400 font-medium flex items-center justify-center">
-                    <span className="mr-2">🔒</span> verify.cafaas.com/audit/8f92a...
+                    <span className="mr-2">🔒</span> cafaas.com/audit/8f92a...
                  </div>
               </div>
 
