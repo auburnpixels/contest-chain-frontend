@@ -3,12 +3,13 @@ import { publicApi } from '@/lib/api/client';
 import { OperatorProfileClient } from './profile-client';
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const data = await publicApi.getPublicOperator(params.slug);
+    const { slug } = await params;
+    const data = await publicApi.getPublicOperator(slug);
     return {
       title: `${data.operator.name} - Operator Profile - Cafaas`,
       description: `View public trust profile and audit history for ${data.operator.name}.`,
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function OperatorProfilePage({ params }: Props) {
-  return <OperatorProfileClient slug={params.slug} />;
+export default async function OperatorProfilePage({ params }: Props) {
+  const { slug } = await params;
+  return <OperatorProfileClient slug={slug} />;
 }

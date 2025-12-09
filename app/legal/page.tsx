@@ -10,7 +10,7 @@ export default function LegalPage() {
          <h1 className="text-4xl font-bold mb-8 text-white">Legal Information</h1>
          <div className="space-y-6 text-muted-foreground">
             <p>
-               Cafaas Platform is a trading name of Cafaas Technology Ltd, a company registered in England and Wales.
+               Veristiq is a trading name of Cafaas Technology Ltd, a company registered in England and Wales.
             </p>
             
             <h2 className="text-2xl font-bold text-white mt-8">Company Details</h2>
@@ -22,7 +22,7 @@ export default function LegalPage() {
 
             <h2 className="text-2xl font-bold text-white mt-8">Regulatory Status</h2>
             <p>
-               Cafaas Platform provides software infrastructure for prize competitions. We are a technology provider and not a gambling operator. Our customers are responsible for ensuring their competitions comply with the Gambling Act 2005 and obtaining any necessary licenses.
+               Veristiq provides software infrastructure for prize competitions. We are a technology provider and not a gambling operator. Our customers are responsible for ensuring their competitions comply with the Gambling Act 2005 and obtaining any necessary licenses.
             </p>
 
             <h2 className="text-2xl font-bold text-white mt-8">Policies</h2>

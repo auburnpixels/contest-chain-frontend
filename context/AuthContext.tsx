@@ -38,6 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const initializationRef = useRef(false); // Prevent duplicate initialization
 
   // Compute operator name from user data
   const operatorName = user?.operator?.name || user?.name || null;
@@ -138,6 +139,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refresh, logout]);
 
   useEffect(() => {
+    // CRITICAL: Prevent re-initialization in development hot reload
+    if (initializationRef.current) {
+      console.log('[AuthContext] Already initialized, skipping duplicate initialization...');
+      return;
+    }
+
     // Check for existing token on mount
     const initializeAuth = async () => {
       const token = apiClient.getToken();
@@ -146,32 +153,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (token) {
         // Verify token and get user
         try {
-          await refresh();
+          // First, try to get user data with existing token
+          // Only refresh if the token is actually invalid
+          console.log('[AuthContext] Attempting to fetch user with existing token...');
+          const meResponse = await authApi.me();
           
-          // Set up automatic token refresh after successful initial refresh
-          if (refreshTimerRef.current) {
-            clearInterval(refreshTimerRef.current);
+          if (meResponse.user) {
+            setUser(meResponse.user);
+            console.log('[AuthContext] User data loaded with existing token:', meResponse.user.email);
+            setLoading(false);
+            
+            // Set up automatic token refresh
+            if (refreshTimerRef.current) {
+              clearInterval(refreshTimerRef.current);
+            }
+            refreshTimerRef.current = setInterval(() => {
+              refresh().catch((error) => {
+                // Only logout on unexpected errors during auto-refresh
+                // Expected errors are already handled silently in refresh()
+                if (error) {
+                  console.error('Auto-refresh failed with unexpected error:', error);
+                  logout();
+                }
+              });
+            }, REFRESH_INTERVAL_MS);
+            
+            console.log('[AuthContext] Auth initialized successfully');
           }
-          refreshTimerRef.current = setInterval(() => {
-            refresh().catch((error) => {
-              // Only logout on unexpected errors during auto-refresh
-              // Expected errors are already handled silently in refresh()
-              if (error) {
-                console.error('Auto-refresh failed with unexpected error:', error);
-                logout();
-              }
-            });
-          }, REFRESH_INTERVAL_MS);
+        } catch (error: any) {
+          // If /me fails, try refreshing the token
+          console.log('[AuthContext] Failed to fetch user with existing token, attempting refresh...', error.code);
           
-          console.log('[AuthContext] Auth initialized successfully');
-        } catch (error) {
-          // refresh() already handles expected errors silently
-          // Only log if there's an unexpected error that was thrown
-          if (error) {
-            console.error('[AuthContext] Auth initialization failed with unexpected error:', error);
+          try {
+            await refresh();
+            
+            // Set up automatic token refresh after successful refresh
+            if (refreshTimerRef.current) {
+              clearInterval(refreshTimerRef.current);
+            }
+            refreshTimerRef.current = setInterval(() => {
+              refresh().catch((error) => {
+                if (error) {
+                  console.error('Auto-refresh failed with unexpected error:', error);
+                  logout();
+                }
+              });
+            }, REFRESH_INTERVAL_MS);
+            
+            console.log('[AuthContext] Auth initialized successfully after refresh');
+          } catch (refreshError) {
+            // refresh() already handles expected errors silently
+            // Only log if there's an unexpected error that was thrown
+            if (refreshError) {
+              console.error('[AuthContext] Auth initialization failed with unexpected error:', refreshError);
+            }
+            // Token already cleared by refresh() function
+            setLoading(false);
           }
-          // Token already cleared by refresh() function
-          setLoading(false);
         } finally {
           setIsInitialized(true);
         }
@@ -182,10 +220,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // CRITICAL: Only run once on app mount, not on every component mount
-    if (!isInitialized) {
-      initializeAuth();
-    }
+    // Mark as initialized immediately to prevent double initialization
+    initializationRef.current = true;
+    initializeAuth();
 
     // Cleanup interval on unmount
     return () => {

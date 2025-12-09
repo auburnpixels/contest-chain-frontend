@@ -44,12 +44,74 @@
 
 @layer base {
   :root {
-    /* DEFAULT TO DARK MODE PALETTE (Black/Zinc) */
+    /* DEFAULT TO LIGHT MODE PALETTE */
+      --background: #fff;
+      --foreground: #0a0a0a;
+
+      --card: #FAFAFA;
+      --card-foreground: #0a0a0a;
+
+      --popover: #fff;
+      --popover-foreground: #0a0a0a;
+
+      --primary: #171717;
+      --primary-foreground: #fafafa;
+
+      --secondary: #f5f5f5;
+      --secondary-foreground: #171717;
+
+      --muted: #f5f5f5;
+      --muted-foreground: #737373;
+
+      --accent: #f5f5f5;
+      --accent-foreground: #171717;
+
+      --destructive: #e40014;
+    --destructive-foreground: 0 0% 98%;
+
+      --border: #e5e5e5;
+      --input: #e5e5e5;
+      --ring: #a1a1a1;
+
+      --radius: .625rem;
+
+      --sidebar: #fafafa;
+      --sidebar-foreground: #0a0a0a;
+      --sidebar-primary: #171717;
+      --sidebar-primary-foreground: #fafafa;
+      --sidebar-accent: #f5f5f5;
+      --sidebar-accent-foreground: #171717;
+      --sidebar-border: #e5e5e5;
+      --sidebar-ring: #a1a1a1;
+      --surface: #f8f8f8;
+      --surface-foreground: var(--foreground);
+      --code: var(--surface);
+      --code-foreground: var(--surface-foreground);
+      --code-highlight: #f2f2f2;
+      --code-number: #747474;
+      --selection: #0a0a0a;
+      --selection-foreground: #fff;
+
+      /* Veristiq Marketing Variables */
+      --veristiq-primary-blue: #2D60FF;
+      --veristiq-primary-blue-dark: #1F3ACC;
+      --veristiq-slate: #1F2430;
+      --veristiq-slate-light: #2B303B;
+      --veristiq-white: #FFFFFF;
+      --veristiq-snow: #F5F7FA;
+      --veristiq-grey: #C7CED9;
+      --veristiq-teal: #0CE2BC;
+      --veristiq-coral: #FF5F5F;
+      --veristiq-gold: #FFD66B;
+  }
+
+  /* Dark mode palette - kept for potential future use */
+  .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
-     --card: #171717;
-     --card-foreground: #fafafa;
+    --card: #171717;
+    --card-foreground: #fafafa;
 
     --popover: #262626;
     --popover-foreground: #fafafa;
@@ -63,14 +125,13 @@
     --muted: #262626;
     --muted-foreground: #a1a1a1;
 
-      --accent: #404040;
-      --accent-foreground: #fafafa;
+    --accent: #404040;
+    --accent-foreground: #fafafa;
     
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-     --border: #ffffff1a;
-
+    --border: #ffffff1a;
     --input: #ffffff1a;
     --ring: 240 4.9% 83.9%;
     

@@ -11,8 +11,8 @@ export default function DcmsCodePage() {
       <main>
         <PageHero 
           title="Compliance"
-          headline="Cafaas & The DCMS Voluntary Code of Good Practice"
-          subheadline="How Cafaas supports transparency, fairness and accountability for prize-draw operators."
+          headline="Veristiq & The DCMS Voluntary Code of Good Practice"
+          subheadline="How Veristiq supports transparency, fairness and accountability for prize-draw operators."
         />
 
         {/* Overview */}
@@ -32,7 +32,7 @@ export default function DcmsCodePage() {
                         </p>
                         <div className="p-6 bg-brand-cobalt/5 border border-brand-cobalt/20 rounded-xl">
                             <p className="font-medium text-brand-cobalt">
-                                Cafaas helps operators adopt many of the Code’s expectations simply, consistently and transparently — without requiring major platform changes.
+                                Veristiq helps operators adopt many of the Code’s expectations simply, consistently and transparently — without requiring major platform changes.
                             </p>
                         </div>
                     </div>
@@ -44,10 +44,10 @@ export default function DcmsCodePage() {
         <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
             <div className="container px-4 md:px-6 mx-auto max-w-4xl">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">How Cafaas Supports the Code</h2>
+                    <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">How Veristiq Supports the Code</h2>
                     <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
                         The Code is built around three pillars: Player Protections, Transparency, and Accountability & Governance. 
-                        Cafaas does not replace operator responsibilities, but it directly supports many of the Code’s core expectations.
+                        Veristiq does not replace operator responsibilities, but it directly supports many of the Code’s core expectations.
                     </p>
                 </div>
 
@@ -93,7 +93,7 @@ export default function DcmsCodePage() {
                     </div>
 
                     <p className="text-zinc-600 dark:text-zinc-400 mb-6">
-                        Cafaas supports evidence, audit, and logging — not enforcement. Operators remain responsible for age checks, spend caps, and self-exclusion.
+                        Veristiq supports evidence, audit, and logging — not enforcement. Operators remain responsible for age checks, spend caps, and self-exclusion.
                     </p>
                     
                     <ul className="grid sm:grid-cols-2 gap-4 mb-8">
@@ -157,7 +157,7 @@ export default function DcmsCodePage() {
                 <div className="mb-20">
                     <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-8 flex items-center gap-3">
                         <AlertTriangle className="h-6 w-6 text-red-500" />
-                        Areas Cafaas Does Not Cover
+                        Areas Veristiq Does Not Cover
                     </h3>
                     <div className="grid md:grid-cols-2 gap-4">
                         <div className="p-4 border border-red-100 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10 rounded-lg flex items-start gap-3">
@@ -193,13 +193,13 @@ export default function DcmsCodePage() {
 
                 {/* Summary Table */}
                 <div className="mb-20">
-                    <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-8 text-center">Summary — How Cafaas Helps You Meet the Code</h3>
+                    <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-8 text-center">Summary — How Veristiq Helps You Meet the Code</h3>
                     <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800">
                         <table className="w-full text-sm text-left">
                             <thead className="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white font-bold">
                                 <tr>
                                     <th className="p-4">DCMS Code Area</th>
-                                    <th className="p-4">Covered by Cafaas?</th>
+                                    <th className="p-4">Covered by Veristiq?</th>
                                     <th className="p-4 hidden sm:table-cell">Notes</th>
                                 </tr>
                             </thead>
@@ -210,9 +210,9 @@ export default function DcmsCodePage() {
                                     { area: "Complaints handling transparency", status: "Supported", notes: "Complaint submitted/resolved events", color: "text-green-600" },
                                     { area: "Fair treatment of free entries", status: "Supported", notes: "Free entries logged & included", color: "text-green-600" },
                                     { area: "Prize information & mechanics", status: "Supported", notes: "Public audit structure", color: "text-green-600" },
-                                    { area: "Player protections (limits)", status: "Partially supported", notes: "Operator implements, Cafaas logs", color: "text-amber-600" },
-                                    { area: "Age verification", status: "Operator responsibility", notes: "Cafaas can log outcomes", color: "text-zinc-500" },
-                                    { area: "Credit-card rules", status: "Operator responsibility", notes: "Cafaas can hold metadata", color: "text-zinc-500" },
+                                    { area: "Player protections (limits)", status: "Partially supported", notes: "Operator implements, Veristiq logs", color: "text-amber-600" },
+                                    { area: "Age verification", status: "Operator responsibility", notes: "Veristiq can log outcomes", color: "text-zinc-500" },
+                                    { area: "Credit-card rules", status: "Operator responsibility", notes: "Veristiq can hold metadata", color: "text-zinc-500" },
                                     { area: "Marketing standards", status: "Operator responsibility", notes: "Out of scope", color: "text-zinc-500" },
                                 ].map((row, idx) => (
                                     <tr key={idx} className="bg-white dark:bg-black">
@@ -235,6 +235,7 @@ export default function DcmsCodePage() {
     </div>
   );
 }
+
 
 
 

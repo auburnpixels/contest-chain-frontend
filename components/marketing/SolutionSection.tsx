@@ -1,57 +1,52 @@
-import { Link2, Globe, Server } from "lucide-react";
+import { Link, Eye, FileText, CheckCircle2 } from "lucide-react";
 
 export function SolutionSection() {
   return (
-    <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
-      <div className="container px-4 md:px-6 mx-auto">
-        
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-6">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            CAFAAS gives you <span className="text-brand-cobalt">verifiable fairness</span> for every draw.
+    <section className="py-24 bg-[var(--veristiq-snow)] relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/40 to-transparent"></div>
+      
+      <div className="container mx-auto px-6 max-w-7xl relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h2 className="text-3xl md:text-4xl font-semibold text-[var(--veristiq-slate)] mb-6">
+            Veristiq creates an independent, cryptographically verifiable record of every draw.
           </h2>
-          <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            CAFAAS is the independent fairness infrastructure for prize competitions. 
-            Every draw, entry, and outcome is logged, hashed, and secured inside a tamper-evident event chain that anyone can verify.
-          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Feature 1 */}
-          <div className="group relative bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 hover:border-brand-cobalt/50 dark:hover:border-brand-cobalt/50 transition-all duration-300">
-            <div className="h-12 w-12 bg-brand-cobalt/10 rounded-xl flex items-center justify-center mb-6 text-brand-cobalt">
-              <Link2 className="h-6 w-6" />
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <Link className="w-6 h-6 text-[var(--veristiq-primary-blue)]" />
+                </div>
+                <h3 className="font-semibold text-lg text-[var(--veristiq-slate)] mb-2">Tamper-Evident Chain</h3>
+                <p className="text-sm text-[var(--veristiq-slate-light)]">Every event is hashed and linked. History cannot be rewritten.</p>
             </div>
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">Independent Draw Audits</h3>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Every prize draw creates a signed, hash-linked audit record. No edits. No deletion. No way to influence results.
-            </p>
-          </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 delay-100">
+                <div className="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <Eye className="w-6 h-6 text-[var(--veristiq-primary-blue)]" />
+                </div>
+                <h3 className="font-semibold text-lg text-[var(--veristiq-slate)] mb-2">Public Verification</h3>
+                <p className="text-sm text-[var(--veristiq-slate-light)]">Dedicated pages where players can verify results independently.</p>
+            </div>
 
-          {/* Feature 2 */}
-          <div className="group relative bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 hover:border-brand-cobalt/50 dark:hover:border-brand-cobalt/50 transition-all duration-300">
-            <div className="h-12 w-12 bg-brand-cobalt/10 rounded-xl flex items-center justify-center mb-6 text-brand-cobalt">
-              <Globe className="h-6 w-6" />
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 delay-200">
+                <div className="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <FileText className="w-6 h-6 text-[var(--veristiq-primary-blue)]" />
+                </div>
+                <h3 className="font-semibold text-lg text-[var(--veristiq-slate)] mb-2">Compliance Reporting</h3>
+                <p className="text-sm text-[var(--veristiq-slate-light)]">Automated reports aligned with DCMS and advertising standards.</p>
             </div>
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">Public Audit Pages</h3>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Show players exactly how winners were chosen. Shareable links. Transparent data. Instant trust.
-            </p>
-          </div>
 
-          {/* Feature 3 */}
-          <div className="group relative bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 hover:border-brand-cobalt/50 dark:hover:border-brand-cobalt/50 transition-all duration-300">
-            <div className="h-12 w-12 bg-brand-cobalt/10 rounded-xl flex items-center justify-center mb-6 text-brand-cobalt">
-              <Server className="h-6 w-6" />
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 delay-300">
+                <div className="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <CheckCircle2 className="w-6 h-6 text-[var(--veristiq-primary-blue)]" />
+                </div>
+                <h3 className="font-semibold text-lg text-[var(--veristiq-slate)] mb-2">Simple API</h3>
+                <p className="text-sm text-[var(--veristiq-slate-light)]">Integrates with your existing platform in minutes.</p>
             </div>
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">API-Driven Fairness</h3>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              A clean JSON API for competition creation, entries, draws, and publishing — all backed by a cryptographically secured audit chain.
-            </p>
-          </div>
         </div>
-
       </div>
     </section>
   );
 }
-

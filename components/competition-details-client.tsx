@@ -242,9 +242,9 @@ export default function CompetitionDetailsClient({ uuid }: Props) {
                 <div className="h-16 w-16 bg-brand-cobalt rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-cobalt/20">
                   <ShieldCheck className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="font-bold text-xl text-white mb-2">Cafaas Verified</h3>
+                <h3 className="font-bold text-xl text-white mb-2">Veristiq Verified</h3>
                 <p className="text-sm text-zinc-300 leading-relaxed">
-                  This competition is monitored by the Cafaas fairness engine. All entries and draws are cryptographically audited.
+                  This competition is monitored by the Veristiq fairness engine. All entries and draws are cryptographically audited.
                 </p>
             </div>
 
@@ -256,6 +256,7 @@ export default function CompetitionDetailsClient({ uuid }: Props) {
     </div>
   );
 }
+
 
 
 

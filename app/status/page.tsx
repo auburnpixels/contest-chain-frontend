@@ -21,7 +21,7 @@ export default function StatusPage() {
             System Status
          </h1>
          <p className="text-zinc-400 text-lg">
-            Current status of Cafaas Platform services.
+            Current status of Veristiq services.
          </p>
       </section>
 

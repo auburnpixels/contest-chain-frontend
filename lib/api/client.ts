@@ -432,6 +432,18 @@ export const operatorApi = {
     complaints: () => apiClient.get<MetricResponse>('/internal/operator/metrics/complaints'),
     entries: () => apiClient.get<MetricResponse>('/internal/operator/metrics/entries'),
     draws: () => apiClient.get<MetricResponse>('/internal/operator/metrics/draws'),
+    events: async (): Promise<MetricResponse> => {
+      // Fetch draw events to get total count
+      const response = await apiClient.get<any>('/internal/operator/draw-events?per_page=1');
+      return {
+        value: response.total?.toString() || '0',
+        footer: 'All time',
+        status: 'neutral',
+        metadata: {
+          total_events: response.total || 0,
+        },
+      };
+    },
   },
 
   updateDetails: (name: string, url?: string) =>

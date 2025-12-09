@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,9 +36,12 @@ export default function OperatorDashboardPage() {
     const [loading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
     const [lastApiEvent, setLastApiEvent] = useState<string | null>(null);
+    const hasLoadedRef = useRef(false); // Prevent duplicate loads during hot reload
 
     useEffect(() => {
-        if (isReady) {
+        // CRITICAL: Prevent duplicate loads during development hot reload
+        if (isReady && !hasLoadedRef.current) {
+            hasLoadedRef.current = true;
             loadDashboardData();
             loadLastApiEvent();
         }
@@ -57,6 +60,11 @@ export default function OperatorDashboardPage() {
             });
         } catch (error: any) {
             console.error('Failed to load dashboard:', error);
+            
+            // Handle rate limit errors specifically
+            if (error.status === 429) {
+                console.error('Rate limit exceeded. Please wait a moment and refresh the page.');
+            }
         } finally {
             setLoading(false);
         }
@@ -169,7 +177,6 @@ export default function OperatorDashboardPage() {
                 {/* Recent Competitions */}
                 <div className="px-4 lg:px-6">
                     <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-lg font-semibold">Recent Competitions</h2>
                         <Button variant="outline" size="sm" asChild>
                             <Link href="/operator/competitions">
                                 View All
@@ -179,55 +186,14 @@ export default function OperatorDashboardPage() {
 
                     <CompetitionsWidget
                         showFilters={false}
-                        showTitle={false}
+                        showTitle={true}
                         maxItems={5}
                         pageSize={5}
                         onLogout={handleLogout}
+                        title="Recent Competitions"
+                        description=""
                     />
                 </div>
-            </div>
-
-            {/* Exportable Audit Reports */}
-            <div className="px-4 lg:px-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="leading-none font-semibold !text-base">Exportable Audit Reports</CardTitle>
-                        <CardDescription className="text-muted-foreground text-sm">
-                            Download compliance reports for regulatory submission or internal review
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                        <div className="flex flex-col sm:flex-row gap-3">
-                            <Button
-                                variant="outline"
-                                className="flex-1"
-                                onClick={() => alert('PDF report generation coming soon. Use JSON export for now.')}
-                            >
-                                <Download className="h-4 w-4 mr-2" />
-                                Full Compliance Report (PDF)
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="flex-1"
-                                onClick={() => alert('Chain integrity proof PDF coming soon.')}
-                            >
-                                <ShieldCheck className="h-4 w-4 mr-2" />
-                                Chain Integrity Proof (PDF)
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="flex-1"
-                                onClick={() => alert('Draw audit bundle export coming soon.')}
-                            >
-                                <FileText className="h-4 w-4 mr-2" />
-                                Draw Audit Bundle (JSON)
-                            </Button>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            PDF reports are formatted for regulatory compliance and include verification signatures.
-                        </p>
-                    </CardContent>
-                </Card>
             </div>
         </DashboardShell>
     );

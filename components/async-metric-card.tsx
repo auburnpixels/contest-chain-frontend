@@ -58,7 +58,17 @@ export function AsyncMetricCard({
         metricCache.set(title, { data: result, timestamp: Date.now() });
       } catch (err: any) {
         console.error(`[AsyncMetricCard] Failed to load ${title}:`, err);
-        setError(err.message || 'Failed to load');
+        
+        // Provide specific error messages for common issues
+        if (err.status === 429) {
+          setError('Rate limit exceeded. Please wait a moment.');
+        } else if (err.status === 401) {
+          setError('Authentication required.');
+        } else if (err.status === 403) {
+          setError('Access denied.');
+        } else {
+          setError(err.message || 'Failed to load');
+        }
       } finally {
         setLoading(false);
       }
@@ -155,7 +165,7 @@ export function AsyncMetricCard({
 
       {displayFooter && (
         <CardFooter className="flex-col items-start gap-2 pt-0">
-          <p className="text-xs text-muted-foreground">{displayFooter}</p>
+          <p>{displayFooter}</p>
         </CardFooter>
       )}
     </Card>

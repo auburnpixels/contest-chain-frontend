@@ -36,7 +36,7 @@ export function DashboardShell({ children, navItems, userRole, userName, onLogou
             )}>
               {userRole === 'operator' ? <LayoutDashboard className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
             </div>
-            <span className="font-bold text-white">Cafaas</span>
+            <span className="font-bold text-white">Veristiq</span>
          </div>
          <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-white hover:bg-zinc-800">
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

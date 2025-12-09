@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 
 const config: Config = {
-  darkMode: "class",
+  darkMode: false, // Disabled - keeping dark: classes for potential future use
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -43,6 +43,18 @@ const config: Config = {
           steel: "#9CA3AF", // Gray 400
           dark: "#111827", // Gray 900
           light: "#F9FAFB", // Gray 50
+        },
+        veristiq: {
+          primaryBlue: '#2D60FF',
+          primaryBlueDark: '#1F3ACC',
+          slate: '#1F2430',
+          slateLight: '#2B303B',
+          white: '#FFFFFF',
+          snow: '#F5F7FA',
+          grey: '#C7CED9',
+          teal: '#0CE2BC',
+          coral: '#FF5F5F',
+          gold: '#FFD66B'
         },
         trust: {
             teal: "#0F766E", // Teal 700 - Trustworthy

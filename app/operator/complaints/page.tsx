@@ -86,9 +86,7 @@ export default function OperatorComplaintsPage() {
 
         <div className="px-4 lg:px-6">
           <ComplaintsWidget
-            showTitle={true}
-            title="All complaints"
-            description="Review issues reported by participants"
+            showTitle={false}
             syncUrlParams={true}
             onLogout={handleLogout}
           />

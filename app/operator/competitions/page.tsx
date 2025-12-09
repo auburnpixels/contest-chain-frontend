@@ -80,9 +80,7 @@ export default function CompetitionsPage() {
 
         <div className="px-4 lg:px-6">
           <CompetitionsWidget 
-            showTitle={true}
-            title="All competitions"
-            description="Monitor and filter your competitions"
+            showTitle={false}
             syncUrlParams={true}
             onLogout={handleLogout}
           />

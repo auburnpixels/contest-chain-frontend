@@ -1,19 +1,17 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/context/AuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const body = Geist({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
-  title: "Cafaas Platform - Fairness & Compliance Engine",
-  description: "Compliance-as-a-Service for UK Prize Competitions",
+  title: "Veristiq - Independent Fairness Verification",
+  description: "A tamper-evident audit trail for prize draws. Prove every draw is fair. Build trust. Stay compliant.",
 };
 
 export default function RootLayout({
@@ -22,22 +20,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en">
       <body
-        className={`${body.variable} font-sans antialiased bg-black text-white`}
+        className={`${inter.variable} font-sans antialiased`}
       >
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-        >
-          <TooltipProvider>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </TooltipProvider>
-        </ThemeProvider>
+        <TooltipProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

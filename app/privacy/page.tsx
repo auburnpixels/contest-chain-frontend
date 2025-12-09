@@ -19,7 +19,7 @@ export default function PrivacyPage() {
                     Introduction
                 </h2>
                 <p>
-                   Cafaas Platform ("we", "our", "us") respects your privacy and is committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website or use our services.
+                   Veristiq ("we", "our", "us") respects your privacy and is committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website or use our services.
                 </p>
             </section>
 

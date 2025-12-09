@@ -32,7 +32,7 @@ export default function HelpPage() {
                   <Book className="h-8 w-8 text-blue-500 mb-2" />
                   <CardTitle className="text-white">Documentation</CardTitle>
                   <CardDescription className="text-muted-foreground">
-                     Technical guides for integrating the Cafaas API.
+                     Technical guides for integrating the Veristiq API.
                   </CardDescription>
                </CardHeader>
             </Card>

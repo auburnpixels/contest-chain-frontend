@@ -50,6 +50,7 @@ export default function AuditsPage() {
                     {/* Draw Audits Widget */}
                     <DrawAuditsWidget
                         showOperator={true}
+                        publicView={true}
                         title="All verified draws"
                         description="A complete, chronological ledger of all competition prize draws conducted through CAFAAS. Each entry is cryptographically validated and publicly available forever."
                     />

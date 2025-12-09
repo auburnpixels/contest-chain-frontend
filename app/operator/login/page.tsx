@@ -55,7 +55,7 @@ export default function OperatorLoginPage() {
             <div className="h-10 w-10 rounded-xl bg-brand-cobalt flex items-center justify-center">
               <Building2 className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold">Cafaas Platform</span>
+            <span className="text-xl font-bold">Veristiq</span>
           </div>
           
           <div className="max-w-md space-y-6">
@@ -67,13 +67,13 @@ export default function OperatorLoginPage() {
             </p>
             
             <div className="space-y-4 pt-8">
-              <div className="flex items-center gap-3 text-sm text-zinc-400">
+              <div className="flex items-center gap-3 text-sm">
                 <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
                   <CheckCircle2 className="h-4 w-4 text-brand-cobalt" />
                 </div>
                 <span>Automated compliance audits</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-zinc-400">
+              <div className="flex items-center gap-3 text-sm">
                 <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
                   <CheckCircle2 className="h-4 w-4 text-brand-cobalt" />
                 </div>
@@ -85,7 +85,7 @@ export default function OperatorLoginPage() {
 
         <div className="relative z-10">
           <p className="text-sm text-zinc-500">
-            &copy; 2025 Cafaas Platform. All rights reserved.
+            &copy; 2025 Veristiq. All rights reserved.
           </p>
         </div>
       </div>

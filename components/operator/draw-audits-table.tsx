@@ -11,10 +11,10 @@ export interface DrawAudit {
   
   // Operator info (only in public page)
   operator?: {
-    uuid: string;
+    uuid: string | null;
     name: string;
     slug: string;
-    url: string;
+    url: string | null;
   } | null;
   
   // Competition info

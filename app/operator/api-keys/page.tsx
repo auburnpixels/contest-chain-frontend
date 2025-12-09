@@ -370,7 +370,7 @@ export default function ApiKeysPage() {
                   <CardContent className="space-y-4">
                       <div>
                           <h4 className=" mb-2 text-sm">1. Include in request headers</h4>
-                          <pre className="bg-muted text-zinc-400 p-4 rounded-md text-xs overflow-x-auto">
+                          <pre className="bg-muted p-4 rounded-md text-xs overflow-x-auto">
                             <code>{`curl -H "X-API-KEY: your_api_key_here" \\ https://api.caas-platform.com/api/v1/operator/competitions`}</code>
                             </pre>
                       </div>
@@ -379,8 +379,8 @@ export default function ApiKeysPage() {
                           <p className="text-sm text-muted-foreground">
                               Use environment variables in your application:
                           </p>
-                          <pre className="bg-muted text-zinc-400 p-4 rounded-md text-xs overflow-x-auto mt-2">
-                <code>Cafaas_API_KEY=your_api_key_here</code>
+                          <pre className="bg-muted p-4 rounded-md text-xs overflow-x-auto mt-2">
+                <code>Veristiq_API_KEY=your_api_key_here</code>
               </pre>
                       </div>
                       <div>

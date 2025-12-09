@@ -179,6 +179,19 @@ export function CompetitionsWidget({
     <div className="space-y-4">
       {/* Table Section with integrated filters */}
       <Card>
+          {showTitle && (
+              <CardHeader>
+                  <div>
+                      <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
+                      {description && (
+                          <CardDescription className="text-muted-foreground text-sm">
+                              {description}
+                          </CardDescription>
+                      )}
+                  </div>
+              </CardHeader>
+          )}
+
         {showFilters && (
           <div className="px-6">
             <div className="flex flex-col gap-4 border-b pb-4">
@@ -269,19 +282,6 @@ export function CompetitionsWidget({
           </div>
         )}
 
-        {showTitle && (
-          <CardHeader>
-            <div className="flex flex-col gap-1.5">
-              <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
-              {description && (
-                <CardDescription className="text-muted-foreground text-sm">
-                  {description}
-                </CardDescription>
-              )}
-            </div>
-          </CardHeader>
-        )}
-
         <CardContent>
           {competitions.length > 0 ? (
             <>
@@ -332,4 +332,5 @@ export function CompetitionsWidget({
     </div>
   );
 }
+
 

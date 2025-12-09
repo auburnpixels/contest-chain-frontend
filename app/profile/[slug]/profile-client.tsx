@@ -34,8 +34,7 @@ export function OperatorProfileClient({ slug }: OperatorProfileClientProps) {
 
     const loadOperator = async () => {
         try {
-            const data = await publicApi.getPublicOperator('b3d719b3-72ff-43c5-9534-30ad0824e854');
-            // const data = await publicApi.getPublicOperator(slug);
+            const data = await publicApi.getPublicOperator(slug);
             setOperator(data);
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : 'Operator not found';
@@ -161,6 +160,7 @@ export function OperatorProfileClient({ slug }: OperatorProfileClientProps) {
                         <DrawAuditsWidget
                             operatorId={op.id}
                             showOperator={false}
+                            publicView={true}
                             title="All verified draws"
                             description="Complete audit history for this operator. Each draw is cryptographically verified and publicly available."
                         />

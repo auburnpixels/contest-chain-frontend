@@ -95,6 +95,7 @@ export default function OperatorDrawsPage() {
           <DrawAuditsWidget 
             showOperator={false}
             showTitle={false}
+            publicView={false}
             title="All draw audits"
             description="Cryptographically verified draw results"
           />

@@ -6,28 +6,26 @@ import { TrustStrip } from "@/components/marketing/TrustStrip";
 import { ProblemSection } from "@/components/marketing/ProblemSection";
 import { SolutionSection } from "@/components/marketing/SolutionSection";
 import { HowItWorksSection } from "@/components/marketing/HowItWorksSection";
-import { FeatureGridSection } from "@/components/marketing/FeatureGridSection";
-import { ExampleAuditSection } from "@/components/marketing/ExampleAuditSection";
-import { PricingSection } from "@/components/marketing/PricingSection";
-import { UseCasesSection } from "@/components/marketing/UseCasesSection";
-import { FaqSection } from "@/components/marketing/FaqSection";
+import { ProductScreenshotSection } from "@/components/marketing/ProductScreenshotSection";
+import { FeaturesChecklistSection } from "@/components/marketing/FeaturesChecklistSection";
+import { ComplianceSection } from "@/components/marketing/ComplianceSection";
+import { PricingPreviewSection } from "@/components/marketing/PricingPreviewSection";
 import { FinalCtaSection } from "@/components/marketing/FinalCtaSection";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
+    <div className="min-h-screen bg-white font-sans text-[var(--veristiq-slate)]">
       <SiteHeader />
-      <main>
+      <main className="pt-20"> {/* Add padding-top to account for fixed header */}
         <HeroSection />
         <TrustStrip />
         <ProblemSection />
         <SolutionSection />
         <HowItWorksSection />
-        <FeatureGridSection />
-        <ExampleAuditSection />
-        <PricingSection />
-        <UseCasesSection />
-        <FaqSection />
+        <ProductScreenshotSection />
+        <FeaturesChecklistSection />
+        <ComplianceSection />
+        <PricingPreviewSection />
         <FinalCtaSection />
       </main>
       <SiteFooter />

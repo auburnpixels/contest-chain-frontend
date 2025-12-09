@@ -1,65 +1,69 @@
-import { PenTool, Database, RefreshCw, FileCheck2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export function HowItWorksSection() {
-  const steps = [
-    {
-      title: "Operators create a competition",
-      desc: "You register competitions through the CAFAAS API or dashboard.",
-      icon: PenTool,
-    },
-    {
-      title: "Entries are recorded and verified",
-      desc: "Each paid or free entry is logged, eligibility validated, and added to the chain.",
-      icon: Database,
-    },
-    {
-      title: "Draw is executed with deterministic randomisation",
-      desc: "CAFAAS generates a random seed, hashes it, and selects a winner. The process is fully auditable and cannot be manipulated.",
-      icon: RefreshCw,
-    },
-    {
-      title: "A public audit page is published instantly",
-      desc: "Players, regulators, partners — anyone — can verify the integrity of the draw.",
-      icon: FileCheck2,
-    },
-  ];
-
   return (
-    <section className="py-24 bg-zinc-50 dark:bg-zinc-900/50 transition-colors duration-300">
-      <div className="container px-4 md:px-6 mx-auto">
-        
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white mb-4">
-            How CAFAAS ensures fairness.
-          </h2>
+    <section className="py-24 bg-white overflow-hidden">
+      <div className="container mx-auto px-6 max-w-7xl">
+         <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h2 className="text-3xl font-semibold text-[var(--veristiq-slate)]">How It Works</h2>
         </div>
 
-        <div className="relative grid md:grid-cols-4 gap-8">
-          {/* Connecting Line (Desktop) */}
-          <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-zinc-300 dark:via-zinc-700 to-transparent -z-0" />
-
-          {steps.map((step, idx) => (
-            <div key={idx} className="relative flex flex-col items-center text-center group z-10">
-              <div className="h-24 w-24 rounded-full bg-white dark:bg-black border-4 border-zinc-100 dark:border-zinc-800 flex items-center justify-center mb-6 shadow-sm group-hover:border-brand-cobalt transition-colors duration-300">
-                <step.icon className="h-10 w-10 text-brand-cobalt" />
-              </div>
-              
-              <div className="bg-white dark:bg-black p-1 inline-block rounded-full px-4 mb-4 border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
-                Step {idx + 1}
-              </div>
-
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">
-                {step.title}
-              </h3>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed max-w-[250px]">
-                {step.desc}
-              </p>
+        <div className="grid md:grid-cols-3 gap-8 relative">
+            {/* Step 1 */}
+            <div className="relative z-10 group">
+                <div className="bg-[var(--veristiq-snow)] rounded-xl p-8 h-full border border-gray-100 transition-all duration-500 hover:shadow-lg hover:border-blue-200 hover:-translate-y-1">
+                    <div className="w-10 h-10 bg-[var(--veristiq-primary-blue)] text-white rounded-full flex items-center justify-center font-bold text-lg mb-6 shadow-md shadow-blue-500/20 group-hover:scale-110 transition-transform duration-300">1</div>
+                    <h3 className="text-xl font-semibold text-[var(--veristiq-slate)] mb-4">Log Entries & Events</h3>
+                    <p className="text-[var(--veristiq-slate-light)] mb-6">
+                        Operators send ticket entries and competition events to Veristiq via API. Everything is logged immutably in real-time.
+                    </p>
+                    <div className="bg-white p-3 rounded border border-gray-200 font-mono text-xs text-gray-500 shadow-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                        POST /api/v1/entries<br/>
+                        {`{ "ticket": "A105", "user_hash": "..." }`}
+                    </div>
+                </div>
             </div>
-          ))}
-        </div>
 
+             {/* Step 2 */}
+            <div className="relative z-10 group">
+                <div className="bg-[var(--veristiq-snow)] rounded-xl p-8 h-full border border-gray-100 transition-all duration-500 hover:shadow-lg hover:border-blue-200 hover:-translate-y-1 delay-100">
+                     <div className="w-10 h-10 bg-[var(--veristiq-primary-blue)] text-white rounded-full flex items-center justify-center font-bold text-lg mb-6 shadow-md shadow-blue-500/20 group-hover:scale-110 transition-transform duration-300">2</div>
+                    <h3 className="text-xl font-semibold text-[var(--veristiq-slate)] mb-4">Execute Draw</h3>
+                    <p className="text-[var(--veristiq-slate-light)] mb-6">
+                        The draw is executed atomically using our provably fair RNG. The result, hash, and timestamp are locked into the chain.
+                    </p>
+                     <div className="bg-white p-3 rounded border border-gray-200 font-mono text-xs text-gray-500 shadow-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                        Draw #8821 Executed<br/>
+                        Winner: Ticket #492<br/>
+                        Hash: 7x9...2a1
+                    </div>
+                </div>
+            </div>
+
+             {/* Step 3 */}
+            <div className="relative z-10 group">
+                <div className="bg-[var(--veristiq-snow)] rounded-xl p-8 h-full border border-gray-100 transition-all duration-500 hover:shadow-lg hover:border-blue-200 hover:-translate-y-1 delay-200">
+                     <div className="w-10 h-10 bg-[var(--veristiq-primary-blue)] text-white rounded-full flex items-center justify-center font-bold text-lg mb-6 shadow-md shadow-blue-500/20 group-hover:scale-110 transition-transform duration-300">3</div>
+                    <h3 className="text-xl font-semibold text-[var(--veristiq-slate)] mb-4">Verify Result</h3>
+                    <p className="text-[var(--veristiq-slate-light)] mb-6">
+                        Anyone can verify the result on a public audit page. Cryptographic proof ensures the winner was picked fairly from the full pool.
+                    </p>
+                     <div className="flex items-center gap-2 bg-green-50 p-3 rounded border border-green-200 text-green-700 text-sm font-medium shadow-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
+                        Verification Successful
+                    </div>
+                </div>
+            </div>
+            
+            {/* Arrows (Hidden on mobile) */}
+            <div className="hidden md:block absolute top-12 left-[30%] text-gray-300 animate-pulse">
+                <ArrowRight className="w-8 h-8" />
+            </div>
+             <div className="hidden md:block absolute top-12 left-[63%] text-gray-300 animate-pulse delay-500">
+                <ArrowRight className="w-8 h-8" />
+            </div>
+        </div>
       </div>
     </section>
   );
 }
-

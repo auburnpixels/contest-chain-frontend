@@ -4,13 +4,8 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from '@/components/ui/
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from '@/components/ui/tooltip';
-import {CheckCircle, AlertCircle, XCircle, Gift, Activity,ShieldCheck} from 'lucide-react';
-import {getStatusIndicatorBadge} from '@/lib/competition-status';
-import {formatDrawDate} from '@/lib/date-utils';
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import {Badge} from "@/components/ui/badge";
-import {Separator} from "@/components/ui/separator";
-import { AttentionTooltip } from './attention-tooltip';
+import {CheckCircle, AlertCircle, XCircle} from 'lucide-react';
+import {CompetitionDetailsView} from '@/components/competition-details-view';
 import {AttentionIssue, getCompetitionAttentionItems} from "@/lib/attention-utils";
 
 export interface OperatorCompetitionPrize {
@@ -117,8 +112,6 @@ export const getComplianceIndicator = (competition: OperatorCompetition) => {
 };
 
 export function CompetitionDetailsDialog({competition, open, onOpenChange}: CompetitionDetailsDialogProps) {
-    const attentionItems = competition ? (competition.issues || competition.attention_issues || getCompetitionAttentionItems(competition)) : [];
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
@@ -128,100 +121,7 @@ export function CompetitionDetailsDialog({competition, open, onOpenChange}: Comp
                     </DialogTitle>
                 </DialogHeader>
 
-                {competition && (
-                    <div className="space-y-4 text-sm">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-1 items-start">
-                                <h3 className="text-sm font-medium text-muted-foreground mb-2">Name</h3>
-                                {competition?.name || competition?.name}
-                            </div>
-
-                            <div className="flex flex-col gap-1 items-start">
-                                <h3 className="text-sm font-medium text-muted-foreground mb-2">External ID</h3>
-                                    {competition.external_id || '—'}
-                            </div>
-                        </div>
-
-                        <Separator />
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-1">
-                                <label className="text-sm font-medium text-muted-foreground">Status</label>
-                                <div className="mt-1">
-                                    {getStatusIndicatorBadge(competition)}
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col gap-1">
-                                <label className="text-sm font-medium text-muted-foreground">Entries</label>
-                                <p className="mt-1 text-sm font-medium">
-                                    {(competition.entries_count || 0).toLocaleString()} <span className="text-muted-foreground">({competition.free_entries_count} free)</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <Separator />
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-1">
-                                <label className="text-sm font-medium text-muted-foreground">Maximum entries</label>
-                                <p className="mt-1 text-sm">
-                                    {Number(competition.ticket_quantity || competition.max_tickets || 0).toLocaleString()}
-                                </p>
-                            </div>
-
-                            <div className="flex flex-col gap-1">
-                                <label className="text-sm font-medium text-muted-foreground">Issues</label>
-                                <div>
-                                    <AttentionTooltip attentionItems={attentionItems} />
-                                </div>
-                            </div>
-                        </div>
-
-                        <Separator />
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-1">
-                                <label className="text-sm font-medium text-muted-foreground">Draw At</label>
-                                <div className="mt-1">
-                                    {formatDrawDate(competition)}
-                                </div>
-                            </div>
-                        </div>
-
-                        <Separator />
-
-                        <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium text-muted-foreground">Prizes ({competition.prizes?.length || 0})</label>
-
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Name</TableHead>
-                                        <TableHead>Winner</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {competition.prizes
-                                        ?.slice()
-                                        .sort((a, b) => a.draw_order - b.draw_order)
-                                        .map((prize) => (
-                                            <TableRow key={prize.id}>
-                                                <TableCell>{prize.name}</TableCell>
-                                                <TableCell>
-                                                    {prize.winning_ticket ? (
-                                                        prize.winning_ticket.external_id
-                                                    ) : (
-                                                        <span className="text-sm text-muted-foreground">Not drawn yet</span>
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    </div>
-                )}
+                {competition && <CompetitionDetailsView competition={competition} />}
 
                 <div className="flex items-center gap-2 mt-4">
                     <Link href={`/operator/audits?competition=${competition?.id}`} className="flex-1">

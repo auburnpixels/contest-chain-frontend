@@ -11,6 +11,7 @@ import { useDialog } from '@/hooks/useDialog';
 import { TablePagination } from '@/components/table-pagination';
 import { DrawAuditsTable, DrawAudit } from '@/components/operator/draw-audits-table';
 import { DrawAuditDetailsDialog } from '@/components/operator/draw-audit-details-dialog';
+import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 
 interface Operator {
   id: number;
@@ -28,29 +29,33 @@ interface Competition {
 
 export interface DrawAuditsWidgetProps {
   operatorId?: string;           // Filter to specific operator (hides operator filter)
+  competitionId?: string;        // Filter to specific competition (pre-selects competition)
   showOperator?: boolean;         // Show operator column (default: false)
   title?: string;                 // Section title (default: "Draw Audits")
   description?: string;           // Section description
   showFilters?: boolean;          // Show filter section (default: true)
   showTitle?: boolean;            // Show title section (default: true)
   pageSize?: number;              // Initial page size (default: 50)
+  publicView?: boolean;           // Public view mode (default: false)
 }
 
 export function DrawAuditsWidget({
   operatorId,
+  competitionId,
   showOperator = false,
   title = 'Draw Audits',
   description = 'Cryptographically verified draw results',
   showFilters = true,
   showTitle = true,
   pageSize = 50,
+  publicView = false,
 }: DrawAuditsWidgetProps) {
   const [loading, setLoading] = useState(true);
   const [audits, setAudits] = useState<DrawAudit[]>([]);
   const [operators, setOperators] = useState<Operator[]>([]);
   const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [selectedOperator, setSelectedOperator] = useState<string>(operatorId || 'all');
-  const [selectedCompetition, setSelectedCompetition] = useState<string>('all');
+  const [selectedCompetition, setSelectedCompetition] = useState<string>(competitionId || 'all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -64,20 +69,28 @@ export function DrawAuditsWidget({
     }
   }, [operatorId, showFilters]);
 
+  // Load competitions when operatorId prop is provided and competitionId is also provided
+  useEffect(() => {
+    if (operatorId && competitionId) {
+      // Auto-load competitions list for the operator so the competition filter shows correctly
+      loadCompetitions(operatorId);
+    }
+  }, [operatorId, competitionId]);
+
   // Load audits when filters or page change
   useEffect(() => {
     loadAudits();
-  }, [selectedOperator, selectedCompetition, currentPage, operatorId]);
+  }, [selectedOperator, selectedCompetition, currentPage, operatorId, competitionId]);
 
   // Load competitions when operator is selected
   useEffect(() => {
-    if (selectedOperator && selectedOperator !== 'all') {
+    if (selectedOperator && selectedOperator !== 'all' && !operatorId) {
       loadCompetitions(selectedOperator);
-    } else {
+    } else if (!operatorId) {
       setCompetitions([]);
       setSelectedCompetition('all');
     }
-  }, [selectedOperator]);
+  }, [selectedOperator, operatorId]);
 
   const loadOperators = async () => {
     try {
@@ -126,13 +139,15 @@ export function DrawAuditsWidget({
     if (!operatorId) {
       setSelectedOperator('all');
     }
-    setSelectedCompetition('all');
+    if (!competitionId) {
+      setSelectedCompetition('all');
+    }
     setCurrentPage(1);
   };
 
   const hasActiveFilters = 
     (!operatorId && selectedOperator !== 'all') || 
-    selectedCompetition !== 'all';
+    (!competitionId && selectedCompetition !== 'all');
 
   if (loading && audits.length === 0) {
     return (
@@ -173,26 +188,29 @@ export function DrawAuditsWidget({
                               </div>
                           )}
 
-                          <div className="flex flex-col gap-1.5 flex-1">
-                              <label className="text-sm font-medium">Competition</label>
-                              <Select
-                                  value={selectedCompetition}
-                                  onValueChange={setSelectedCompetition}
-                                  disabled={!operatorId && (!selectedOperator || selectedOperator === 'all')}
-                              >
-                                  <SelectTrigger className="w-full">
-                                      <SelectValue placeholder="All" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                      <SelectItem value="all">All Competitions</SelectItem>
-                                      {competitions.map((competition) => (
-                                          <SelectItem key={competition.id} value={competition.id}>
-                                              {competition.name}
-                                          </SelectItem>
-                                      ))}
-                                  </SelectContent>
-                              </Select>
-                          </div>
+                          {/* Only show competition filter if no competitionId prop is provided */}
+                          {!competitionId && (
+                              <div className="flex flex-col gap-1.5 flex-1">
+                                  <label className="text-sm font-medium">Competition</label>
+                                  <Select
+                                      value={selectedCompetition}
+                                      onValueChange={setSelectedCompetition}
+                                      disabled={!operatorId && (!selectedOperator || selectedOperator === 'all')}
+                                  >
+                                      <SelectTrigger className="w-full">
+                                          <SelectValue placeholder="All" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                          <SelectItem value="all">All Competitions</SelectItem>
+                                          {competitions.map((competition) => (
+                                              <SelectItem key={competition.id} value={competition.id}>
+                                                  {competition.name}
+                                              </SelectItem>
+                                          ))}
+                                      </SelectContent>
+                                  </Select>
+                              </div>
+                          )}
 
                           <Button
                               variant="secondary"
@@ -229,15 +247,40 @@ export function DrawAuditsWidget({
                   audits={audits}
                   showOperator={showOperator}
                   renderActions={(audit) => (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => dialog.open(audit)}
-                      className="hover:bg-primary/10 hover:text-primary gap-1.5 font-medium"
-                    >
-                      Verify
-                      <ArrowRight className="h-3.5 w-3.5 opacity-70" />
-                    </Button>
+                    <OperatorActionsMenu
+                      actions={
+                        !publicView
+                          ? [
+                              {
+                                label: 'View details',
+                                onSelect: () => dialog.open(audit),
+                              },
+                                {
+                                    label: 'View public audit',
+                                    href: `/audit/${audit.id}`,
+                                },
+                            ]
+                          : [
+                              {
+                                label: 'View audit',
+                                href: `/audit/${audit.id}`,
+                              },
+                              ...(audit.competition
+                                ? [
+                                    {
+                                      label: 'View competition audits',
+                                      href: `/competition/${audit.competition.id}`,
+                                    },
+                                  ]
+                                : []),
+                                {
+
+                                    label: 'View operator',
+                                    href: `/profile/${audit.operator.slug}`,
+                                }
+                            ]
+                      }
+                    />
                   )}
                 />
               </div>

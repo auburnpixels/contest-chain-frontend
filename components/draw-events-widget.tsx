@@ -426,6 +426,20 @@ export function DrawEventsWidget({
           </div>
         )}
 
+          {/* Table */}
+          {showTitle && (
+              <CardHeader>
+                  <div className="flex items-center justify-between pb-4 border-b">
+                      <div className="flex flex-col gap-1.5">
+                          <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
+                          <CardDescription className="text-muted-foreground text-sm">
+                              {description}
+                          </CardDescription>
+                      </div>
+                  </div>
+              </CardHeader>
+          )}
+
         {/* Filters */}
         {showFilters && (
           <div className="px-6 pt-6 pb-4 border-b">
@@ -571,20 +585,6 @@ export function DrawEventsWidget({
               </div>
             )}
           </div>
-        )}
-
-        {/* Table */}
-        {showTitle && (
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-1.5">
-                <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
-                <CardDescription className="text-muted-foreground text-sm">
-                  {description}
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
         )}
 
         <CardContent className={showTitle ? '' : 'pt-6'}>
@@ -1027,4 +1027,5 @@ export function DrawEventsWidget({
     </div>
   );
 }
+
 

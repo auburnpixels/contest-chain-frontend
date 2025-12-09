@@ -18,7 +18,7 @@ export default function ApiReferencePage() {
             API Reference
          </h1>
          <p className="text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Complete documentation for the Cafaas Platform REST API.
+            Complete documentation for the Veristiq REST API.
             Manage competitions, process entries, and verify results programmatically.
          </p>
          <div className="flex justify-center gap-4">
