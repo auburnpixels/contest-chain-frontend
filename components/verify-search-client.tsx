@@ -15,7 +15,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { publicApi } from '@/lib/api/client';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, ShieldCheck } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Operator {
   id: string;
@@ -87,10 +88,10 @@ export default function VerifySearchClient() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[var(--veristiq-slate)]">
         <SiteHeader />
-        <main className="container mx-auto px-4 py-16 flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-brand-cobalt" />
+        <main className="container mx-auto px-4 py-32 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-white" />
         </main>
         <SiteFooter />
       </div>
@@ -98,118 +99,108 @@ export default function VerifySearchClient() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
+    <div className="min-h-screen bg-[var(--veristiq-snow)] font-sans text-[var(--veristiq-slate)] flex flex-col">
       <SiteHeader />
-      <main className="container mx-auto px-6 py-24 max-w-2xl min-h-[80vh] flex flex-col justify-center">
-        
-        <div className="mb-12 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">Verify Your Ticket</h1>
-            <p className="text-xl text-zinc-400">
-              Search for your competition entry to verify its status and see if you won.
-            </p>
-        </div>
+      
+      {/* Hero Background */}
+      <div className="absolute top-0 inset-x-0 h-[600px] bg-[var(--veristiq-slate)] z-0 overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      </div>
 
-        <div className="bg-zinc-900/50 border border-white/10 rounded-2xl p-8 shadow-2xl backdrop-blur-xl">
-            <form onSubmit={handleSearch} className="space-y-8">
-              {/* Operator Selection */}
-              <div className="space-y-3">
-                <Label htmlFor="operator" className="text-base font-medium text-white flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-cobalt/20 text-brand-cobalt text-xs border border-brand-cobalt/30">1</span>
-                    Select Operator
-                </Label>
-                <Select value={selectedOperator} onValueChange={setSelectedOperator}>
-                  <SelectTrigger id="operator" className="h-12 bg-black/50 border-white/10 text-white focus:ring-brand-cobalt/50">
-                    <SelectValue placeholder="Choose the competition operator..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-white/10 text-white">
-                    {operators.map((op) => (
-                      <SelectItem key={op.id} value={op.id} className="focus:bg-zinc-800 focus:text-white cursor-pointer">
-                        {op.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Competition Selection */}
-              <div className="space-y-3">
-                <Label htmlFor="competition" className="text-base font-medium text-white flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-cobalt/20 text-brand-cobalt text-xs border border-brand-cobalt/30">2</span>
-                    Select Competition
-                </Label>
-                <Select 
-                  value={selectedCompetition} 
-                  onValueChange={setSelectedCompetition}
-                  disabled={!selectedOperator || loadingCompetitions}
-                >
-                  <SelectTrigger id="competition" className="h-12 bg-black/50 border-white/10 text-white focus:ring-brand-cobalt/50 disabled:opacity-50">
-                    <SelectValue placeholder={
-                      !selectedOperator 
-                        ? "Select an operator first..." 
-                        : loadingCompetitions 
-                        ? "Loading competitions..." 
-                        : "Choose your competition..."
-                    } />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-white/10 text-white">
-                    {competitions.map((comp) => (
-                      <SelectItem key={comp.id} value={comp.id} className="focus:bg-zinc-800 focus:text-white cursor-pointer">
-                        {comp.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Ticket Number Input */}
-              <div className="space-y-3">
-                <Label htmlFor="ticketNumber" className="text-base font-medium text-white flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-cobalt/20 text-brand-cobalt text-xs border border-brand-cobalt/30">3</span>
-                    Enter Ticket Number
-                </Label>
-                <Input
-                  id="ticketNumber"
-                  type="text"
-                  placeholder="e.g., 42 or TXN-12345"
-                  value={ticketNumber}
-                  onChange={(e) => setTicketNumber(e.target.value)}
-                  disabled={!selectedCompetition}
-                  className="h-12 bg-black/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-brand-cobalt focus:ring-brand-cobalt/50"
-                />
-                <p className="text-sm text-zinc-500 pl-1">
-                  This is the ticket ID you received when entering the competition
+      <main className="flex-1 container mx-auto px-6 py-32 max-w-xl relative z-10 flex flex-col justify-center">
+            <div className="text-center mb-10">
+                <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
+                    <ShieldCheck className="w-8 h-8 text-[var(--veristiq-teal)]" />
+                </div>
+                <h1 className="text-4xl font-bold text-white mb-4 tracking-tight">Verify Your Ticket</h1>
+                <p className="text-gray-300 text-lg">
+                    Check the status of your entry and view independent audit proofs.
                 </p>
-              </div>
+            </div>
 
-              {/* Search Button */}
-              <Button 
-                type="submit" 
-                className="w-full h-12 text-lg font-semibold bg-brand-cobalt hover:bg-brand-cobalt/90 text-white shadow-lg shadow-brand-cobalt/20 transition-all hover:scale-[1.02]" 
-                disabled={!canSearch}
-              >
-                <Search className="mr-2 h-5 w-5" />
-                Verify Ticket
-              </Button>
-            </form>
-        </div>
+            <Card className="border-gray-200 shadow-2xl bg-white/95 backdrop-blur-sm">
+                <CardHeader>
+                    <CardTitle>Ticket Search</CardTitle>
+                    <CardDescription>Enter your ticket details below</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSearch} className="space-y-6">
+                        {/* Operator Selection */}
+                        <div className="space-y-2">
+                            <Label htmlFor="operator">1. Select Operator</Label>
+                            <Select value={selectedOperator} onValueChange={setSelectedOperator}>
+                                <SelectTrigger id="operator" className="h-11">
+                                    <SelectValue placeholder="Choose the competition operator..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {operators.map((op) => (
+                                    <SelectItem key={op.id} value={op.id}>
+                                        {op.name}
+                                    </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-        {/* Help Text */}
-        <div className="mt-8 text-center text-sm text-zinc-500">
-          <p>
-            Don&apos;t have your ticket number? Check your confirmation email or contact the competition operator.
-          </p>
-        </div>
+                        {/* Competition Selection */}
+                        <div className="space-y-2">
+                            <Label htmlFor="competition">2. Select Competition</Label>
+                            <Select 
+                                value={selectedCompetition} 
+                                onValueChange={setSelectedCompetition}
+                                disabled={!selectedOperator || loadingCompetitions}
+                            >
+                                <SelectTrigger id="competition" className="h-11">
+                                    <SelectValue placeholder={
+                                    !selectedOperator 
+                                        ? "Select an operator first..." 
+                                        : loadingCompetitions 
+                                        ? "Loading competitions..." 
+                                        : "Choose your competition..."
+                                    } />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {competitions.map((comp) => (
+                                    <SelectItem key={comp.id} value={comp.id}>
+                                        {comp.name}
+                                    </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Ticket Number */}
+                        <div className="space-y-2">
+                            <Label htmlFor="ticketNumber">3. Enter Ticket Number</Label>
+                            <Input
+                                id="ticketNumber"
+                                type="text"
+                                placeholder="e.g., 42 or TXN-12345"
+                                value={ticketNumber}
+                                onChange={(e) => setTicketNumber(e.target.value)}
+                                disabled={!selectedCompetition}
+                                className="h-11 font-mono"
+                            />
+                        </div>
+
+                        <Button 
+                            type="submit" 
+                            className="w-full h-12 text-base bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white shadow-md transition-all mt-2" 
+                            disabled={!canSearch}
+                        >
+                            <Search className="mr-2 h-4 w-4" />
+                            Verify Ticket
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+
+            <p className="text-center text-sm text-gray-500 mt-8 font-medium">
+                Don't have your ticket number? Check your confirmation email or contact the competition operator directly.
+            </p>
       </main>
       <SiteFooter />
     </div>
   );
 }
-
-
-
-
-
-
-
-
-

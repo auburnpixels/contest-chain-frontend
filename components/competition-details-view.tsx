@@ -168,3 +168,4 @@ export function CompetitionDetailsView({ competition }: CompetitionDetailsViewPr
 }
 
 
+

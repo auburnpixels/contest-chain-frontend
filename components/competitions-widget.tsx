@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { operatorApi } from '@/lib/api/client';
-import { Trophy, X, RefreshCw } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { useDialog } from '@/hooks/useDialog';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { PaginationControls } from '@/components/pagination-controls';
 import { CompetitionsTable } from '@/components/operator/competitions-table';
 import { CompetitionDetailsDialog, OperatorCompetition } from '@/components/operator/competition-details-dialog';
 import { handleApiError } from '@/lib/error-handler';
-import { Badge } from '@/components/ui/badge';
 
 export interface CompetitionsWidgetProps {
   title?: string;                 // Section title (default: "Competitions")
@@ -63,6 +62,10 @@ export function CompetitionsWidget({
     status: '',
   });
 
+  // Debounced filter values for text inputs (reduces API calls while typing)
+  const debouncedName = useDebouncedValue(filters.name, 500);
+  const debouncedExternalId = useDebouncedValue(filters.external_id, 500);
+
   // Initialize from URL parameters if syncUrlParams is enabled
   useEffect(() => {
     if (syncUrlParams && searchParams) {
@@ -81,19 +84,19 @@ export function CompetitionsWidget({
     }
   }, [syncUrlParams, searchParams, initialPageSize]);
 
-  // Load competitions when initialized or filters change
+  // Load competitions when initialized or filters change (using debounced values for text inputs)
   useEffect(() => {
     if (initialized) {
       loadCompetitions();
     }
-  }, [initialized, page, pageSize, filters.external_id, filters.name, filters.status]);
+  }, [initialized, page, pageSize, debouncedExternalId, debouncedName, filters.status]);
 
-  // Update URL if syncUrlParams is enabled
+  // Update URL if syncUrlParams is enabled (using debounced values for text inputs)
   useEffect(() => {
     if (initialized && syncUrlParams) {
       updateURL();
     }
-  }, [initialized, syncUrlParams, page, pageSize, filters.external_id, filters.name, filters.status]);
+  }, [initialized, syncUrlParams, page, pageSize, debouncedExternalId, debouncedName, filters.status]);
 
   const updateURL = () => {
     if (!syncUrlParams) return;
@@ -101,8 +104,8 @@ export function CompetitionsWidget({
     const params = new URLSearchParams();
     if (page > 1) params.set('page', page.toString());
     if (pageSize !== initialPageSize) params.set('per_page', pageSize.toString());
-    if (filters.external_id) params.set('external_id', filters.external_id);
-    if (filters.name) params.set('name', filters.name);
+    if (debouncedExternalId) params.set('external_id', debouncedExternalId);
+    if (debouncedName) params.set('name', debouncedName);
     if (filters.status) params.set('status', filters.status);
 
     const queryString = params.toString();
@@ -117,8 +120,8 @@ export function CompetitionsWidget({
         per_page: maxItems || pageSize,
       };
 
-      if (filters.external_id) params.external_id = filters.external_id;
-      if (filters.name) params.name = filters.name;
+      if (debouncedExternalId) params.external_id = debouncedExternalId;
+      if (debouncedName) params.name = debouncedName;
       if (filters.status) params.status = filters.status;
 
       const competitionsData = await operatorApi.getCompetitions(params);
@@ -194,7 +197,7 @@ export function CompetitionsWidget({
 
         {showFilters && (
           <div className="px-6">
-            <div className="flex flex-col gap-4 border-b pb-4">
+            <div className="border-b pb-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor="name-filter" className="text-sm font-medium">Name</Label>
@@ -223,61 +226,28 @@ export function CompetitionsWidget({
                     onValueChange={(value) => handleFilterChange('status', value === 'all' ? '' : value)}
                   >
                     <SelectTrigger id="status-filter">
-                      <SelectValue placeholder="All Statuses" />
+                      <SelectValue placeholder="All statuses" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="all">All statuses</SelectItem>
                       <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="awaiting_draw">Awaiting Draw</SelectItem>
+                      <SelectItem value="awaiting_draw">Awaiting draw</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="flex flex-col gap-1.5 justify-end">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleReset}
-                    disabled={!hasActiveFilters}
-                    className="w-full gap-2"
-                  >
-                    <RefreshCw className="h-3 w-3" />
-                    Reset
-                  </Button>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={handleReset}
+                      className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+                    >
+                      Reset filters
+                    </button>
+                  )}
                 </div>
               </div>
-
-              {/* Active Filters */}
-              {hasActiveFilters && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm text-muted-foreground">Active filters:</span>
-                  {filters.name && (
-                    <Badge variant="secondary" className="gap-1">
-                      Name: {filters.name}
-                      <button onClick={() => handleFilterChange('name', '')} className="ml-1 hover:text-foreground">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  {filters.external_id && (
-                    <Badge variant="secondary" className="gap-1">
-                      External ID: {filters.external_id}
-                      <button onClick={() => handleFilterChange('external_id', '')} className="ml-1 hover:text-foreground">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  {filters.status && (
-                    <Badge variant="secondary" className="gap-1">
-                      Status: {filters.status}
-                      <button onClick={() => handleFilterChange('status', '')} className="ml-1 hover:text-foreground">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -332,5 +302,6 @@ export function CompetitionsWidget({
     </div>
   );
 }
+
 
 

@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -10,12 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { operatorApi } from '@/lib/api/client';
-import { MessageSquare, X, RefreshCw } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { PaginationControls } from '@/components/pagination-controls';
 import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { getComplaintStatusBadge, formatComplaintCategory, type Complaint } from '@/lib/complaint-status';
 import { dateFormatters } from "@/lib/date-utils";
 import { Separator } from "@/components/ui/separator";
+import { SearchableSelect, SearchableSelectOption } from '@/components/ui/searchable-select';
 
 export interface ComplaintsWidgetProps {
   title?: string;                 // Section title (default: "Complaints")
@@ -40,7 +40,8 @@ export function ComplaintsWidget({
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
-  const [competitions, setCompetitions] = useState<any[]>([]);
+  const [competitions, setCompetitions] = useState<SearchableSelectOption[]>([]);
+  const [competitionsLoading, setCompetitionsLoading] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialized, setInitialized] = useState(!syncUrlParams);
@@ -118,14 +119,26 @@ export function ComplaintsWidget({
     router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const loadCompetitions = async () => {
+  const loadCompetitions = useCallback(async (search: string = '') => {
     try {
-      const competitionsData = await operatorApi.getCompetitions({ per_page: 1000 });
-      setCompetitions(competitionsData.data || []);
+      setCompetitionsLoading(true);
+      const competitionsData = await operatorApi.getCompetitions({ 
+        per_page: 50,
+        name: search || undefined,
+      });
+      const options: SearchableSelectOption[] = (competitionsData.data || [])
+        .filter((c: any) => c.uuid || c.id)
+        .map((c: any) => ({
+          value: c.uuid || c.id,
+          label: c.name,
+        }));
+      setCompetitions(options);
     } catch (error) {
       console.error('Failed to load competitions:', error);
+    } finally {
+      setCompetitionsLoading(false);
     }
-  };
+  }, []);
 
   const loadComplaints = async () => {
     setLoading(true);
@@ -213,28 +226,21 @@ export function ComplaintsWidget({
 
         {showFilters && (
           <div className="px-6">
-            <div className="flex flex-col gap-4 border-b pb-4">
+            <div className="border-b pb-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
-                  <Select
+                  <SearchableSelect
                     value={filters.competition || 'all'}
                     onValueChange={(value) => handleFilterChange('competition', value)}
-                  >
-                    <SelectTrigger id="competition-filter" className="w-full">
-                      <SelectValue placeholder="All competitions" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All competitions</SelectItem>
-                      {competitions
-                        .filter((competition) => competition.uuid || competition.id)
-                        .map((competition) => (
-                          <SelectItem key={competition.uuid || competition.id} value={competition.uuid || competition.id}>
-                            {competition.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
+                    onSearch={loadCompetitions}
+                    options={competitions}
+                    placeholder="All competitions"
+                    searchPlaceholder="Search competitions..."
+                    emptyText="No competitions found."
+                    loading={competitionsLoading}
+                    allOptionLabel="All competitions"
+                  />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
@@ -255,41 +261,16 @@ export function ComplaintsWidget({
                 </div>
 
                 <div className="flex flex-col gap-1.5 justify-end">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleReset}
-                    disabled={!hasActiveFilters}
-                    className="w-full gap-2"
-                  >
-                    <RefreshCw className="h-3 w-3" />
-                    Reset
-                  </Button>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={handleReset}
+                      className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+                    >
+                      Reset filters
+                    </button>
+                  )}
                 </div>
               </div>
-
-              {/* Active Filters */}
-              {hasActiveFilters && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm text-muted-foreground">Active filters:</span>
-                  {filters.competition && (
-                    <Badge variant="secondary" className="gap-1">
-                      Competition: {competitions.find(c => (c.uuid || c.id) === filters.competition)?.name || filters.competition}
-                      <button onClick={() => handleFilterChange('competition', '')} className="ml-1 hover:text-foreground">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  {filters.status && (
-                    <Badge variant="secondary" className="gap-1">
-                      Status: {filters.status}
-                      <button onClick={() => handleFilterChange('status', '')} className="ml-1 hover:text-foreground">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         )}

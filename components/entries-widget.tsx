@@ -1,18 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { operatorApi } from '@/lib/api/client';
-import { Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { EntriesTable, OperatorEntry } from '@/components/operator/entries-table';
 import { PaginationControls } from '@/components/pagination-controls';
 import { handleApiError } from '@/lib/error-handler';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { SearchableSelect, SearchableSelectOption } from '@/components/ui/searchable-select';
 
 export interface EntriesWidgetProps {
   title?: string;                 // Section title (default: "All entries")
@@ -23,12 +23,6 @@ export interface EntriesWidgetProps {
   syncUrlParams?: boolean;        // Sync filters/pagination to URL (default: false)
   competitionId?: string;         // Pre-filter to specific competition
   onLogout?: () => void;          // Logout handler for error handling
-}
-
-interface Competition {
-  id: string;
-  name: string;
-  external_id: string;
 }
 
 export function EntriesWidget({
@@ -45,7 +39,8 @@ export function EntriesWidget({
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState<OperatorEntry[]>([]);
-  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [competitions, setCompetitions] = useState<SearchableSelectOption[]>([]);
+  const [competitionsLoading, setCompetitionsLoading] = useState(false);
   const [initialized, setInitialized] = useState(!syncUrlParams);
 
   // Pagination state
@@ -69,11 +64,9 @@ export function EntriesWidget({
     user_reference: '',
   });
 
-  // Debounced external_id for API calls
-  const [debouncedExternalId, setDebouncedExternalId] = useState('');
-  
-  // Debounced user_reference for API calls
-  const [debouncedUserReference, setDebouncedUserReference] = useState('');
+  // Debounced filter values for text inputs (reduces API calls while typing)
+  const debouncedExternalId = useDebouncedValue(filters.external_id, 500);
+  const debouncedUserReference = useDebouncedValue(filters.user_reference, 500);
 
   // Initialize from URL parameters if syncUrlParams is enabled
   useEffect(() => {
@@ -91,8 +84,6 @@ export function EntriesWidget({
       setPage(urlPage);
       setPageSize(urlPageSize);
       setFilters(urlFilters);
-      setDebouncedExternalId(urlFilters.external_id);
-      setDebouncedUserReference(urlFilters.user_reference);
       setInitialized(true);
     }
   }, [syncUrlParams, searchParams, initialPageSize, competitionId]);
@@ -104,27 +95,7 @@ export function EntriesWidget({
     }
   }, [initialized, competitionId]);
 
-  // Debounce external_id search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedExternalId(filters.external_id);
-      setPage(1); // Reset to first page when search changes
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [filters.external_id]);
-
-  // Debounce user_reference search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedUserReference(filters.user_reference);
-      setPage(1); // Reset to first page when search changes
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [filters.user_reference]);
-
-  // Load entries when initialized or filters change
+  // Load entries when initialized or filters change (using debounced values for text inputs)
   useEffect(() => {
     if (initialized) {
       loadEntries();
@@ -152,16 +123,26 @@ export function EntriesWidget({
     router.push(`${window.location.pathname}${queryString ? `?${queryString}` : ''}`, { scroll: false });
   };
 
-  const loadCompetitions = async () => {
+  const loadCompetitions = useCallback(async (search: string = '') => {
     try {
-      const competitionsData = await operatorApi.getCompetitions({ per_page: 1000 });
-      setCompetitions(competitionsData.data || []);
+      setCompetitionsLoading(true);
+      const competitionsData = await operatorApi.getCompetitions({
+        per_page: 50,
+        name: search || undefined,
+      });
+      const options: SearchableSelectOption[] = (competitionsData.data || []).map((c: any) => ({
+        value: c.id,
+        label: c.name,
+      }));
+      setCompetitions(options);
     } catch (error) {
       if (onLogout) {
         handleApiError(error, onLogout);
       }
+    } finally {
+      setCompetitionsLoading(false);
     }
-  };
+  }, [onLogout]);
 
   const loadEntries = async () => {
     try {
@@ -294,7 +275,7 @@ export function EntriesWidget({
                       <Input
                           id="external_id"
                           type="text"
-                          placeholder="Search by External ID..."
+                          placeholder="Search by external ID..."
                           value={filters.external_id}
                           onChange={(e) => handleFilterChange('external_id', e.target.value)}
                           className="w-full"
@@ -308,7 +289,7 @@ export function EntriesWidget({
                       <Input
                           id="user_reference"
                           type="text"
-                          placeholder="Search by User Reference..."
+                          placeholder="Search by user reference..."
                           value={filters.user_reference}
                           onChange={(e) => handleFilterChange('user_reference', e.target.value)}
                           className="w-full"
@@ -320,22 +301,17 @@ export function EntriesWidget({
                           <Label htmlFor="competition_id" className="text-sm font-medium">
                               Competition
                           </Label>
-                          <Select
+                          <SearchableSelect
                               value={filters.competition_id || 'all'}
                               onValueChange={(value) => handleFilterChange('competition_id', value)}
-                          >
-                              <SelectTrigger id="competition_id" className="w-full">
-                                  <SelectValue placeholder="All competitions" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                  <SelectItem value="all">All competitions</SelectItem>
-                                  {competitions.map((competition) => (
-                                      <SelectItem key={competition.id} value={competition.id}>
-                                          {competition.name}
-                                      </SelectItem>
-                                  ))}
-                              </SelectContent>
-                          </Select>
+                              onSearch={loadCompetitions}
+                              options={competitions}
+                              placeholder="All competitions"
+                              searchPlaceholder="Search competitions..."
+                              emptyText="No competitions found."
+                              loading={competitionsLoading}
+                              allOptionLabel="All competitions"
+                          />
                       </div>
                   )}
 
@@ -378,16 +354,14 @@ export function EntriesWidget({
                       </Select>
                   </div>
 
-                  <div className="space-y-2 flex items-end">
+                  <div className="flex flex-col gap-1.5 justify-end">
                       {hasActiveFilters && (
-                          <Button
-                              variant="outline"
+                          <button
                               onClick={handleClearFilters}
-                              className="w-full"
+                              className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
                           >
-                              <X className="h-4 w-4 mr-2" />
-                              Clear Filters
-                          </Button>
+                              Reset filters
+                          </button>
                       )}
                   </div>
               </div>
@@ -437,7 +411,12 @@ export function EntriesWidget({
                   <p className="text-sm text-muted-foreground mb-4">
                     Try adjusting your filters
                   </p>
-                  <Button variant="outline" onClick={handleClearFilters}>Clear Filters</Button>
+                  <button
+                    onClick={handleClearFilters}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors underline"
+                  >
+                    Reset filters
+                  </button>
                 </>
               ) : (
                 <>
@@ -454,5 +433,6 @@ export function EntriesWidget({
     </div>
   );
 }
+
 
 

@@ -18,6 +18,7 @@ import { useOperatorAuth } from '@/hooks/useOperatorAuth';
 import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import {dateFormatters} from "@/lib/date-utils";
+import {OperatorActionsMenu} from "@/components/operator-actions-menu";
 
 export default function ApiKeysPage() {
   const { isReady, handleLogout, operatorName } = useOperatorAuth();
@@ -301,32 +302,22 @@ export default function ApiKeysPage() {
                                                   </div>
                                               </TableCell>
                                               <TableCell>
-                                                  <div className="flex items-center justify-end gap-2">
-                                                      {!isRevoked && (
-                                                          <>
-                                                              {apiKey.is_revealed && (
-                                                                  <Button
-                                                                      variant="ghost"
-                                                                      size="sm"
-                                                                      onClick={() => handleCopyKey(apiKey.key)}
-                                                                      className="gap-1 hover:bg-slate-800"
-                                                                  >
-                                                                      <Copy className="h-4 w-4" />
-                                                                      Copy
-                                                                  </Button>
-                                                              )}
-                                                              <Button
-                                                                  variant="ghost"
-                                                                  size="sm"
-                                                                  onClick={() => handleRevokeKey(apiKey.id)}
-                                                                  className="gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                              >
-                                                                  <Trash2 className="h-4 w-4" />
-                                                                  Revoke
-                                                              </Button>
-                                                          </>
-                                                      )}
-                                                  </div>
+                                                  <OperatorActionsMenu
+                                                      actions={[
+                                                          {
+                                                              label: 'Copy',
+                                                              onSelect: () => {
+                                                                  handleCopyKey(apiKey.key)
+                                                              },
+                                                          },
+                                                          {
+                                                              label: 'Revoke',
+                                                              onSelect: () => {
+                                                                  handleRevokeKey(apiKey.id)
+                                                              },
+                                                          },
+                                                      ]}
+                                                  />
                                               </TableCell>
                                           </TableRow>
                                       );
@@ -371,7 +362,7 @@ export default function ApiKeysPage() {
                       <div>
                           <h4 className=" mb-2 text-sm">1. Include in request headers</h4>
                           <pre className="bg-muted p-4 rounded-md text-xs overflow-x-auto">
-                            <code>{`curl -H "X-API-KEY: your_api_key_here" \\ https://api.caas-platform.com/api/v1/operator/competitions`}</code>
+                            <code>{`curl -H "X-API-KEY: your_api_key_here" \\ https://api.veristiq.com/api/v1/operator/competitions`}</code>
                             </pre>
                       </div>
                       <div>
@@ -380,8 +371,8 @@ export default function ApiKeysPage() {
                               Use environment variables in your application:
                           </p>
                           <pre className="bg-muted p-4 rounded-md text-xs overflow-x-auto mt-2">
-                <code>Veristiq_API_KEY=your_api_key_here</code>
-              </pre>
+                            <code>VERISTIQ_API_KEY=your_api_key_here</code>
+                          </pre>
                       </div>
                       <div>
                           <h4 className=" mb-2 text-sm">3. Rotate keys periodically</h4>

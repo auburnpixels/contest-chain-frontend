@@ -45,7 +45,6 @@ export default function EntriesPage() {
             title="Entry eligibility"
             fetchData={operatorApi.getMetrics.entries}
             icon={CheckCircle2}
-            useIndicatorBadge={true}
             renderValue={(data) => {
               const pct = data.metadata?.entry_eligibility_percentage;
               return pct ? `${Math.round(pct)}%` : 'N/A';

@@ -14,20 +14,27 @@ export default function ContactPage() {
       <main className="pt-20">
         
         {/* Hero */}
-        <section className="py-20 bg-[var(--veristiq-snow)] border-b border-gray-100 text-center">
-            <div className="container mx-auto px-6 max-w-4xl">
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-[var(--veristiq-slate)]">Get in touch</h1>
-                <p className="text-xl text-[var(--veristiq-slate-light)] mb-8">
+        <section className="py-24 bg-[var(--veristiq-slate)] text-white relative overflow-hidden">
+             {/* Background Pattern */}
+             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20"></div>
+             <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
+             
+             <div className="container mx-auto px-6 text-center max-w-4xl relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-8 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
+                    <Mail className="w-8 h-8 text-[var(--veristiq-teal)]" />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6">Get in touch</h1>
+                <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
                     Ready to build trust? Our team is here to help you integrate.
                 </p>
-            </div>
+             </div>
         </section>
 
         <section className="py-20 bg-white">
           <div className="container mx-auto px-6 max-w-6xl grid lg:grid-cols-2 gap-16">
             
             {/* Contact Info */}
-            <div className="space-y-12">
+            <div className="space-y-12 animate-in fade-in slide-in-from-left-8 duration-700 delay-100 fill-mode-both">
                 <div>
                     <h2 className="text-2xl font-bold mb-6">Contact Us</h2>
                     <p className="text-[var(--veristiq-slate-light)] text-lg mb-8">
@@ -36,8 +43,8 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-8">
-                    <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-[var(--veristiq-primary-blue)] flex-shrink-0">
+                    <div className="flex items-start gap-4 group">
+                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-[var(--veristiq-primary-blue)] flex-shrink-0 transition-transform group-hover:scale-110">
                             <Mail className="w-5 h-5" />
                         </div>
                         <div>
@@ -47,8 +54,8 @@ export default function ContactPage() {
                         </div>
                     </div>
 
-                     <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-[var(--veristiq-primary-blue)] flex-shrink-0">
+                     <div className="flex items-start gap-4 group">
+                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-[var(--veristiq-primary-blue)] flex-shrink-0 transition-transform group-hover:scale-110">
                             <MapPin className="w-5 h-5" />
                         </div>
                         <div>
@@ -64,7 +71,7 @@ export default function ContactPage() {
             </div>
 
             {/* Form */}
-            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-xl">
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-xl animate-in fade-in slide-in-from-right-8 duration-700 delay-200 fill-mode-both hover:shadow-2xl transition-all">
               <form className="space-y-6">
                 <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>

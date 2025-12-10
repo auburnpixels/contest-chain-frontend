@@ -12,14 +12,17 @@ import {
     Building2,
     CheckCircle2,
     Download,
-    Link as LinkIcon
+    Link as LinkIcon,
+    ShieldCheck,
+    Copy,
+    Check
 } from 'lucide-react';
 import { dateFormatters } from '@/lib/date-utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { IndicatorBadge } from '@/components/ui/indicator-badge';
-import { DrawAuditDetails } from '@/components/draw-audit-details';
+import { InfoTooltip } from '@/components/info-tooltip';
 
 interface AuditClientProps {
   uuid: string;
@@ -29,11 +32,18 @@ export function AuditClient({ uuid }: AuditClientProps) {
   const [auditData, setAuditData] = useState<DrawAuditDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   useEffect(() => {
     loadAudit();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid]);
+
+  const copyToClipboard = async (text: string, fieldName: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedField(fieldName);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
 
   const loadAudit = async () => {
     try {
@@ -85,40 +95,43 @@ export function AuditClient({ uuid }: AuditClientProps) {
   const audit = auditData;
 
   return (
-    <div className="min-h-screen bg-[var(--veristiq-snow)] font-sans text-[var(--veristiq-slate)]">
+    <div className="min-h-screen bg-[var(--veristiq-snow)] flex flex-col font-sans text-[var(--veristiq-slate)]">
       <SiteHeader />
 
-      <main className="pt-24 pb-20">
-        <div className="container mx-auto px-6 max-w-5xl">
-            {/* Header / Status Banner */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                <div>
-                     <div className="flex items-center gap-2 mb-2">
-                        <h1 className="text-2xl font-bold">Public Fairness Audit</h1>
-                        <IndicatorBadge color="green" text="Verified Intact" size="sm" />
-                    </div>
-                    <p className="text-[var(--veristiq-slate-light)]">
-                        Audit ID: <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">{audit.draw_id}</span>
-                    </p>
-                </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" className="gap-2">
-                        <Download className="w-4 h-4" /> Export JSON
-                    </Button>
-                    <Button className="bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white gap-2">
-                         <LinkIcon className="w-4 h-4" /> Verify Chain
-                    </Button>
+      {/* Hero Section */}
+      <div className="relative bg-[var(--veristiq-slate)] pt-32 pb-20 overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="container mx-auto px-6 relative z-10 text-center">
+            <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
+                    <ShieldCheck className="w-8 h-8 text-[var(--veristiq-teal)]" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Verified Audit Record</h1>
+            <div className="flex flex-col items-center gap-4">
+                <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                    Immutable proof of fairness for competition draw events.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
+                        <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full flex items-center gap-2">
+                        <span className="text-gray-400 text-sm">Draw ID</span>
+                        <span className="font-mono text-white font-bold">{audit.draw_id}</span>
+                        </div>
+                        <IndicatorBadge color="green" text="Verified Intact" size="xs" />
                 </div>
             </div>
+        </div>
+      </div>
 
+      <main className="flex-1 container mx-auto max-w-7xl px-6 -mt-10 relative z-20 pb-20">
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className="lg:col-span-2 space-y-6">
                     
                     {/* Competition Details */}
-                    <Card>
+                    <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                         <CardHeader>
-                            <CardTitle>Competition Details</CardTitle>
+                            <CardTitle className="!text-xl">Competition Details</CardTitle>
                         </CardHeader>
                         <CardContent className="grid gap-6">
                             <div>
@@ -126,24 +139,24 @@ export function AuditClient({ uuid }: AuditClientProps) {
                                 <p className="font-medium text-lg">{audit.competition?.name || 'N/A'}</p>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                 <div>
+                                    <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1">Prize</h3>
-                                    <p>{audit.prize?.name || audit.prize_name || 'N/A'}</p>
+                                    <p>{audit.prize_name || 'N/A'}</p>
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1">Draw Time</h3>
                                     <p>{dateFormatters.shortDateTime(audit.drawn_at_utc)}</p>
                                 </div>
                             </div>
-                             <div className="grid grid-cols-2 gap-4">
-                                 <div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1">Total Entries</h3>
                                     <p>{audit.total_entries.toLocaleString()}</p>
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1">Winner Ticket</h3>
                                     <p className="font-mono bg-green-50 text-green-700 px-2 py-1 rounded inline-block font-bold">
-                                        {audit.selected_entry ? audit.selected_entry.external_id : audit.winning_ticket}
+                                        {audit.winning_ticket || 'Pending'}
                                     </p>
                                 </div>
                             </div>
@@ -151,24 +164,151 @@ export function AuditClient({ uuid }: AuditClientProps) {
                     </Card>
 
                     {/* Technical Proofs */}
-                     <Card>
+                        <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                            <CardTitle className="flex items-center gap-2 !text-xl">
+                                <ShieldCheck className="w-5 h-5 text-green-500" />
                                 Cryptographic Proofs
                             </CardTitle>
                             <CardDescription>The following hashes link this draw to the immutable audit chain.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                             <DrawAuditDetails audit={audit} showOperator={false} />
+                        <CardContent className="space-y-6">
+                             {/* Signature Hash */}
+                            <div>
+                                <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                                    Signature Hash
+                                    <InfoTooltip>
+                                        Unique identifier for this draw event in the audit chain. Links to previous draws to prevent tampering.
+                                    </InfoTooltip>
+                                </h3>
+                                <div className="flex items-start gap-2">
+                                    <p className="text-xs font-mono break-all bg-gray-100 p-2 rounded flex-1">
+                                        {audit.signature_hash}
+                                    </p>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 w-8 p-0 shrink-0"
+                                        onClick={() => copyToClipboard(audit.signature_hash, 'signature_hash')}
+                                    >
+                                        {copiedField === 'signature_hash' ? (
+                                            <Check className="h-4 w-4 text-green-500" />
+                                        ) : (
+                                            <Copy className="h-4 w-4" />
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Previous Signature Hash */}
+                            {audit.previous_signature_hash && (
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                                        Previous Signature Hash
+                                        <InfoTooltip>
+                                            Links this draw to the previous event in the chain, creating an unbreakable sequence.
+                                        </InfoTooltip>
+                                    </h3>
+                                    <div className="flex items-start gap-2">
+                                        <p className="text-xs font-mono break-all bg-gray-100 p-2 rounded flex-1">
+                                            {audit.previous_signature_hash}
+                                        </p>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 shrink-0"
+                                            onClick={() => copyToClipboard(audit.previous_signature_hash!, 'previous_signature_hash')}
+                                        >
+                                            {copiedField === 'previous_signature_hash' ? (
+                                                <Check className="h-4 w-4 text-green-500" />
+                                            ) : (
+                                                <Copy className="h-4 w-4" />
+                                            )}
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* RNG Seed */}
+                            <div>
+                                <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                                    RNG Seed / Hash
+                                    <InfoTooltip>
+                                        The cryptographic fingerprint of the random seed used to select the winner. This proves the randomness source can't be changed after the draw.
+                                    </InfoTooltip>
+                                </h3>
+                                <div className="flex items-start gap-2">
+                                    <p className="text-xs font-mono break-all bg-gray-100 p-2 rounded flex-1">
+                                        {audit.rng_seed_or_hash || 'N/A'}
+                                    </p>
+                                    {audit.rng_seed_or_hash && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 shrink-0"
+                                            onClick={() => copyToClipboard(audit.rng_seed_or_hash, 'rng_seed_or_hash')}
+                                        >
+                                            {copiedField === 'rng_seed_or_hash' ? (
+                                                <Check className="h-4 w-4 text-green-500" />
+                                            ) : (
+                                                <Copy className="h-4 w-4" />
+                                            )}
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {/* Pool Hash */}
+                            {audit.pool_hash && (
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                                        Pool Hash
+                                        <InfoTooltip>
+                                            Fingerprint of all eligible entries at draw time. Proves entries weren't added or removed after the draw started.
+                                        </InfoTooltip>
+                                    </h3>
+                                    <div className="flex items-start gap-2">
+                                        <p className="text-xs font-mono break-all bg-gray-100 p-2 rounded flex-1">
+                                            {audit.pool_hash}
+                                        </p>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 shrink-0"
+                                            onClick={() => copyToClipboard(audit.pool_hash!, 'pool_hash')}
+                                        >
+                                            {copiedField === 'pool_hash' ? (
+                                                <Check className="h-4 w-4 text-green-500" />
+                                            ) : (
+                                                <Copy className="h-4 w-4" />
+                                            )}
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-8">
-                     {/* Chain Visual */}
-                    <Card className="bg-[var(--veristiq-slate)] text-white border-0">
+                <div className="space-y-6">
+                    {/* Actions Card */}
+                    <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
+                        <CardHeader>
+                            <CardTitle>Actions</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <Button className="w-full bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white gap-2">
+                                <LinkIcon className="w-4 h-4" /> Verify Chain
+                            </Button>
+                            <Button variant="outline" className="w-full gap-2">
+                                <Download className="w-4 h-4" /> Export JSON
+                            </Button>
+                        </CardContent>
+                    </Card>
+
+                        {/* Chain Visual */}
+                    <Card className="bg-[var(--veristiq-slate)] text-white border-0 shadow-xl">
                         <CardHeader>
                             <CardTitle className="text-white flex items-center gap-2">
                                 <LinkIcon className="w-5 h-5 text-[var(--veristiq-teal)]" />
@@ -176,63 +316,64 @@ export function AuditClient({ uuid }: AuditClientProps) {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                             <div className="relative pl-4 border-l-2 border-white/20 space-y-6">
-                                 {/* Prev Block */}
-                                 <div className="opacity-50 text-sm">
-                                     <div className="w-3 h-3 bg-gray-500 rounded-full absolute -left-[7px]"></div>
-                                     <p className="font-mono text-xs text-gray-400 mb-1">Previous Event</p>
-                                     <p className="font-mono text-xs truncate w-full bg-white/10 p-2 rounded">
-                                         {audit.previous_signature_hash?.substring(0, 20)}...
-                                     </p>
-                                 </div>
+                                <div className="relative pl-4 border-l-2 border-white/20 space-y-6">
+                                    {/* Prev Block */}
+                                    <div className="opacity-50 text-sm">
+                                        <div className="w-3 h-3 bg-gray-500 rounded-full absolute -left-[7px]"></div>
+                                        <p className="font-mono text-xs text-gray-400 mb-1">Previous Event</p>
+                                        <p className="font-mono text-xs truncate w-full bg-white/10 p-2 rounded">
+                                            {audit.previous_signature_hash?.substring(0, 20)}...
+                                        </p>
+                                    </div>
 
-                                 {/* Current Block */}
-                                 <div className="text-sm">
-                                     <div className="w-3 h-3 bg-[var(--veristiq-teal)] rounded-full absolute -left-[7px] shadow-[0_0_10px_rgba(12,226,188,0.5)]"></div>
-                                     <p className="font-mono text-xs text-[var(--veristiq-teal)] mb-1">Current Event (This Draw)</p>
-                                     <div className="bg-white/10 p-3 rounded border border-[var(--veristiq-teal)]">
-                                         <p className="font-bold mb-1">Event #{audit.sequence}</p>
-                                         <p className="font-mono text-xs break-all text-gray-300">
-                                             {audit.signature_hash.substring(0, 20)}...
-                                         </p>
-                                     </div>
-                                 </div>
+                                    {/* Current Block */}
+                                    <div className="text-sm">
+                                        <div className="w-3 h-3 bg-[var(--veristiq-teal)] rounded-full absolute -left-[7px] shadow-[0_0_10px_rgba(12,226,188,0.5)]"></div>
+                                        <p className="font-mono text-xs text-[var(--veristiq-teal)] mb-1">Current Event (This Draw)</p>
+                                        <div className="bg-white/10 p-3 rounded border border-[var(--veristiq-teal)]">
+                                            <p className="font-bold mb-1">Event #{audit.sequence}</p>
+                                            <p className="font-mono text-xs break-all text-gray-300">
+                                                {audit.signature_hash.substring(0, 20)}...
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                  {/* Next Block */}
-                                 <div className="opacity-50 text-sm">
-                                     <div className="w-3 h-3 bg-gray-500 rounded-full absolute -left-[7px]"></div>
-                                     <p className="font-mono text-xs text-gray-400 mb-1">Next Event</p>
-                                     <p className="font-mono text-xs bg-white/10 p-2 rounded text-gray-500 italic">
-                                         [Pending or Future]
-                                     </p>
-                                 </div>
-                             </div>
+                                    {/* Next Block */}
+                                    <div className="opacity-50 text-sm">
+                                        <div className="w-3 h-3 bg-gray-500 rounded-full absolute -left-[7px]"></div>
+                                        <p className="font-mono text-xs text-gray-400 mb-1">Next Event</p>
+                                        <p className="font-mono text-xs bg-white/10 p-2 rounded text-gray-500 italic">
+                                            [Pending or Future]
+                                        </p>
+                                    </div>
+                                </div>
                         </CardContent>
                     </Card>
 
                     {/* Operator Info */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Operator</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                    <Building2 className="w-6 h-6 text-gray-500" />
+                    {audit.operator && (
+                        <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
+                            <CardHeader>
+                                <CardTitle>Operator</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                        <Building2 className="w-6 h-6 text-gray-500" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold">{audit.operator.name}</p>
+                                        <p className="text-xs text-gray-500">@{audit.operator.slug}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="font-bold">{audit.operator.name}</p>
-                                    <p className="text-xs text-gray-500">Member since {dateFormatters.shortDate(audit.operator.created_at)}</p>
-                                </div>
-                            </div>
-                             <Button variant="outline" className="w-full" asChild>
-                                <Link href={`/profile/${audit.operator.slug}`}>View Operator Profile</Link>
-                            </Button>
-                        </CardContent>
-                    </Card>
+                                <Button variant="outline" className="w-full" asChild>
+                                    <Link href={`/profile/${audit.operator.slug}`}>View Operator Profile</Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
-        </div>
       </main>
 
       <SiteFooter />

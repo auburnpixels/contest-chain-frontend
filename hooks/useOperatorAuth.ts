@@ -17,6 +17,7 @@ interface UseOperatorAuthReturn {
   handleLogout: () => Promise<void>;
   isReady: boolean;
   operatorName: string | null;
+  operatorId: string | null;
 }
 
 /**
@@ -74,6 +75,7 @@ export function useOperatorAuth(
     handleLogout,
     isReady,
     operatorName,
+    operatorId: user?.operator?.id || null,
   };
 }
 

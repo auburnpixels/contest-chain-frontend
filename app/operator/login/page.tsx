@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/context/AuthContext';
-import { AlertCircle, Building2, Info, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, ShieldCheck, Info, ArrowRight, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 
 export default function OperatorLoginPage() {
   const router = useRouter();
@@ -42,154 +43,88 @@ export default function OperatorLoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-background">
-      {/* Left Panel - Branding */}
-      <div className="hidden lg:flex flex-col justify-between bg-black p-12 text-white relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-cobalt/20 to-black/0 z-0" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-cobalt/50 to-transparent" />
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-cobalt/20 rounded-full blur-3xl" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-12">
-            <div className="h-10 w-10 rounded-xl bg-brand-cobalt flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-bold">Veristiq</span>
-          </div>
-          
-          <div className="max-w-md space-y-6">
-            <h1 className="text-4xl font-bold tracking-tight">
-              Operator Portal
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Manage your competitions with confidence. Ensure fairness, transparency, and compliance with our automated tools.
-            </p>
-            
-            <div className="space-y-4 pt-8">
-              <div className="flex items-center gap-3 text-sm">
-                <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4 text-brand-cobalt" />
+    <div className="min-h-screen flex items-center justify-center bg-[var(--veristiq-slate)] relative overflow-hidden p-4">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-t from-purple-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-500">
+        <div className="flex flex-col items-center mb-8">
+            <Link href="/" className="flex items-center gap-3 mb-2 group">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--veristiq-primary-blue)] text-white shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
+                  <ShieldCheck className="h-6 w-6" />
                 </div>
-                <span>Automated compliance audits</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4 text-brand-cobalt" />
-                </div>
-                <span>Real-time fair draw engine</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10">
-          <p className="text-sm text-zinc-500">
-            &copy; 2025 Veristiq. All rights reserved.
-          </p>
-        </div>
-      </div>
-
-      {/* Right Panel - Login Form */}
-      <div className="flex items-center justify-center p-8 lg:p-12">
-        <div className="w-full max-w-sm space-y-8">
-          <div className="text-center lg:text-left space-y-2">
-             <div className="lg:hidden flex justify-center mb-4">
-                <div className="h-10 w-10 rounded-xl bg-brand-cobalt flex items-center justify-center">
-                  <Building2 className="h-6 w-6 text-white" />
-                </div>
-             </div>
-            <h2 className="text-2xl font-bold tracking-tight">Sign in to your account</h2>
-            <p className="text-muted-foreground">
-              Enter your email below to access your dashboard
-            </p>
-          </div>
-
-          {/* Demo Alert */}
-          <Alert className="bg-brand-cobalt/10 border-brand-cobalt/20 text-brand-cobalt">
-            <Info className="h-4 w-4" />
-            <AlertDescription className="text-xs">
-              <strong>Demo:</strong> raffaly@operator.local / password
-            </AlertDescription>
-          </Alert>
-
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="operator@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading}
-                className="bg-background/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Button variant="link" className="px-0 text-xs text-muted-foreground" type="button">
-                  Forgot password?
-                </Button>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={loading}
-                className="bg-background/50"
-              />
-            </div>
-
-            <Button type="submit" className="w-full bg-brand-cobalt hover:bg-brand-cobalt/90" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </form>
-
-          <div className="text-center text-sm text-muted-foreground">
-            Don't have an account?{' '}
-            <Link 
-              href="/operator/register"
-              className="text-brand-cobalt hover:text-brand-cobalt/80 hover:underline font-medium"
-            >
-              Register here
+                <span className="font-sans font-bold text-2xl text-white tracking-tight">Veristiq</span>
             </Link>
-          </div>
-          
-          <div className="relative">
-             <div className="absolute inset-0 flex items-center">
-               <span className="w-full border-t" />
-             </div>
-             <div className="relative flex justify-center text-xs uppercase">
-               <span className="bg-background px-2 text-muted-foreground">Or</span>
-             </div>
-          </div>
-          
-           <div className="text-center text-sm">
-             <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => router.push('/regulator/login')}
-              type="button"
-            >
-              Sign in as Regulator
-            </Button>
-          </div>
+            <p className="text-gray-400 text-sm">Operator Portal</p>
         </div>
+
+        <Card className="border-gray-800 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden">
+          <CardHeader className="space-y-1 pb-2 text-center border-b border-gray-100 bg-gray-50/50">
+            <CardTitle className="text-xl font-bold text-[var(--veristiq-slate)]">Welcome back</CardTitle>
+            <CardDescription>Enter your credentials to access your dashboard</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {error && (
+                <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+                </Alert>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="bg-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <Link href="/operator/forgot-password">
+                    <Button variant="link" className="px-0 text-xs text-[var(--veristiq-primary-blue)]" type="button">
+                        Forgot password?
+                    </Button>
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="bg-white"
+                />
+              </div>
+              <Button type="submit" className="w-full bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white font-medium h-10 transition-all shadow-md hover:shadow-lg" disabled={loading}>
+                {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {loading ? 'Signing in...' : 'Sign in'}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4 border-t border-gray-100 bg-gray-50/50 pt-6">
+            <div className="text-center text-sm text-gray-500">
+              Don't have an account?{' '}
+              <Link href="/operator/register" className="font-semibold text-[var(--veristiq-primary-blue)] hover:underline transition-all">
+                Create an account
+              </Link>
+            </div>
+            <Link href="/regulator/login" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                Regulator Login
+            </Link>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

@@ -12,6 +12,18 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Veristiq - Independent Fairness Verification",
   description: "A tamper-evident audit trail for prize draws. Prove every draw is fair. Build trust. Stay compliant.",
+  openGraph: {
+    title: "Veristiq - Independent Fairness Verification",
+    description: "A tamper-evident audit trail for prize draws. Prove every draw is fair. Build trust. Stay compliant.",
+    type: "website",
+    locale: "en_GB",
+    siteName: "Veristiq",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Veristiq - Independent Fairness Verification",
+    description: "A tamper-evident audit trail for prize draws.",
+  },
 };
 
 export default function RootLayout({

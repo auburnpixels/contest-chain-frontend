@@ -1,12 +1,12 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { PageHero } from "@/components/marketing/PageHero";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { HelpCircle } from "lucide-react";
 
 interface FaqCategory {
     title: string;
@@ -19,139 +19,115 @@ export default function FaqPage() {
             title: "General",
             items: [
                 {
-                    question: "What is CAFAAS in simple terms?",
-                    answer: "CAFAAS is an independent fairness and audit platform for online competitions. It records entries and draws, creates tamper-evident audit logs and publishes public verification pages so you can prove your draws are fair."
+                    question: "What is Veristiq?",
+                    answer: "Veristiq is an independent fairness verification platform. We act as a digital auditor for online competitions, creating a tamper-evident record of every entry and draw result."
                 },
                 {
-                    question: "Are you a regulator or licensing authority?",
-                    answer: "No. CAFAAS is not a regulator. We don’t issue licenses or legal approvals. We provide technical tools that help you demonstrate fairness and transparency."
+                    question: "Why do I need independent verification?",
+                    answer: "Trust is the currency of the competition industry. Players and regulators are increasingly skeptical of 'black box' draws. Veristiq provides mathematical proof that your draws are fair, protecting your reputation and helping you meet compliance standards."
                 },
                 {
-                    question: "Who is CAFAAS for?",
-                    answer: "Online competition and raffle operators, prize platforms, charities running ticketed draws, and any business that wants to prove its prize draws are fair."
+                    question: "Is Veristiq a regulator?",
+                    answer: "No. We are a technology provider. We don’t issue licenses. Instead, we provide the technical infrastructure that allows you to demonstrate compliance with fairness regulations and voluntary codes (like the DCMS Code)."
                 }
             ]
         },
         {
-            title: "Fairness & draws",
+            title: "Technology & Security",
             items: [
                 {
-                    question: "Can CAFAAS influence or “fix” draw results?",
-                    answer: "No. CAFAAS uses deterministic randomisation and logs every step of the process, including seed hashes and entry pool hashes. The system is designed to show if tampering occurs, not enable it."
+                    question: "How is the random number generation (RNG) secured?",
+                    answer: "We use a cryptographically secure RNG that is seeded with external entropy (like atmospheric noise or blockchain block hashes) just before the draw. This seed is logged in the audit chain, making the result verifiable by anyone, but impossible to predict."
                 },
                 {
-                    question: "Does CAFAAS pick winners automatically?",
-                    answer: "CAFAAS runs the randomisation and records the result, but you are the one triggering the draw via the API or dashboard. You stay in control of when draws happen."
+                    question: "Can Veristiq or the operator 'fix' a draw?",
+                    answer: "No. The system uses a 'Commit-Reveal' scheme. All entries are hashed and committed to the ledger *before* the draw takes place. The random seed is also committed before use. This means the outcome is mathematically determined by inputs that cannot be changed once the draw begins."
                 },
                 {
-                    question: "Can I re-run a draw if I make a mistake?",
-                    answer: "You can run draws for different prizes or reconfigure future competitions. However, historic draw events are recorded and audited. If a draw is re-run, that fact should be visible in the event history."
+                    question: "What happens if my site goes down?",
+                    answer: "Veristiq operates independently of your website. Once entry data is synced to our system, the draw can proceed securely on our infrastructure, ensuring no data is lost and the draw completes successfully."
                 }
             ]
         },
         {
-            title: "Integration",
+            title: "Integration & Operations",
             items: [
                 {
-                    question: "Do I need a developer to use CAFAAS?",
-                    answer: "For a full integration, yes — a developer or technical implementer is recommended. They’ll wire up the API so that competitions, entries and draws are synchronised. Over time, we may offer more no-code / low-code options."
+                    question: "Does integrating Veristiq slow down my website?",
+                    answer: "No. The integration is asynchronous. You send entry data to our API in the background (e.g., via a queue). The actual draw processing happens on our servers, so your customer experience remains fast and responsive."
                 },
                 {
-                    question: "How long does integration usually take?",
-                    answer: "It varies by platform, but many operators can implement the core flows (create competition, submit entries, trigger draws, show audit links) in a few days of focused development."
+                    question: "Do I need a developer to integrate?",
+                    answer: "Yes, for a seamless automated experience, a developer will need to connect your platform to our API. It typically takes 1-3 days. We provide comprehensive documentation and SDKs to make this easy."
                 },
                 {
-                    question: "Can I test CAFAAS before going live?",
-                    answer: "Yes. We provide a test/sandbox environment where you can run fake competitions and draws without affecting live data."
+                    question: "What data do you store?",
+                    answer: "We practice data minimization. We only require a unique Ticket ID and an anonymized User Reference to verify a draw. We do *not* need (and prefer not to receive) PII like names, emails, or addresses."
                 }
             ]
         },
         {
-            title: "Data & privacy",
+            title: "Compliance & Legal",
             items: [
                 {
-                    question: "What data about players do I need to send?",
-                    answer: "At minimum, you send an external entry ID and whether the entry is eligible. You can send an anonymised user reference if you want to cross-check later. We encourage operators to avoid sending full personal details."
+                    question: "Does Veristiq ensure I meet the DCMS Voluntary Code?",
+                    answer: "Veristiq provides the *technical evidence* required by the Code—specifically independent verification, auditable logs, and transparency. While our tools provide the proof, you are responsible for your overall operational compliance (e.g., terms and conditions, age verification)."
                 },
                 {
-                    question: "Do you sell or share data with third parties?",
-                    answer: "No, we do not sell your data. Data is used only to provide the CAFAAS service."
+                    question: "Can I use Veristiq for free draws?",
+                    answer: "Yes. The system supports paid, free (postal), and promotional entries equally. They are all logged in the same tamper-evident ledger, ensuring free entries are treated exactly the same as paid ones."
                 },
                 {
-                    question: "Can players see other players’ data?",
-                    answer: "No. Players see aggregate counts and the winning entry ID/ticket number, not personal information."
-                }
-            ]
-        },
-        {
-            title: "Legal & compliance",
-            items: [
-                {
-                    question: "Does using CAFAAS make me automatically compliant with gambling or promotion law?",
-                    answer: "No. CAFAAS is a technical fairness and audit tool. You remain responsible for ensuring your competitions meet legal requirements in your jurisdiction (e.g. licensing, wording, no-purchase-necessary rules, age limits)."
-                },
-                {
-                    question: "Can regulators use CAFAAS data?",
-                    answer: "Yes. One of the goals of CAFAAS is to make it easier for regulators to understand what happened in a draw, if they need to investigate. You can share audit links or export data as needed."
-                },
-                {
-                    question: "Do you provide legal advice?",
-                    answer: "No. We are not a law firm and do not provide legal advice. We suggest speaking to a qualified professional about any regulatory questions."
-                }
-            ]
-        },
-        {
-            title: "Pricing & plans",
-            items: [
-                {
-                    question: "Do I have to pay per competition?",
-                    answer: "No. You pay a monthly subscription plus a per-draw fee. You can run as many competitions as you like — you only pay per draw when winners are selected."
-                },
-                {
-                    question: "Is there a free trial?",
-                    answer: "Yes, we offer 14 days and 50 free draws to help you test the platform integration."
-                },
-                {
-                    question: "What happens to my audits if I cancel?",
-                    answer: "Audit history for past draws remains available for a defined retention period, so you still have proof of what happened."
+                    question: "What happens if a regulator asks for an audit?",
+                    answer: "You can generate a comprehensive compliance report from your dashboard instantly. This report includes the full audit trail, cryptographic proofs, and entry statistics for any given competition."
                 }
             ]
         }
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-brand-cobalt/20 selection:text-brand-cobalt">
+        <div className="min-h-screen bg-[var(--veristiq-snow)] font-sans text-[var(--veristiq-slate)] flex flex-col">
             <SiteHeader />
-            <main>
-                <PageHero
-                    title="FAQ"
-                    headline="Frequently Asked Questions"
-                    subheadline="Here are answers to the most common questions from operators about how CAFAAS works, how it integrates with your existing platform and what it does (and doesn’t) do."
-                />
-
-                <section className="py-24 bg-white dark:bg-black transition-colors duration-300">
-                    <div className="container px-4 md:px-6 mx-auto max-w-3xl space-y-20">
-                        {categories.map((category, idx) => (
-                            <div key={idx}>
-                                <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-8 pb-4 border-b border-zinc-100 dark:border-zinc-900">
-                                    {category.title}
-                                </h2>
-                                <Accordion type="single" collapsible className="w-full">
-                                    {category.items.map((item, i) => (
-                                        <AccordionItem key={i} value={`cat-${idx}-item-${i}`} className="border-b border-zinc-200 dark:border-zinc-800">
-                                            <AccordionTrigger className="text-left text-lg font-medium text-zinc-900 dark:text-white py-6 hover:text-brand-cobalt transition-colors">
-                                                {item.question}
-                                            </AccordionTrigger>
-                                            <AccordionContent className="text-zinc-600 dark:text-zinc-400 pb-6 text-base leading-relaxed">
-                                                {item.answer}
-                                            </AccordionContent>
-                                        </AccordionItem>
-                                    ))}
-                                </Accordion>
-                            </div>
-                        ))}
+            
+            {/* Hero Section */}
+            <div className="relative bg-[var(--veristiq-slate)] pt-32 pb-24 overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div className="container mx-auto px-6 relative z-10 text-center">
+                    <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
+                         <HelpCircle className="w-8 h-8 text-[var(--veristiq-teal)]" />
                     </div>
-                </section>
+                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Frequently Asked Questions</h1>
+                    <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                        Answers to common questions about how Veristiq works, integrates, and ensures fairness.
+                    </p>
+                </div>
+            </div>
+
+            <main className="flex-1 container mx-auto px-6 py-20 max-w-3xl -mt-12 relative z-20">
+                <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 md:p-12 space-y-16">
+                    {categories.map((category, idx) => (
+                        <div key={idx}>
+                            <h2 className="text-2xl font-bold text-[var(--veristiq-slate)] mb-6 pb-4 border-b border-gray-100 flex items-center gap-3">
+                                <div className="h-8 w-1 bg-[var(--veristiq-primary-blue)] rounded-full"></div>
+                                {category.title}
+                            </h2>
+                            <Accordion type="single" collapsible className="w-full">
+                                {category.items.map((item, i) => (
+                                    <AccordionItem key={i} value={`cat-${idx}-item-${i}`} className="border-b border-gray-100 last:border-0">
+                                        <AccordionTrigger className="text-left text-lg font-medium text-[var(--veristiq-slate)] py-5 hover:text-[var(--veristiq-primary-blue)] hover:no-underline transition-colors data-[state=open]:text-[var(--veristiq-primary-blue)]">
+                                            {item.question}
+                                        </AccordionTrigger>
+                                        <AccordionContent className="text-[var(--veristiq-slate-light)] pb-6 text-base leading-relaxed">
+                                            {item.answer}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        </div>
+                    ))}
+                </div>
             </main>
             <SiteFooter />
         </div>

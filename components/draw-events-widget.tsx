@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -10,12 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { operatorApi } from '@/lib/api/client';
-import { Eye, CheckCircle, Copy, X, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Copy, AlertTriangle } from 'lucide-react';
 import { PaginationControls } from '@/components/pagination-controls';
 import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { IndicatorBadge } from '@/components/ui/indicator-badge';
 import { handleApiError } from '@/lib/error-handler';
 import { dateFormatters } from '@/lib/date-utils';
+import { SearchableSelect, SearchableSelectOption } from '@/components/ui/searchable-select';
 
 export interface DrawEventsWidgetProps {
   title?: string;
@@ -94,6 +95,10 @@ export function DrawEventsWidget({
     actor_types: ['operator', 'system', 'user', 'admin'],
   });
 
+  // Searchable competitions state
+  const [competitions, setCompetitions] = useState<SearchableSelectOption[]>([]);
+  const [competitionsLoading, setCompetitionsLoading] = useState(false);
+
   // Pagination state
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
@@ -160,12 +165,39 @@ export function DrawEventsWidget({
     try {
       const filtersData = await operatorApi.getDrawEventsFilters();
       setFilterOptions(filtersData);
+      // Initialize competitions from filter options
+      const options: SearchableSelectOption[] = (filtersData.competitions || []).map((c: any) => ({
+        value: c.id,
+        label: c.name,
+      }));
+      setCompetitions(options);
     } catch (error) {
       if (onLogout) {
         handleApiError(error, onLogout);
       }
     }
   };
+
+  const loadCompetitions = useCallback(async (search: string = '') => {
+    try {
+      setCompetitionsLoading(true);
+      const competitionsData = await operatorApi.getCompetitions({
+        per_page: 50,
+        name: search || undefined,
+      });
+      const options: SearchableSelectOption[] = (competitionsData.data || []).map((c: any) => ({
+        value: c.uuid || c.id,
+        label: c.name,
+      }));
+      setCompetitions(options);
+    } catch (error) {
+      if (onLogout) {
+        handleApiError(error, onLogout);
+      }
+    } finally {
+      setCompetitionsLoading(false);
+    }
+  }, [onLogout]);
 
   const loadEvents = async () => {
     try {
@@ -426,168 +458,130 @@ export function DrawEventsWidget({
           </div>
         )}
 
-          {/* Table */}
-          {showTitle && (
-              <CardHeader>
-                  <div className="flex items-center justify-between pb-4 border-b">
-                      <div className="flex flex-col gap-1.5">
-                          <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
-                          <CardDescription className="text-muted-foreground text-sm">
-                              {description}
-                          </CardDescription>
-                      </div>
-                  </div>
-              </CardHeader>
-          )}
+        {/* Title */}
+        {showTitle && (
+          <CardHeader>
+            <div className="flex items-center justify-between pb-4 border-b">
+              <div className="flex flex-col gap-1.5">
+                <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
+                <CardDescription className="text-muted-foreground text-sm">
+                  {description}
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+        )}
 
         {/* Filters */}
         {showFilters && (
-          <div className="px-6 pt-6 pb-4 border-b">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="event-filter" className="text-sm font-medium">Event Type</Label>
-                <Select
-                  value={filters.event_type || 'all'}
-                  onValueChange={(value) => {
-                    setFilters({ ...filters, event_type: value === 'all' ? '' : value });
-                    setPage(1);
-                  }}
-                >
-                  <SelectTrigger id="event-filter">
-                    <SelectValue placeholder="All Events" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Events</SelectItem>
-                    {filterOptions.event_types.map((type: string) => (
-                      <SelectItem key={type} value={type}>{getEventDisplayName(type)}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="px-6">
+                <div className="border-b pb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                            <Label htmlFor="event-filter" className="text-sm font-medium">Event Type</Label>
+                            <Select
+                                value={filters.event_type || 'all'}
+                                onValueChange={(value) => {
+                                    setFilters({ ...filters, event_type: value === 'all' ? '' : value });
+                                    setPage(1);
+                                }}
+                            >
+                                <SelectTrigger id="event-filter">
+                                    <SelectValue placeholder="All events" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All events</SelectItem>
+                                    {filterOptions.event_types.map((type: string) => (
+                                        <SelectItem key={type} value={type}>{getEventDisplayName(type)}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-              {!competitionId && (
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
-                  <Select
-                    value={filters.competition_id || 'all'}
-                    onValueChange={(value) => {
-                      setFilters({ ...filters, competition_id: value === 'all' ? '' : value });
-                      setPage(1);
-                    }}
-                  >
-                    <SelectTrigger id="competition-filter">
-                      <SelectValue placeholder="All Competitions" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Competitions</SelectItem>
-                      {filterOptions.competitions.map((comp: any) => (
-                        <SelectItem key={comp.id} value={comp.id}>{comp.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                        {!competitionId && (
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
+                                <SearchableSelect
+                                    value={filters.competition_id || 'all'}
+                                    onValueChange={(value) => {
+                                        setFilters({ ...filters, competition_id: value === 'all' ? '' : value });
+                                        setPage(1);
+                                    }}
+                                    onSearch={loadCompetitions}
+                                    options={competitions}
+                                    placeholder="All competitions"
+                                    searchPlaceholder="Search competitions..."
+                                    emptyText="No competitions found."
+                                    loading={competitionsLoading}
+                                    allOptionLabel="All competitions"
+                                />
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-1.5">
+                            <Label htmlFor="actor-filter" className="text-sm font-medium">Actor</Label>
+                            <Select
+                                value={filters.actor_type || 'all'}
+                                onValueChange={(value) => {
+                                    setFilters({ ...filters, actor_type: value === 'all' ? '' : value });
+                                    setPage(1);
+                                }}
+                            >
+                                <SelectTrigger id="actor-filter">
+                                    <SelectValue placeholder="All actors" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All actors</SelectItem>
+                                    <SelectItem value="operator">Operator</SelectItem>
+                                    <SelectItem value="system">System</SelectItem>
+                                    <SelectItem value="user">User</SelectItem>
+                                    <SelectItem value="admin">Admin</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                            <Label htmlFor="from-date" className="text-sm font-medium">From Date</Label>
+                            <Input
+                                id="from-date"
+                                type="date"
+                                value={filters.from_date}
+                                onChange={(e) => {
+                                    setFilters({ ...filters, from_date: e.target.value });
+                                    setPage(1);
+                                }}
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                            <Label htmlFor="to-date" className="text-sm font-medium">To Date</Label>
+                            <Input
+                                id="to-date"
+                                type="date"
+                                value={filters.to_date}
+                                onChange={(e) => {
+                                    setFilters({ ...filters, to_date: e.target.value });
+                                    setPage(1);
+                                }}
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-1.5 justify-end">
+                            {hasActiveFilters && (
+                                <button
+                                    onClick={clearAllFilters}
+                                    className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+                                >
+                                    Reset filters
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
-              )}
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="actor-filter" className="text-sm font-medium">Actor</Label>
-                <Select
-                  value={filters.actor_type || 'all'}
-                  onValueChange={(value) => {
-                    setFilters({ ...filters, actor_type: value === 'all' ? '' : value });
-                    setPage(1);
-                  }}
-                >
-                  <SelectTrigger id="actor-filter">
-                    <SelectValue placeholder="All Actors" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Actors</SelectItem>
-                    <SelectItem value="operator">Operator</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="from-date" className="text-sm font-medium">From Date</Label>
-                <Input
-                  id="from-date"
-                  type="date"
-                  value={filters.from_date}
-                  onChange={(e) => {
-                    setFilters({ ...filters, from_date: e.target.value });
-                    setPage(1);
-                  }}
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="to-date" className="text-sm font-medium">To Date</Label>
-                <Input
-                  id="to-date"
-                  type="date"
-                  value={filters.to_date}
-                  onChange={(e) => {
-                    setFilters({ ...filters, to_date: e.target.value });
-                    setPage(1);
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Active Filters */}
-            {hasActiveFilters && (
-              <div className="flex items-center gap-2 mt-4 flex-wrap">
-                <span className="text-sm text-muted-foreground">Active filters:</span>
-                {filters.event_type && (
-                  <Badge variant="secondary" className="gap-1">
-                    Event: {getEventDisplayName(filters.event_type)}
-                    <button onClick={() => removeFilter('event_type')} className="ml-1 hover:text-foreground">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.competition_id && !competitionId && (
-                  <Badge variant="secondary" className="gap-1">
-                    Competition: {getCompetitionName(filters.competition_id)}
-                    <button onClick={() => removeFilter('competition_id')} className="ml-1 hover:text-foreground">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.actor_type && (
-                  <Badge variant="secondary" className="gap-1">
-                    Actor: {filters.actor_type}
-                    <button onClick={() => removeFilter('actor_type')} className="ml-1 hover:text-foreground">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.from_date && (
-                  <Badge variant="secondary" className="gap-1">
-                    From: {filters.from_date}
-                    <button onClick={() => removeFilter('from_date')} className="ml-1 hover:text-foreground">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.to_date && (
-                  <Badge variant="secondary" className="gap-1">
-                    To: {filters.to_date}
-                    <button onClick={() => removeFilter('to_date')} className="ml-1 hover:text-foreground">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                <Button variant="ghost" size="sm" onClick={clearAllFilters}>Clear All</Button>
-              </div>
-            )}
           </div>
         )}
 
-        <CardContent className={showTitle ? '' : 'pt-6'}>
+        <CardContent className={showTitle ? '' : ''}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <p className="text-lg text-muted-foreground animate-pulse">Loading...</p>
@@ -1027,5 +1021,6 @@ export function DrawEventsWidget({
     </div>
   );
 }
+
 
 

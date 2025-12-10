@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { apiClient, authApi } from '@/lib/api/client';
 import { useAuth } from '@/context/AuthContext';
-import { AlertCircle, Building2, CheckCircle2, Info, ArrowRight, ShieldCheck } from 'lucide-react';
+import { AlertCircle, ShieldCheck, ArrowRight, Loader2, Info } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 
 export default function OperatorRegisterPage() {
   const router = useRouter();
@@ -58,178 +59,125 @@ export default function OperatorRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-background">
-      {/* Left Panel - Branding */}
-      <div className="hidden lg:flex flex-col justify-between bg-black p-12 text-white relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-cobalt/20 to-black/0 z-0" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-cobalt/50 to-transparent" />
-        <div className="absolute top-24 right-24 w-96 h-96 bg-brand-cobalt/20 rounded-full blur-3xl" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-12">
-            <div className="h-10 w-10 rounded-xl bg-brand-cobalt flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-bold">Veristiq</span>
-          </div>
-          
-          <div className="max-w-md space-y-6">
-            <h1 className="text-4xl font-bold tracking-tight">
-              Join the Network
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Create an operator account to start running fair, compliant, and audited competitions.
-            </p>
-            
-            <div className="space-y-4 pt-8">
-              <div className="flex items-center gap-3 text-sm">
-                <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
-                  <ShieldCheck className="h-4 w-4 text-brand-cobalt" />
+    <div className="min-h-screen flex items-center justify-center bg-[var(--veristiq-slate)] relative overflow-hidden p-4">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-t from-purple-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="w-full max-w-lg relative z-10 animate-in fade-in zoom-in-95 duration-500">
+        <div className="flex flex-col items-center mb-8">
+            <Link href="/" className="flex items-center gap-3 mb-2 group">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--veristiq-primary-blue)] text-white shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
+                  <ShieldCheck className="h-6 w-6" />
                 </div>
-                <span>Instant compliance verification</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="h-8 w-8 rounded-full bg-brand-cobalt/20 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4 text-brand-cobalt" />
-                </div>
-                <span>Automated fairness audits</span>
-              </div>
-            </div>
-          </div>
+                <span className="font-sans font-bold text-2xl text-white tracking-tight">Veristiq</span>
+            </Link>
+            <p className="text-gray-400 text-sm">Operator Portal</p>
         </div>
 
-        <div className="relative z-10">
-          <p className="text-sm text-zinc-500">
-            &copy; 2025 Veristiq. All rights reserved.
-          </p>
-        </div>
-      </div>
+        <Card className="border-gray-800 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden !gap-0">
+          <CardHeader className="space-y-1 pb-2 text-center border-b border-gray-100 bg-gray-50/50">
+            <CardTitle className="text-xl font-bold text-[var(--veristiq-slate)]">Create Account</CardTitle>
+            <CardDescription>Join the network to run verifiable competitions</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {error && (
+                <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+                </Alert>
+            )}
 
-      {/* Right Panel - Register Form */}
-      <div className="flex items-center justify-center p-8 lg:p-12">
-        <div className="w-full max-w-sm space-y-8">
-          <div className="text-center lg:text-left space-y-2">
-             <div className="lg:hidden flex justify-center mb-4">
-                <div className="h-10 w-10 rounded-xl bg-brand-cobalt flex items-center justify-center">
-                  <Building2 className="h-6 w-6 text-white" />
+            <form onSubmit={handleRegister} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="operatorName">Organization Name</Label>
+                <Input
+                  id="operatorName"
+                  type="text"
+                  placeholder="Acme Corporation Ltd"
+                  value={operatorName}
+                  onChange={(e) => setOperatorName(e.target.value)}
+                  required
+                  disabled={loading}
+                  className={validationErrors.operator_name ? 'border-destructive bg-white' : 'bg-white'}
+                />
+                {validationErrors.operator_name && (
+                  <p className="text-xs text-destructive">{validationErrors.operator_name[0]}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                  className={validationErrors.email ? 'border-destructive bg-white' : 'bg-white'}
+                />
+                {validationErrors.email && (
+                  <p className="text-xs text-destructive">{validationErrors.email[0]}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                    className={validationErrors.password ? 'border-destructive bg-white' : 'bg-white'}
+                    />
                 </div>
-             </div>
-            <h2 className="text-2xl font-bold tracking-tight">Create an account</h2>
-            <p className="text-muted-foreground">
-              Enter your details below to create your account
-            </p>
-          </div>
-
-          {/* Info Banner */}
-          <Alert className="bg-brand-cobalt/10 border-brand-cobalt/20 text-brand-cobalt">
-            <Info className="h-4 w-4" />
-            <AlertDescription className="text-xs">
-              You'll get instant access to your operator dashboard.
-            </AlertDescription>
-          </Alert>
-
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="operatorName">Organization Name</Label>
-              <Input
-                id="operatorName"
-                type="text"
-                placeholder="Acme Corporation Ltd"
-                value={operatorName}
-                onChange={(e) => setOperatorName(e.target.value)}
-                required
-                disabled={loading}
-                className={validationErrors.operator_name ? 'border-destructive bg-background/50' : 'bg-background/50'}
-              />
-              {validationErrors.operator_name && (
-                <p className="text-xs text-destructive">{validationErrors.operator_name[0]}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@acme.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading}
-                className={validationErrors.email ? 'border-destructive bg-background/50' : 'bg-background/50'}
-              />
-              {validationErrors.email && (
-                <p className="text-xs text-destructive">{validationErrors.email[0]}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={loading}
-                className={validationErrors.password ? 'border-destructive bg-background/50' : 'bg-background/50'}
-              />
-              <p className="text-xs text-muted-foreground">Must be at least 8 characters</p>
+                <div className="space-y-2">
+                    <Label htmlFor="passwordConfirmation">Confirm</Label>
+                    <Input
+                    id="passwordConfirmation"
+                    type="password"
+                    placeholder="••••••••"
+                    value={passwordConfirmation}
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    required
+                    disabled={loading}
+                    className="bg-white"
+                    />
+                </div>
+              </div>
               {validationErrors.password && (
-                <p className="text-xs text-destructive">{validationErrors.password[0]}</p>
+                <p className="text-xs text-destructive mt-1">{validationErrors.password[0]}</p>
               )}
+              <p className="text-xs text-gray-500">Must be at least 8 characters</p>
+
+              <Button type="submit" className="w-full bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white font-medium h-10 transition-all shadow-md hover:shadow-lg mt-2" disabled={loading}>
+                {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {loading ? 'Creating Account...' : 'Create Account'}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4 border-t border-gray-100 bg-gray-50/50 pt-6">
+            <div className="text-center text-sm text-gray-500">
+              Already have an account?{' '}
+              <Link href="/operator/login" className="font-semibold text-[var(--veristiq-primary-blue)] hover:underline transition-all">
+                Sign in
+              </Link>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="passwordConfirmation">Confirm Password</Label>
-              <Input
-                id="passwordConfirmation"
-                type="password"
-                placeholder="••••••••"
-                value={passwordConfirmation}
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                required
-                disabled={loading}
-                className="bg-background/50"
-              />
+            <div className="text-xs text-center text-gray-400 px-4">
+                By creating an account, you agree to our{' '}
+                <Link href="/terms" className="underline hover:text-gray-600">Terms of Service</Link>
+                {' '}and{' '}
+                <Link href="/privacy" className="underline hover:text-gray-600">Privacy Policy</Link>
             </div>
-
-            <Button type="submit" className="w-full bg-brand-cobalt hover:bg-brand-cobalt/90" disabled={loading}>
-              {loading ? 'Creating Account...' : 'Create Account'}
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </form>
-
-          <div className="text-center text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link 
-              href="/operator/login"
-              className="text-brand-cobalt hover:text-brand-cobalt/80 hover:underline font-medium"
-            >
-              Sign in here
-            </Link>
-          </div>
-          
-          <div className="text-xs text-center text-muted-foreground px-4">
-            By creating an account, you agree to our{' '}
-            <Link href="/terms" className="underline hover:text-foreground">
-              Terms of Service
-            </Link>{' '}
-            and{' '}
-            <Link href="/privacy" className="underline hover:text-foreground">
-              Privacy Policy
-            </Link>
-          </div>
-        </div>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

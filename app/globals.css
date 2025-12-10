@@ -147,6 +147,9 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   * {
     @apply border-border;
   }
@@ -154,6 +157,10 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply tracking-tight;
+    }
 
     .bg-background, .bg-background\/70 {
         background-color: var(--background);
@@ -281,5 +288,14 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .hover\:rotate-x-2:hover {
+    transform: rotateX(2deg);
   }
 }

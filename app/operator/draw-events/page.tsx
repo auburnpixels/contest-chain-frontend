@@ -28,6 +28,7 @@ export default function EventsPage() {
           <DrawEventsWidget 
             syncUrlParams={true}
             showActions={true}
+            showTitle={false}
             onLogout={handleLogout}
           />
         </div>

@@ -1,31 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { useCallback, useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { publicApi } from '@/lib/api/client';
-import { Hash, RefreshCw, ArrowRight } from 'lucide-react';
+import { Hash } from 'lucide-react';
 import { useDialog } from '@/hooks/useDialog';
 import { TablePagination } from '@/components/table-pagination';
 import { DrawAuditsTable, DrawAudit } from '@/components/operator/draw-audits-table';
 import { DrawAuditDetailsDialog } from '@/components/operator/draw-audit-details-dialog';
 import { OperatorActionsMenu } from '@/components/operator-actions-menu';
-
-interface Operator {
-  id: number;
-  uuid: string;
-  name: string;
-  slug: string;
-  url: string;
-}
-
-interface Competition {
-  id: string;
-  name: string;
-  operator_id: number;
-}
+import { SearchableSelect, SearchableSelectOption } from '@/components/ui/searchable-select';
+import { Label } from '@/components/ui/label';
 
 export interface DrawAuditsWidgetProps {
   operatorId?: string;           // Filter to specific operator (hides operator filter)
@@ -52,8 +37,10 @@ export function DrawAuditsWidget({
 }: DrawAuditsWidgetProps) {
   const [loading, setLoading] = useState(true);
   const [audits, setAudits] = useState<DrawAudit[]>([]);
-  const [operators, setOperators] = useState<Operator[]>([]);
-  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [operators, setOperators] = useState<SearchableSelectOption[]>([]);
+  const [operatorsLoading, setOperatorsLoading] = useState(false);
+  const [competitions, setCompetitions] = useState<SearchableSelectOption[]>([]);
+  const [competitionsLoading, setCompetitionsLoading] = useState(false);
   const [selectedOperator, setSelectedOperator] = useState<string>(operatorId || 'all');
   const [selectedCompetition, setSelectedCompetition] = useState<string>(competitionId || 'all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -62,53 +49,69 @@ export function DrawAuditsWidget({
   const [perPage, setPerPage] = useState(pageSize);
   const dialog = useDialog<DrawAudit>();
 
+  // Callback functions for loading data (defined before useEffects)
+  const loadOperators = useCallback(async (search: string = '') => {
+    try {
+      setOperatorsLoading(true);
+      const response = await publicApi.getDrawAuditOperators(search || undefined);
+      const options: SearchableSelectOption[] = (response.data || []).map((op: any) => ({
+        value: op.uuid,
+        label: op.name,
+      }));
+      setOperators(options);
+    } catch (error) {
+      console.error('Failed to load operators:', error);
+    } finally {
+      setOperatorsLoading(false);
+    }
+  }, []);
+
+  const loadCompetitions = useCallback(async (search: string = '') => {
+    try {
+      setCompetitionsLoading(true);
+      const effectiveOperator = operatorId || (selectedOperator !== 'all' ? selectedOperator : undefined);
+      const response = await publicApi.getPublicCompetitions(effectiveOperator, search || undefined);
+      const options: SearchableSelectOption[] = (response.data || []).map((c: any) => ({
+        value: c.id,
+        label: c.name,
+      }));
+      setCompetitions(options);
+    } catch (error) {
+      console.error('Failed to load competitions:', error);
+    } finally {
+      setCompetitionsLoading(false);
+    }
+  }, [operatorId, selectedOperator]);
+
   // Load operators on mount (only if no operatorId is provided)
   useEffect(() => {
     if (!operatorId && showFilters) {
       loadOperators();
     }
-  }, [operatorId, showFilters]);
+  }, [operatorId, showFilters, loadOperators]);
 
-  // Load competitions when operatorId prop is provided and competitionId is also provided
+  // Load competitions when we have an effective operator (from prop or selection)
   useEffect(() => {
-    if (operatorId && competitionId) {
-      // Auto-load competitions list for the operator so the competition filter shows correctly
-      loadCompetitions(operatorId);
+    const effectiveOperator = operatorId || (selectedOperator !== 'all' ? selectedOperator : null);
+    
+    if (effectiveOperator) {
+      // Reset competition selection when operator changes (unless competitionId is fixed)
+      if (!competitionId) {
+        setSelectedCompetition('all');
+      }
+      loadCompetitions();
+    } else {
+      setCompetitions([]);
+      if (!competitionId) {
+        setSelectedCompetition('all');
+      }
     }
-  }, [operatorId, competitionId]);
+  }, [operatorId, selectedOperator, competitionId, loadCompetitions]);
 
   // Load audits when filters or page change
   useEffect(() => {
     loadAudits();
   }, [selectedOperator, selectedCompetition, currentPage, operatorId, competitionId]);
-
-  // Load competitions when operator is selected
-  useEffect(() => {
-    if (selectedOperator && selectedOperator !== 'all' && !operatorId) {
-      loadCompetitions(selectedOperator);
-    } else if (!operatorId) {
-      setCompetitions([]);
-      setSelectedCompetition('all');
-    }
-  }, [selectedOperator, operatorId]);
-
-  const loadOperators = async () => {
-    try {
-      const response = await publicApi.getDrawAuditOperators();
-      setOperators(response.data || []);
-    } catch (error) {
-      console.error('Failed to load operators:', error);
-    }
-  };
-
-  const loadCompetitions = async (operatorUuid: string) => {
-    try {
-      const response = await publicApi.getPublicCompetitions(operatorUuid);
-      setCompetitions(response.data || []);
-    } catch (error) {
-      console.error('Failed to load competitions:', error);
-    }
-  };
 
   const loadAudits = async () => {
     setLoading(true);
@@ -163,82 +166,77 @@ export function DrawAuditsWidget({
   return (
     <div className="space-y-4">
       {/* Table Section */}
+
       <Card>
+          {showTitle && (
+              <CardHeader>
+                  <div className="flex flex-col border-b pb-4 gap-1.5">
+                      <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
+                      {description && (
+                          <CardDescription className="text-muted-foreground text-sm">
+                              {description}
+                          </CardDescription>
+                      )}
+                  </div>
+              </CardHeader>
+          )}
+
           {showFilters && (
               <div className="px-6">
-                  <div className="flex flex-col gap-4 border-b pb-4">
-                      <div className="flex gap-2">
+                  <div className="border-b pb-4">
+                      <div className="flex gap-4">
                           {/* Only show operator filter if no operatorId prop is provided */}
                           {!operatorId && (
                               <div className="flex flex-col gap-1.5 flex-1">
-                                  <label className="text-sm font-medium">Operator</label>
-                                  <Select value={selectedOperator} onValueChange={setSelectedOperator}>
-                                      <SelectTrigger className="w-full">
-                                          <SelectValue placeholder="All" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                          <SelectItem value="all">All Operators</SelectItem>
-                                          {operators.map((operator) => (
-                                              <SelectItem key={operator.uuid} value={operator.uuid}>
-                                                  {operator.name}
-                                              </SelectItem>
-                                          ))}
-                                      </SelectContent>
-                                  </Select>
+                                  <Label className="text-sm font-medium">Operator</Label>
+                                  <SearchableSelect
+                                      value={selectedOperator}
+                                      onValueChange={setSelectedOperator}
+                                      onSearch={loadOperators}
+                                      options={operators}
+                                      placeholder="All operators"
+                                      searchPlaceholder="Search operators..."
+                                      emptyText="No operators found."
+                                      loading={operatorsLoading}
+                                      allOptionLabel="All operators"
+                                  />
                               </div>
                           )}
 
                           {/* Only show competition filter if no competitionId prop is provided */}
                           {!competitionId && (
                               <div className="flex flex-col gap-1.5 flex-1">
-                                  <label className="text-sm font-medium">Competition</label>
-                                  <Select
+                                  <Label className="text-sm font-medium">Competition</Label>
+                                  <SearchableSelect
                                       value={selectedCompetition}
                                       onValueChange={setSelectedCompetition}
+                                      onSearch={loadCompetitions}
+                                      options={competitions}
+                                      placeholder="All competitions"
+                                      searchPlaceholder="Search competitions..."
+                                      emptyText="No competitions found."
+                                      loading={competitionsLoading}
                                       disabled={!operatorId && (!selectedOperator || selectedOperator === 'all')}
-                                  >
-                                      <SelectTrigger className="w-full">
-                                          <SelectValue placeholder="All" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                          <SelectItem value="all">All Competitions</SelectItem>
-                                          {competitions.map((competition) => (
-                                              <SelectItem key={competition.id} value={competition.id}>
-                                                  {competition.name}
-                                              </SelectItem>
-                                          ))}
-                                      </SelectContent>
-                                  </Select>
+                                      allOptionLabel="All competitions"
+                                  />
                               </div>
                           )}
 
-                          <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={handleReset}
-                              disabled={!hasActiveFilters}
-                              className="w-full gap-2 flex flex-1"
-                          >
-                              <RefreshCw className="h-3 w-3" />
-                              Reset Filters
-                          </Button>
+                          <div className="flex flex-col gap-1.5 justify-end">
+                              {hasActiveFilters && (
+                                  <button
+                                      onClick={handleReset}
+                                      className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+                                  >
+                                      Reset filters
+                                  </button>
+                              )}
+                          </div>
                       </div>
                   </div>
               </div>
           )}
 
-        {showTitle && (
-          <CardHeader>
-            <div className="flex flex-col gap-1.5">
-              <CardTitle className="leading-none font-semibold !text-base">{title}</CardTitle>
-              {description && (
-                <CardDescription className="text-muted-foreground text-sm">
-                  {description}
-                </CardDescription>
-              )}
-            </div>
-          </CardHeader>
-        )}
         <CardContent>
           {audits.length > 0 ? (
             <>
@@ -273,11 +271,12 @@ export function DrawAuditsWidget({
                                     },
                                   ]
                                 : []),
-                                {
-
-                                    label: 'View operator',
-                                    href: `/profile/${audit.operator.slug}`,
-                                }
+                                ...(audit.operator
+                                  ? [{
+                                      label: 'View operator',
+                                      href: `/profile/${audit.operator.slug}`,
+                                    }]
+                                  : [])
                             ]
                       }
                     />

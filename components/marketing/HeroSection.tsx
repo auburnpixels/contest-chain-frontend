@@ -8,7 +8,7 @@ export function HeroSection() {
       
       <div className="container max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
-          <h1 className="text-5xl md:text-6xl font-semibold text-[var(--veristiq-slate)] mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-semibold text-[var(--veristiq-slate)] mb-6 leading-tight tracking-tight">
             Independent Fairness Verification for Competitions
           </h1>
           <p className="text-lg text-[var(--veristiq-slate-light)] mb-8 leading-relaxed max-w-lg">

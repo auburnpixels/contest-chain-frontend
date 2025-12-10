@@ -60,7 +60,8 @@ export default function EventsPage() {
         <div className="px-4 lg:px-6">
           <DrawEventsWidget 
             syncUrlParams={true}
-            showActions={true}
+            showActions={false}
+            showTitle={false}
             onLogout={handleLogout}
           />
         </div>

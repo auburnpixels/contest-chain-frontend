@@ -58,12 +58,8 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
       
       <div className="mt-auto p-4 border-t">
          <div className="flex items-center gap-3 mb-4 px-2">
-            <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
-                <User className="h-4 w-4 text-zinc-400" />
-            </div>
             <div className="flex flex-col overflow-hidden">
                 <span className="text-sm font-medium truncate">{userName || 'User'}</span>
-                <span className="text-xs capitalize">{userRole}</span>
             </div>
          </div>
          <Button 

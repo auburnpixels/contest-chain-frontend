@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ShieldCheck } from "lucide-react"
+import { ShieldCheck, Github, Twitter, Linkedin } from "lucide-react"
 
 export function SiteFooter() {
   return (
@@ -25,6 +25,7 @@ export function SiteFooter() {
               <li><Link href="/how-it-works" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">How It Works</Link></li>
               <li><Link href="/pricing" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Pricing</Link></li>
               <li><Link href="/compliance" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Compliance</Link></li>
+              <li><Link href="/verify" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Verify your ticket</Link></li>
             </ul>
           </div>
 
@@ -33,6 +34,7 @@ export function SiteFooter() {
             <ul className="space-y-3 text-sm text-[var(--veristiq-slate-light)]">
               <li><Link href="/about" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">About</Link></li>
               <li><Link href="/contact" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Contact</Link></li>
+              <li><Link href="/security" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Security</Link></li>
             </ul>
           </div>
 
@@ -41,6 +43,7 @@ export function SiteFooter() {
             <ul className="space-y-3 text-sm text-[var(--veristiq-slate-light)]">
               <li><Link href="/docs" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Docs</Link></li>
               <li><Link href="/api-reference" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">API Reference</Link></li>
+              <li><Link href="/status" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Status</Link></li>
             </ul>
           </div>
         </div>
@@ -52,9 +55,14 @@ export function SiteFooter() {
             <Link href="/terms" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Terms of Service</Link>
           </div>
           
-          <div className="flex items-center gap-2">
-             <div className="h-2 w-2 rounded-full bg-green-500"></div>
-             <span className="font-medium text-[var(--veristiq-slate)]">Systems Normal</span>
+          <div className="flex flex-col items-end gap-2">
+             <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                <span className="font-medium text-[var(--veristiq-slate)]">Systems Normal</span>
+             </div>
+             <p className="text-[10px] text-gray-400 max-w-[300px] text-right">
+                Veristiq is an independent technical service and is not affiliated with the Department for Digital, Culture, Media & Sport.
+             </p>
           </div>
         </div>
       </div>

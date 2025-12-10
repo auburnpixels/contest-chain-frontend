@@ -372,3 +372,4 @@ export function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDi
 
 
 
+

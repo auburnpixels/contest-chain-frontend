@@ -2,12 +2,17 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, ShieldCheck } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = React.useState(false)
+  const pathname = usePathname()
+
+  const isActive = (path: string) => pathname === path
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-xl">
@@ -21,16 +26,48 @@ export function SiteHeader() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="/how-it-works" className="text-sm font-medium text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)] transition-colors">
+            <Link 
+              href="/how-it-works" 
+              className={cn(
+                "text-sm font-medium transition-colors",
+                isActive("/how-it-works") 
+                  ? "text-[var(--veristiq-primary-blue)]" 
+                  : "text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)]"
+              )}
+            >
               How It Works
             </Link>
-            <Link href="/pricing" className="text-sm font-medium text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)] transition-colors">
+            <Link 
+              href="/pricing" 
+              className={cn(
+                "text-sm font-medium transition-colors",
+                isActive("/pricing") 
+                  ? "text-[var(--veristiq-primary-blue)]" 
+                  : "text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)]"
+              )}
+            >
               Pricing
             </Link>
-            <Link href="/compliance" className="text-sm font-medium text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)] transition-colors">
+            <Link 
+              href="/compliance" 
+              className={cn(
+                "text-sm font-medium transition-colors",
+                isActive("/compliance") 
+                  ? "text-[var(--veristiq-primary-blue)]" 
+                  : "text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)]"
+              )}
+            >
               Compliance
             </Link>
-            <Link href="/docs" className="text-sm font-medium text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)] transition-colors">
+            <Link 
+              href="/docs" 
+              className={cn(
+                "text-sm font-medium transition-colors",
+                isActive("/docs") 
+                  ? "text-[var(--veristiq-primary-blue)]" 
+                  : "text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)]"
+              )}
+            >
               Docs
             </Link>
           </nav>
@@ -42,7 +79,7 @@ export function SiteHeader() {
                Sign In
             </Link>
             <Link href="/operator/register">
-              <Button size="default" className="bg-[var(--veristiq-primary-blue)] text-white hover:bg-[var(--veristiq-primary-blue-dark)] font-medium rounded-md px-6 shadow-sm transition-all">
+              <Button size="default" className="bg-[var(--veristiq-primary-blue)] text-white hover:bg-[var(--veristiq-primary-blue-dark)] font-medium rounded-md px-6 shadow-sm transition-all hover:-translate-y-0.5">
                 Get Started
               </Button>
             </Link>
@@ -66,10 +103,46 @@ export function SiteHeader() {
                 </div>
               <nav className="flex flex-col p-6 gap-6">
                  <div className="space-y-4">
-                    <Link href="/how-it-works" onClick={() => setIsOpen(false)} className="block text-lg font-medium text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)] transition-colors">How It Works</Link>
-                    <Link href="/pricing" onClick={() => setIsOpen(false)} className="block text-lg font-medium text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)] transition-colors">Pricing</Link>
-                    <Link href="/compliance" onClick={() => setIsOpen(false)} className="block text-lg font-medium text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)] transition-colors">Compliance</Link>
-                    <Link href="/docs" onClick={() => setIsOpen(false)} className="block text-lg font-medium text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)] transition-colors">Docs</Link>
+                    <Link 
+                        href="/how-it-works" 
+                        onClick={() => setIsOpen(false)} 
+                        className={cn(
+                            "block text-lg font-medium transition-colors",
+                            isActive("/how-it-works") ? "text-[var(--veristiq-primary-blue)]" : "text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)]"
+                        )}
+                    >
+                        How It Works
+                    </Link>
+                    <Link 
+                        href="/pricing" 
+                        onClick={() => setIsOpen(false)} 
+                        className={cn(
+                            "block text-lg font-medium transition-colors",
+                            isActive("/pricing") ? "text-[var(--veristiq-primary-blue)]" : "text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)]"
+                        )}
+                    >
+                        Pricing
+                    </Link>
+                    <Link 
+                        href="/compliance" 
+                        onClick={() => setIsOpen(false)} 
+                        className={cn(
+                            "block text-lg font-medium transition-colors",
+                            isActive("/compliance") ? "text-[var(--veristiq-primary-blue)]" : "text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)]"
+                        )}
+                    >
+                        Compliance
+                    </Link>
+                    <Link 
+                        href="/docs" 
+                        onClick={() => setIsOpen(false)} 
+                        className={cn(
+                            "block text-lg font-medium transition-colors",
+                            isActive("/docs") ? "text-[var(--veristiq-primary-blue)]" : "text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)]"
+                        )}
+                    >
+                        Docs
+                    </Link>
                  </div>
                  <div className="pt-6 border-t border-gray-100 space-y-4">
                      <Link href="/operator/login" onClick={() => setIsOpen(false)}>

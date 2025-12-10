@@ -21,7 +21,7 @@ import { DrawAuditsWidget } from '@/components/draw-audits-widget';
 export default function OperatorDrawsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isReady, handleLogout, operatorName } = useOperatorAuth();
+  const { isReady, handleLogout, operatorName, operatorId } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [totalDraws, setTotalDraws] = useState(0);
 
@@ -54,11 +54,7 @@ export default function OperatorDrawsPage() {
       onLogout={handleLogout}
     >
       <div className="space-y-8">
-        <DashboardHeader title="Draw Audits">
-          <Badge variant="outline" className="px-3 py-1">
-            {totalDraws} Total
-          </Badge>
-        </DashboardHeader>
+        <DashboardHeader title="Draws & Winners" />
 
         {/* Metrics Cards - 3 cards */}
         <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2 xl:grid-cols-3">
@@ -93,6 +89,7 @@ export default function OperatorDrawsPage() {
 
         <div className="px-4 lg:px-6">
           <DrawAuditsWidget 
+            operatorId={operatorId || undefined}
             showOperator={false}
             showTitle={false}
             publicView={false}
