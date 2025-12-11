@@ -11,7 +11,8 @@ export default function HowItWorksPage() {
       <main className="pt-20">
         
         {/* Hero Section */}
-        <section className="py-20 bg-[var(--veristiq-snow)] border-b border-gray-100 overflow-hidden">
+        <section className="py-20 bg-[var(--veristiq-snow)] border-b border-gray-100 overflow-hidden relative">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
             <div className="container mx-auto px-6 max-w-4xl text-center relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 text-[var(--veristiq-slate)]">How Veristiq Works</h1>
                 <p className="text-xl text-[var(--veristiq-slate-light)] mb-8 leading-relaxed">

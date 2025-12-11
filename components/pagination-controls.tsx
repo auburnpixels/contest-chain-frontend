@@ -123,7 +123,7 @@ export function PaginationControls({
               return (
                 <Button
                   key={`page-${pageNum}`}
-                  variant={page === pageNum ? 'default' : 'outline'}
+                  variant={page === pageNum ? 'ghost' : 'outline'}
                   size="sm"
                   onClick={() => onPageChange(pageNum as number)}
                   disabled={loading}

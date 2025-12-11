@@ -59,13 +59,10 @@ export default function OperatorRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--veristiq-slate)] relative overflow-hidden p-4">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
-      <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-t from-purple-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[var(--veristiq-slate)] relative overflow-hidden p-4">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
 
-      <div className="w-full max-w-lg relative z-10 animate-in fade-in zoom-in-95 duration-500">
+          <div className="w-full max-w-lg relative z-10 animate-in fade-in zoom-in-95 duration-500">
         <div className="flex flex-col items-center mb-8">
             <Link href="/" className="flex items-center gap-3 mb-2 group">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--veristiq-primary-blue)] text-white shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
@@ -73,11 +70,10 @@ export default function OperatorRegisterPage() {
                 </div>
                 <span className="font-sans font-bold text-2xl text-white tracking-tight">Veristiq</span>
             </Link>
-            <p className="text-gray-400 text-sm">Operator Portal</p>
         </div>
 
-        <Card className="border-gray-800 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden !gap-0">
-          <CardHeader className="space-y-1 pb-2 text-center border-b border-gray-100 bg-gray-50/50">
+          <Card className="border-gray-800 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden px-5 py-10">
+              <CardHeader className="space-y-1 pb-2 text-center border-b border-gray-100 bg-gray-50/50 gap-2">
             <CardTitle className="text-xl font-bold text-[var(--veristiq-slate)]">Create Account</CardTitle>
             <CardDescription>Join the network to run verifiable competitions</CardDescription>
           </CardHeader>
@@ -90,7 +86,7 @@ export default function OperatorRegisterPage() {
             )}
 
             <form onSubmit={handleRegister} className="space-y-4">
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="operatorName">Organization Name</Label>
                 <Input
                   id="operatorName"
@@ -107,7 +103,7 @@ export default function OperatorRegisterPage() {
                 )}
               </div>
 
-              <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -125,7 +121,7 @@ export default function OperatorRegisterPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="password">Password</Label>
                     <Input
                     id="password"
@@ -138,7 +134,7 @@ export default function OperatorRegisterPage() {
                     className={validationErrors.password ? 'border-destructive bg-white' : 'bg-white'}
                     />
                 </div>
-                <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="passwordConfirmation">Confirm</Label>
                     <Input
                     id="passwordConfirmation"
@@ -163,7 +159,7 @@ export default function OperatorRegisterPage() {
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4 border-t border-gray-100 bg-gray-50/50 pt-6">
+          <CardFooter className="flex flex-col items-center gap-4 border-t border-gray-100 bg-gray-50/50 pt-6">
             <div className="text-center text-sm text-gray-500">
               Already have an account?{' '}
               <Link href="/operator/login" className="font-semibold text-[var(--veristiq-primary-blue)] hover:underline transition-all">

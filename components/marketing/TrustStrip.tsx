@@ -11,19 +11,7 @@ export function TrustStrip() {
             {/* Placeholders using text/icons for now as per instructions */}
             <div className="flex items-center gap-2 text-xl font-bold text-[var(--veristiq-slate)]">
                 <div className="bg-gray-200 h-8 w-8 rounded"></div>
-                <span>OperatorOne</span>
-            </div>
-             <div className="flex items-center gap-2 text-xl font-bold text-[var(--veristiq-slate)]">
-                <div className="bg-gray-200 h-8 w-8 rounded"></div>
-                <span>WinBig</span>
-            </div>
-             <div className="flex items-center gap-2 text-xl font-bold text-[var(--veristiq-slate)]">
-                <div className="bg-gray-200 h-8 w-8 rounded"></div>
-                <span>PrizeDraws</span>
-            </div>
-             <div className="flex items-center gap-2 text-xl font-bold text-[var(--veristiq-slate)]">
-                <div className="bg-gray-200 h-8 w-8 rounded"></div>
-                <span>Compify</span>
+                <span>Raffaly</span>
             </div>
         </div>
       </div>

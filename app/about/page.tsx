@@ -10,13 +10,11 @@ export default function AboutPage() {
 
         {/* Hero */}
         <section className="py-24 bg-[var(--veristiq-slate)] text-white relative overflow-hidden">
-             {/* Background Pattern */}
-             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20"></div>
-             <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
 
              <div className="container mx-auto px-6 text-center max-w-4xl relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-8 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
-                    <Target className="w-8 h-8 text-[var(--veristiq-teal)]" />
+                    <Target className="w-8 h-8 text-[var(--veristiq-primary-blue)]" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold mb-6">Making Fairness the Standard</h1>
                 <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -46,14 +44,14 @@ export default function AboutPage() {
                         <p className="text-sm text-gray-600">We are not an operator. We are not a marketplace. We are a neutral third-party verification service.</p>
                     </div>
                     <div className="p-6 bg-[var(--veristiq-snow)] rounded-xl border border-gray-100 text-center">
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4 text-green-600">
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4 text-[var(--veristiq-primary-blue)]">
                             <Lock className="w-6 h-6" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">Security</h3>
                         <p className="text-sm text-gray-600">We use cryptographic chaining to create an immutable record of every entry and every draw.</p>
                     </div>
                     <div className="p-6 bg-[var(--veristiq-snow)] rounded-xl border border-gray-100 text-center">
-                        <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4 text-purple-600">
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4 text-[var(--veristiq-primary-blue)]">
                             <Globe className="w-6 h-6" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">Transparency</h3>

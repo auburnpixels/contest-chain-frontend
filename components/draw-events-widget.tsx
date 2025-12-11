@@ -33,6 +33,8 @@ export interface DrawEventsWidgetProps {
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
   const mapping: Record<string, string> = {
+    'competition.created': 'Competition Created',
+    'competition.updated': 'Competition Updated',
     'operator.competition_created': 'Competition Created',
     'operator.draw_requested': 'Draw Triggered',
     'operator.api_request': 'API Request',
@@ -534,8 +536,6 @@ export function DrawEventsWidget({
                                     <SelectItem value="all">All actors</SelectItem>
                                     <SelectItem value="operator">Operator</SelectItem>
                                     <SelectItem value="system">System</SelectItem>
-                                    <SelectItem value="user">User</SelectItem>
-                                    <SelectItem value="admin">Admin</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -624,7 +624,7 @@ export function DrawEventsWidget({
                         )}
                         <TableCell>
                           <Badge variant="outline">
-                            {(event.actor_type || 'system')}
+                            {String((event.actor_type || 'system')).charAt(0).toUpperCase() + String((event.actor_type || 'system')).slice(1)}
                           </Badge>
                         </TableCell>
                         <TableCell>

@@ -92,7 +92,7 @@ export function CompetitionsTable({
               <TableCell className="font-medium text-foreground">
                   {competition.name}
               </TableCell>
-            <TableCell className="font-mono text-sm text-muted-foreground">
+            <TableCell>
                 {competition.external_id}
             </TableCell>
             <TableCell>

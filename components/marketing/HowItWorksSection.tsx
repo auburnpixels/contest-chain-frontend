@@ -18,8 +18,8 @@ export function HowItWorksSection() {
                         Operators send ticket entries and competition events to Veristiq via API. Everything is logged immutably in real-time.
                     </p>
                     <div className="bg-white p-3 rounded border border-gray-200 font-mono text-xs text-gray-500 shadow-sm opacity-80 group-hover:opacity-100 transition-opacity">
-                        POST /api/v1/entries<br/>
-                        {`{ "ticket": "A105", "user_hash": "..." }`}
+                        POST /api/v1/operator/entries<br/>
+                        {`{ "external_id": "A105", "user_reference": "..." }`}
                     </div>
                 </div>
             </div>

@@ -17,7 +17,7 @@ export function InfoTooltip({ children, side = 'top', className }: InfoTooltipPr
         <TooltipTrigger asChild>
           <button
             type="button"
-            className={`ml-1 inline-flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors ${className}`}
+            className={`cursor-help ml-1 inline-flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors ${className}`}
             onClick={(e) => e.preventDefault()}
           >
             <HelpCircle className="h-4 w-4" />

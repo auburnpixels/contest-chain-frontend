@@ -101,7 +101,7 @@ export function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="!max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl">
             {getEventDisplayName(event.event_type)}

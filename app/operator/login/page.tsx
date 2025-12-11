@@ -44,12 +44,9 @@ export default function OperatorLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--veristiq-slate)] relative overflow-hidden p-4">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
-      <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-t from-purple-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
 
-      <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-500">
+      <div className="w-full max-w-lg relative z-10 animate-in fade-in zoom-in-95 duration-500">
         <div className="flex flex-col items-center mb-8">
             <Link href="/" className="flex items-center gap-3 mb-2 group">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--veristiq-primary-blue)] text-white shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
@@ -57,15 +54,14 @@ export default function OperatorLoginPage() {
                 </div>
                 <span className="font-sans font-bold text-2xl text-white tracking-tight">Veristiq</span>
             </Link>
-            <p className="text-gray-400 text-sm">Operator Portal</p>
         </div>
 
-        <Card className="border-gray-800 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden">
-          <CardHeader className="space-y-1 pb-2 text-center border-b border-gray-100 bg-gray-50/50">
-            <CardTitle className="text-xl font-bold text-[var(--veristiq-slate)]">Welcome back</CardTitle>
+        <Card className="border-gray-800 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden px-5 py-10">
+          <CardHeader className="space-y-1 pb-2 text-center border-b border-gray-100 bg-gray-50/50 gap-2">
+            <CardTitle className="text-xl font-bold text-[var(--veristiq-slate)] mb-0">Welcome back</CardTitle>
             <CardDescription>Enter your credentials to access your dashboard</CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent>
             {error && (
                 <Alert variant="destructive" className="mb-6">
                 <AlertCircle className="h-4 w-4" />
@@ -74,7 +70,7 @@ export default function OperatorLoginPage() {
             )}
 
             <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -87,25 +83,28 @@ export default function OperatorLoginPage() {
                   className="bg-white"
                 />
               </div>
-              <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link href="/operator/forgot-password">
-                    <Button variant="link" className="px-0 text-xs text-[var(--veristiq-primary-blue)]" type="button">
-                        Forgot password?
-                    </Button>
-                  </Link>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="bg-white"
-                />
+                    <div>
+                        <Input
+                            id="password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            disabled={loading}
+                            className="bg-white"
+                        />
+                        <Link href="/operator/forgot-password">
+                            <Button variant="link" className="px-0 text-xs text-[var(--veristiq-primary-blue)]" type="button">
+                                Forgot password?
+                            </Button>
+                        </Link>
+                    </div>
+
               </div>
               <Button type="submit" className="w-full bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white font-medium h-10 transition-all shadow-md hover:shadow-lg" disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
@@ -120,9 +119,6 @@ export default function OperatorLoginPage() {
                 Create an account
               </Link>
             </div>
-            <Link href="/regulator/login" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
-                Regulator Login
-            </Link>
           </CardFooter>
         </Card>
       </div>

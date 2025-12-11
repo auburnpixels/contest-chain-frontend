@@ -64,6 +64,7 @@ export default function EntriesPage() {
         <div className="px-4 lg:px-6">
           <EntriesWidget 
             syncUrlParams={true}
+            showTitle={false}
             onLogout={handleLogout}
           />
         </div>
