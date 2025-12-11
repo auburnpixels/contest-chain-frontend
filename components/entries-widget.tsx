@@ -347,8 +347,8 @@ export function EntriesWidget({
                           </SelectTrigger>
                           <SelectContent>
                               <SelectItem value="all">All</SelectItem>
-                              <SelectItem value="correct">Correct answer</SelectItem>
-                              <SelectItem value="incorrect">Incorrect answer</SelectItem>
+                              <SelectItem value="eligible">Eligible</SelectItem>
+                              <SelectItem value="ineligible">Ineligible</SelectItem>
                               <SelectItem value="deleted">Voided</SelectItem>
                           </SelectContent>
                       </Select>

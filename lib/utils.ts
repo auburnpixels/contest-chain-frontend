@@ -33,15 +33,11 @@ export function maskEmail(email: string | null | undefined): string {
  * - Free + incorrect answer = not eligible
  * - Incorrect answer (any type) = not eligible
  */
-export function isEntryEligible(isFree: boolean, correctAnswer: boolean, deletedAt: string | null = null): boolean {
+export function isEntryEligible(eligible: boolean, deletedAt: string | null = null): boolean {
   // Deleted entries are never eligible
   if (deletedAt) return false;
-  
-  // Paid entries are always eligible
-  if (!isFree) return true;
-  
-  // Free entries are only eligible if they answered correctly
-  return isFree && correctAnswer;
+
+  return eligible;
 }
 
 

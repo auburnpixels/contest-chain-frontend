@@ -162,11 +162,10 @@ export default function ApiReferencePage() {
                         </TabsList>
                         <TabsContent value="body">
                             <Table>
-                                <Row name="external_id" type="string" required description="Your unique identifier for this competition (e.g., 'comp_123')." />
+                                <Row name="external_id" type="string" required description="Your unique identifier for this competition." />
                                 <Row name="name" type="string" required description="Public name/title of the competition." />
                                 <Row name="max_tickets" type="integer" required description="Total available tickets." />
                                 <Row name="draw_at" type="timestamp" required description="Scheduled draw time (ISO 8601 format)." />
-                                <Row name="status" type="string" description="Initial status (default: 'pending'). Options: pending, active." />
                                 <Row name="prizes" type="array" required description="Array of prizes for this competition (minimum 1 prize required)." />
                                 <Row name="prizes[].external_id" type="string" required description="Your unique identifier for this prize within the competition." />
                                 <Row name="prizes[].name" type="string" required description="Name/title of the prize." />
@@ -273,14 +272,13 @@ export default function ApiReferencePage() {
                             </TabsList>
                             <TabsContent value="body">
                                 <Table>
-                                    <Row name="external_id" type="string" description="Update the external identifier." />
-                                    <Row name="name" type="string" description="Update the public name/title." />
-                                    <Row name="max_tickets" type="integer" description="Update the total ticket quantity." />
-                                    <Row name="draw_at" type="timestamp" description="Reschedule the draw time." />
-                                    <Row name="status" type="string" description="Update the status (pending, active, ended, closed, awaiting_draw, completed)." />
-                                    <Row name="prizes" type="array" description="Update prizes array. You can add new prizes, update existing ones, or remove undrawn prizes." />
-                                    <Row name="prizes[].external_prize_id" type="string" description="Prize identifier (required when prizes array is provided)." />
-                                    <Row name="prizes[].name" type="string" description="Prize title (required when prizes array is provided)." />
+                                    <Row name="external_id" type="string" required description="Your unique identifier for this competition." />
+                                    <Row name="name" type="string" required description="Public name/title of the competition." />
+                                    <Row name="max_tickets" type="integer" required description="Total available tickets." />
+                                    <Row name="draw_at" type="timestamp" required description="Scheduled draw time (ISO 8601 format)." />
+                                    <Row name="prizes" type="array" required description="Array of prizes for this competition (minimum 1 prize required)." />
+                                    <Row name="prizes[].external_id" type="string" required description="Your unique identifier for this prize within the competition." />
+                                    <Row name="prizes[].name" type="string" required description="Name/title of the prize." />
                                 </Table>
                                 <div className="mt-8">
                                     <p className="text-sm text-[var(--veristiq-slate)] mb-3 font-semibold flex items-center gap-2"><Code2 className="w-4 h-4" /> Example Request</p>

@@ -41,7 +41,7 @@ export function EntriesTable({ entries, showCompetitionName = true }: EntriesTab
       </TableHeader>
       <TableBody>
         {entries.map((entry) => {
-          const isEligible = isEntryEligible(entry.is_free, entry.eligible || false, entry.deleted_at);
+          const isEligible = isEntryEligible(entry.eligible || false, entry.deleted_at);
           
           return (
             <TableRow key={entry.id}>
@@ -63,7 +63,7 @@ export function EntriesTable({ entries, showCompetitionName = true }: EntriesTab
               </TableCell>
               <TableCell>
                   <IndicatorBadge
-                      text={entry.deleted_at ? 'Voided' : isEligible ? 'Correct answer' : 'Incorrect answer'}
+                      text={entry.deleted_at ? 'Voided' : isEligible ? 'Eligible' : 'Ineligible'}
                       color={entry.deleted_at || !isEligible ? 'red' : 'green'}
                       size="xs"
                   />
