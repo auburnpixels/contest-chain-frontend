@@ -120,14 +120,17 @@ export interface PublicCompetition {
 export interface PublicOperator {
   operator: {
     id: string;
+    uuid?: string;
     name: string;
     slug: string;
+    url?: string;
     created_at: string;
   };
   stats: {
     total_competitions: number;
     total_draws: number;
     total_entries: number;
+    total_audits?: number;
     draw_audit_rate: number;
   };
   recent_competitions: Array<{

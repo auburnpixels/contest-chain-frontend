@@ -85,7 +85,7 @@ export default function DrawEventsPage() {
   return (
     <>
       <DashboardShell
-        navItems={navItems}
+        navItems={regulatorNavItems}
         userRole="regulator"
         userName={regulator?.name}
         onLogout={handleLogout}

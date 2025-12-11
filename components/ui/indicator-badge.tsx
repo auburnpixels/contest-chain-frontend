@@ -57,7 +57,7 @@ export interface IndicatorBadgeProps
     VariantProps<typeof indicatorBadgeVariants> {
   text: string
   color?: "green" | "yellow" | "blue" | "red" | "white" | "gray" | "purple" | "orange"
-    size: 'xs' | 'lg' | 'xl'
+    size?: 'xs' | 'lg' | 'xl'
 }
 
 function IndicatorBadge({ 

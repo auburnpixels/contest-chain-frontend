@@ -21,7 +21,7 @@ export default function EventsPage() {
     <DashboardShell
       navItems={operatorNavItems}
       userRole="operator"
-      userName={operatorName}
+      userName={operatorName ?? undefined}
       onLogout={handleLogout}
     >
       <div className="space-y-6">

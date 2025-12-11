@@ -44,12 +44,10 @@ export function exportToCSV<T extends Record<string, any>>(
     return columns
       .map(col => {
         const key = col.key as keyof T;
-        let value = row[key];
+        const rawValue = row[key];
 
-        // Apply transform if provided
-        if (col.transform) {
-          value = col.transform(value, row);
-        }
+        // Apply transform if provided, otherwise use raw value
+        const value = col.transform ? col.transform(rawValue, row) : rawValue;
 
         // Handle null/undefined
         if (value === null || value === undefined) {

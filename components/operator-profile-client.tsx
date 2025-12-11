@@ -123,7 +123,7 @@ export default function OperatorProfileClient({ slug }: Props) {
                 <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Competitions</p>
               </div>
               <div className="text-center p-4 bg-black/40 rounded-xl border border-white/5">
-                <p className="text-2xl font-bold text-white mb-1">{stats.total_audits}</p>
+                <p className="text-2xl font-bold text-white mb-1">{stats.total_audits ?? stats.total_draws}</p>
                 <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Audits</p>
               </div>
               <div className="text-center p-4 bg-black/40 rounded-xl border border-white/5">
@@ -142,7 +142,7 @@ export default function OperatorProfileClient({ slug }: Props) {
               Recent Competitions
             </h2>
             <Button variant="ghost" asChild className="text-zinc-400 hover:text-white hover:bg-white/5">
-              <Link href={`/audits?operator=${operator.uuid}`}>
+              <Link href={`/audits?operator=${operator.uuid ?? operator.id}`}>
                 View All Audits <ExternalLink className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -196,6 +196,7 @@ export default function OperatorProfileClient({ slug }: Props) {
     </div>
   );
 }
+
 
 
 

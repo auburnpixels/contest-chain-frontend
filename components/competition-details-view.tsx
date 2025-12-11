@@ -37,7 +37,9 @@ export interface CompetitionDetailsViewProps {
 }
 
 export function CompetitionDetailsView({ competition }: CompetitionDetailsViewProps) {
-  const attentionItems = competition.issues || competition.attention_issues || [];
+  // Convert string[] issues to AttentionIssue[] format if needed
+  const attentionItems: AttentionIssue[] = competition.attention_issues || 
+    (competition.issues?.map(issue => ({ type: 'warning' as const, message: issue, action: 'Review issue' })) || []);
   const hasEntries = typeof competition.entries_count !== 'undefined';
   const hasMaxTickets = typeof competition.ticket_quantity !== 'undefined' || typeof competition.max_tickets !== 'undefined';
   const hasDrawDate = typeof competition.draw_at !== 'undefined';
@@ -166,6 +168,7 @@ export function CompetitionDetailsView({ competition }: CompetitionDetailsViewPr
     </div>
   );
 }
+
 
 
 

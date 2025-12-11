@@ -1,5 +1,4 @@
 import { IndicatorBadge } from '@/components/ui/indicator-badge';
-import type { OperatorCompetition } from '@/components/operator/competition-details-dialog';
 
 /**
  * Status configuration map for IndicatorBadge components.
@@ -21,7 +20,7 @@ export const COMPETITION_STATUS_CONFIG: Record<
 /**
  * Returns an IndicatorBadge component for a competition's status.
  */
-export const getStatusIndicatorBadge = (competition: OperatorCompetition) => {
+export const getStatusIndicatorBadge = (competition: { status: string }) => {
   const status = competition.status;
   
   const config = COMPETITION_STATUS_CONFIG[status] 

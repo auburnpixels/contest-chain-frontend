@@ -217,9 +217,9 @@ export function EntriesWidget({
     const active: Array<{ key: string; label: string; value: string }> = [];
     
     if (filters.competition_id && !competitionId) {
-      const comp = competitions.find(c => c.id === filters.competition_id);
+      const comp = competitions.find(c => c.value === filters.competition_id);
       if (comp) {
-        active.push({ key: 'competition_id', label: 'Competition', value: comp.name });
+        active.push({ key: 'competition_id', label: 'Competition', value: comp.label });
       }
     }
     

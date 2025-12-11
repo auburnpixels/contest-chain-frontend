@@ -46,10 +46,10 @@ export function MetricCard({
   };
 
     const indicatorBadgeColor = {
-        good: 'green',
-        warning: 'yellow',
-        critical: 'red',
-        neutral: 'gray',
+        good: 'green' as const,
+        warning: 'yellow' as const,
+        critical: 'red' as const,
+        neutral: 'gray' as const,
     };
 
   const getBadgeVariant = () => {
@@ -81,7 +81,7 @@ export function MetricCard({
         </CardDescription>
           {useIndicatorBadge ? (
               <CardTitle>
-                  <IndicatorBadge color={indicatorBadgeColor[status]} text={value} size="xl" className="text-4xl" />
+                  <IndicatorBadge color={indicatorBadgeColor[status]} text={String(value)} size="xl" className="text-4xl" />
               </CardTitle>
           ) : (
               <CardTitle className={cn('text-2xl', statusColors[status])}>

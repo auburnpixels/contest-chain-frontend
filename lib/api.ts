@@ -118,6 +118,13 @@ export interface ApiError {
   };
 }
 
+export interface CompetitionStatistics {
+  total_entries: number;
+  total_draws: number;
+  total_prizes: number;
+  completion_rate: number;
+}
+
 export interface ComplianceCategory {
   score: number;
   max: number;

@@ -186,7 +186,7 @@ export function getComplianceIcon(score: number, isFinal: boolean): LucideIcon {
  */
 export function getSystemStatus(chainIntegrity?: ChainIntegrityData): {
   status: 'operational' | 'degraded' | 'unknown';
-  color: string;
+  color: 'green' | 'yellow' | 'gray';
   label: string;
 } {
   if (!chainIntegrity) {
