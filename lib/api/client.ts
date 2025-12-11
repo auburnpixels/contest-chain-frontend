@@ -66,6 +66,7 @@ export interface PublicCompetition {
     status: string;
     draw_at?: string;
     created_at: string;
+    updated_at: string;
     prizes: Array<{
       id: string;
       name: string;
@@ -76,14 +77,20 @@ export interface PublicCompetition {
     id: string;
     name: string;
     slug: string;
+    url?: string;
   };
   draw_audits: Array<{
     id: string;
     drawn_at: string;
+    drawn_at_utc: string;
     total_entries: number;
+    prize_name: string;
     prize?: {
       id: string;
       name: string;
+    };
+    winning_ticket: {
+      external_id: string;
     };
     winner?: {
       external_id: string;
@@ -95,6 +102,7 @@ export interface PublicCompetition {
     free_entries: number;
     paid_entries: number;
     eligible_entries: number;
+    voided_entries: number;
     eligibility_rate: number;
   };
   entry_timeline: Array<{
