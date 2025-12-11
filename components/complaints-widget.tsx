@@ -340,9 +340,6 @@ export function ComplaintsWidget({
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-16 text-center px-4">
-              <div className="bg-muted rounded-full p-4 mb-4">
-                <MessageSquare className="h-8 w-8 text-muted-foreground opacity-50" />
-              </div>
               <h3 className="text-lg font-medium text-foreground mb-1">No complaints</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
                 {hasActiveFilters

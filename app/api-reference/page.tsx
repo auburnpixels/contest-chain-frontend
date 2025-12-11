@@ -67,7 +67,6 @@ export default function ApiReferencePage() {
                     <li><a href="#create-competition" className="group block pl-4 py-1.5 text-sm -ml-px border-l-2 border-transparent hover:border-[var(--veristiq-primary-blue)] transition-all"><Badge variant="outline" className="mr-2 bg-blue-50 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0.5">POST</Badge><span className="text-[var(--veristiq-slate-light)] group-hover:text-[var(--veristiq-primary-blue)] truncate">Create competition</span></a></li>
                     <li><a href="#get-competition" className="group block pl-4 py-1.5 text-sm -ml-px border-l-2 border-transparent hover:border-[var(--veristiq-primary-blue)] transition-all"><Badge variant="outline" className="mr-2 bg-blue-50 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0.5">GET</Badge><span className="text-[var(--veristiq-slate-light)] group-hover:text-[var(--veristiq-primary-blue)] truncate">Get competition</span></a></li>
                     <li><a href="#update-competition" className="group block pl-4 py-1.5 text-sm -ml-px border-l-2 border-transparent hover:border-[var(--veristiq-primary-blue)] transition-all"><Badge variant="outline" className="mr-2 bg-blue-50 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0.5">PUT</Badge><span className="text-[var(--veristiq-slate-light)] group-hover:text-[var(--veristiq-primary-blue)] truncate">Update competition</span></a></li>
-                    <li><a href="#publish-competition" className="group block pl-4 py-1.5 text-sm -ml-px border-l-2 border-transparent hover:border-[var(--veristiq-primary-blue)] transition-all"><Badge variant="outline" className="mr-2 bg-blue-50 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0.5">POST</Badge><span className="text-[var(--veristiq-slate-light)] group-hover:text-[var(--veristiq-primary-blue)] truncate">Publish competition</span></a></li>
                     <li><a href="#close-competition" className="group block pl-4 py-1.5 text-sm -ml-px border-l-2 border-transparent hover:border-[var(--veristiq-primary-blue)] transition-all"><Badge variant="outline" className="mr-2 bg-blue-50 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0.5">POST</Badge><span className="text-[var(--veristiq-slate-light)] group-hover:text-[var(--veristiq-primary-blue)] truncate">Close competition</span></a></li>
                     <li><a href="#get-competition-stats" className="group block pl-4 py-1.5 text-sm -ml-px border-l-2 border-transparent hover:border-[var(--veristiq-primary-blue)] transition-all"><Badge variant="outline" className="mr-2 bg-blue-50 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0.5">GET</Badge><span className="text-[var(--veristiq-slate-light)] group-hover:text-[var(--veristiq-primary-blue)] truncate">Get stats</span></a></li>
                 </ul>
@@ -311,29 +310,6 @@ export default function ApiReferencePage() {
                         </Tabs>
                     </Endpoint>
                 </div>
-
-                 {/* POST /api/v1/operator/competitions/{external_id}/publish */}
-                 <div id="publish-competition" className="scroll-mt-32">
-                    <Endpoint 
-                    method="POST" 
-                    path="/api/v1/operator/competitions/{external_id}/publish" 
-                    title="Publish Competition"
-                    description="Marks the competition as active and ready to accept entries."
-                    >
-                    <Tabs defaultValue="response" className="w-full">
-                        <TabsList className="bg-gray-100 p-1 h-auto rounded-lg mb-6">
-                            <TabsTrigger value="response" className="data-[state=active]:bg-white data-[state=active]:text-[var(--veristiq-primary-blue)] data-[state=active]:shadow-sm text-gray-500 px-4 py-2 rounded-md text-sm font-medium transition-all">Response</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="response">
-                            <CodeBlock code={`{
-        "id": "956774e8-9835-4c54-9eb2-ce099db4e5f0",
-        "status": "active",
-        // ...
-    }`} />
-                        </TabsContent>
-                    </Tabs>
-                    </Endpoint>
-                 </div>
 
                 {/* POST /api/v1/operator/competitions/{external_id}/close */}
                  <div id="close-competition" className="scroll-mt-32">

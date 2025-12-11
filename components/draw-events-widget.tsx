@@ -92,7 +92,7 @@ export function DrawEventsWidget({
   }>({
     event_types: [],
     competitions: [],
-    actor_types: ['operator', 'system', 'user', 'admin'],
+    actor_types: ['operator', 'system'],
   });
 
   // Searchable competitions state

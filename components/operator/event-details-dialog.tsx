@@ -45,22 +45,22 @@ export interface EventDetailsDialogProps {
 // Helper function to map technical event types to friendly names
 const getEventDisplayName = (eventType: string): string => {
   const mapping: Record<string, string> = {
-    'competition.created': 'Competition Created',
-    'operator.competition_created': 'Competition Created',
-    'operator.draw_requested': 'Draw Triggered',
-    'operator.api_request': 'API Request',
-    'operator.entry_created': 'Entry Created',
-    'competition.published': 'Competition Published',
+    'api.request': 'API Request',
     'competition.closed': 'Competition Closed',
+    'competition.created': 'Competition Created',
     'competition.updated': 'Competition Updated',
-    'entry.created': 'Entry Added',
+    'complaint.submitted': 'Complaint Submitted',
+    'complaint.resolved': 'Complaint Resolved',
+    'operator.draw_requested': 'Draw Triggered',
+    'entry.created': 'Entry Created',
     'entry.deleted': 'Entry Removed',
     'draw.started': 'Draw Started',
     'draw.completed': 'Draw Completed',
+    'draw.triggered': 'Draw Triggered',
+      'draw.skipped_no_entries': 'Draw skipped',
     'draw.seed_generated': 'Draw Seed Generated',
     'draw.randomization_run': 'Randomization Run',
     'draw.audit_created': 'Draw Audit Created',
-    'complaint.submitted': 'Complaint Submitted',
     'prize.created': 'Prize Created',
     'prize.deleted': 'Prize Deleted',
   };
@@ -359,17 +359,5 @@ export function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDi
     </Dialog>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
