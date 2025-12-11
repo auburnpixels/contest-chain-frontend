@@ -385,7 +385,7 @@ export default function ApiReferencePage() {
                             <Table>
                                 <Row name="external_id" type="string" required description="Your unique transaction/entry ID." />
                                 <Row name="user_reference" type="string" description="User identifier (hashed/masked recommended for privacy)." />
-                                <Row name="question_answered_correctly" type="boolean" required description="Whether the user answered the entry question correctly. Only entries with true are eligible for the draw." />
+                                <Row name="eligible" type="boolean" required description="Whether this entry should be entered into the final draw. Only entries with true are eligible for the draw." />
                             </Table>
                         </TabsContent>
                         <TabsContent value="response">
@@ -427,7 +427,7 @@ export default function ApiReferencePage() {
                                 <Row name="external_id" type="string" required description="Your unique transaction/entry ID." />
                                 <Row name="user_reference" type="string" required description="Identifier for the user submitting the free entry." />
                                 <Row name="reason" type="string" description="Reason for free entry (e.g., 'postal', 'promotional', 'compensation')." />
-                                <Row name="question_answered_correctly" type="boolean" required description="Whether the user answered the entry question correctly. Only entries with true are eligible for the draw." />
+                                <Row name="eligible" type="boolean" required description="Whether this entry should be entered into the final draw. Only entries with true are eligible for the draw." />
                             </Table>
                         </TabsContent>
                         <TabsContent value="response">

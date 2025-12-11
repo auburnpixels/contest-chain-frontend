@@ -13,7 +13,7 @@ export interface OperatorEntry {
   user_reference: string;
   competition_id: string;
   is_free: boolean;
-  question_answered_correctly?: boolean;
+  eligible?: boolean;
   deleted_at?: string | null;
   created_at: string;
   competition?: {
@@ -41,7 +41,7 @@ export function EntriesTable({ entries, showCompetitionName = true }: EntriesTab
       </TableHeader>
       <TableBody>
         {entries.map((entry) => {
-          const isEligible = isEntryEligible(entry.is_free, entry.question_answered_correctly || false, entry.deleted_at);
+          const isEligible = isEntryEligible(entry.is_free, entry.eligible || false, entry.deleted_at);
           
           return (
             <TableRow key={entry.id}>
