@@ -439,6 +439,7 @@ export const operatorApi = {
   getMetrics: {
     attention: () => apiClient.get<MetricResponse>('/internal/operator/metrics/attention'),
     chainIntegrity: () => apiClient.get<MetricResponse>('/internal/operator/metrics/chain-integrity'),
+    eventsChainIntegrity: () => apiClient.get<MetricResponse>('/internal/operator/metrics/events-chain-integrity'),
     competitions: () => apiClient.get<MetricResponse>('/internal/operator/metrics/competitions'),
     complaints: () => apiClient.get<MetricResponse>('/internal/operator/metrics/complaints'),
     entries: () => apiClient.get<MetricResponse>('/internal/operator/metrics/entries'),

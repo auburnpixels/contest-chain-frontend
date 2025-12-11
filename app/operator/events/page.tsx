@@ -39,9 +39,9 @@ export default function EventsPage() {
 
           <AsyncMetricCard
             title="Chain integrity status"
-            fetchData={operatorApi.getMetrics.chainIntegrity}
+            fetchData={operatorApi.getMetrics.eventsChainIntegrity}
             useIndicatorBadge={true}
-            helpText="Verifies that your competition's audit records are securely chained and tamper-proof, ensuring your draw results stay trustworthy."
+            helpText="Verifies that your competition's event records are securely chained and tamper-proof, ensuring your audit trail stays trustworthy."
             renderValue={(data) => {
               const chainStatus = data.metadata?.chain_status;
               if (chainStatus === 'valid') return 'Verified';

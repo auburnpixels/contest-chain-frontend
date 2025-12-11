@@ -138,7 +138,7 @@ export default function OperatorDashboardPage() {
                         renderFooter={(data) => {
                             const verified = data.metadata?.verified_events || 0;
                             const total = Number(data.metadata?.total_events || 0).toLocaleString();
-                            return `${verified} of ${total} events verified`;
+                            return `${verified} of ${total} draws verified`;
                         }}
                     />
 
