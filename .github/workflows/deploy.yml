@@ -17,5 +17,5 @@ jobs:
       - name: Push to `frontend`
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku@157.180.113.27:22/frontend'
+          git_remote_url: 'ssh://dokku@157.180.113.27:22/web
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}

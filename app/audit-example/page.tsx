@@ -65,7 +65,7 @@ export default function AuditExamplePage() {
                                      <div className="h-3 w-3 rounded-full bg-amber-400" />
                                      <div className="h-3 w-3 rounded-full bg-green-400" />
                                  </div>
-                                 <div className="text-xs text-zinc-400 font-mono">cafaas.com</div>
+                                 <div className="text-xs text-zinc-400 font-mono">veristiq.com</div>
                              </div>
 
                              {/* Mockup Body */}
