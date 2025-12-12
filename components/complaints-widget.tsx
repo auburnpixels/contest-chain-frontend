@@ -227,49 +227,51 @@ export function ComplaintsWidget({
         {showFilters && (
           <div className="px-6">
             <div className="border-b pb-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
-                  <SearchableSelect
-                    value={filters.competition || 'all'}
-                    onValueChange={(value) => handleFilterChange('competition', value)}
-                    onSearch={loadCompetitions}
-                    options={competitions}
-                    placeholder="All competitions"
-                    searchPlaceholder="Search competitions..."
-                    emptyText="No competitions found."
-                    loading={competitionsLoading}
-                    allOptionLabel="All competitions"
-                  />
-                </div>
+              <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
+                          <SearchableSelect
+                              value={filters.competition || 'all'}
+                              onValueChange={(value) => handleFilterChange('competition', value)}
+                              onSearch={loadCompetitions}
+                              options={competitions}
+                              placeholder="All competitions"
+                              searchPlaceholder="Search competitions..."
+                              emptyText="No competitions found."
+                              loading={competitionsLoading}
+                              allOptionLabel="All competitions"
+                          />
+                      </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="status-filter" className="text-sm font-medium">Status</Label>
-                  <Select
-                    value={filters.status || 'all'}
-                    onValueChange={(value) => handleFilterChange('status', value)}
-                  >
-                    <SelectTrigger id="status-filter" className="w-full">
-                      <SelectValue placeholder="All statuses" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All statuses</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="resolved">Resolved</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="status-filter" className="text-sm font-medium">Status</Label>
+                          <Select
+                              value={filters.status || 'all'}
+                              onValueChange={(value) => handleFilterChange('status', value)}
+                          >
+                              <SelectTrigger id="status-filter" className="w-full">
+                                  <SelectValue placeholder="All statuses" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="all">All statuses</SelectItem>
+                                  <SelectItem value="pending">Pending</SelectItem>
+                                  <SelectItem value="resolved">Resolved</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
+                  </div>
 
-                <div className="flex flex-col gap-1.5 justify-end">
                   {hasActiveFilters && (
-                    <button
-                      onClick={handleReset}
-                      className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
-                    >
-                      Reset filters
-                    </button>
+                    <div className="flex flex-col gap-1.5 justify-end">
+                        <button
+                          onClick={handleReset}
+                          className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+                        >
+                          Reset filters
+                        </button>
+                    </div>
                   )}
-                </div>
               </div>
             </div>
           </div>

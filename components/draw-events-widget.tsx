@@ -35,6 +35,7 @@ const getEventDisplayName = (eventType: string): string => {
   const mapping: Record<string, string> = {
     'competition.created': 'Competition Created',
     'competition.updated': 'Competition Updated',
+    'competition.closed': 'Competition Closed',
     'operator.competition_created': 'Competition Created',
     'operator.draw_requested': 'Draw Triggered',
     'operator.api_request': 'API Request',
@@ -44,13 +45,12 @@ const getEventDisplayName = (eventType: string): string => {
     'raffle.updated': 'Competition Updated',
     'entry.created': 'Entry Added',
     'entry.deleted': 'Entry Removed',
-    'draw.started': 'Draw Started',
+    'draw.triggered': 'Draw Triggered',
     'draw.completed': 'Draw Completed',
-    'draw.seed_generated': 'Draw Seed Generated',
-    'draw.randomization_run': 'Randomization Run',
-    'draw.audit_created': 'Draw Audit Created',
+    'draw.skipped_no_entries': 'Draw Skipped (No Entries)',
     'complaint.submitted': 'Complaint Submitted',
     'prize.created': 'Prize Created',
+    'prize.updated': 'Prize Updated',
     'prize.deleted': 'Prize Deleted',
   };
   return mapping[eventType] || eventType;
@@ -478,104 +478,106 @@ export function DrawEventsWidget({
         {showFilters && (
             <div className="px-6">
                 <div className="border-b pb-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="event-filter" className="text-sm font-medium">Event Type</Label>
-                            <Select
-                                value={filters.event_type || 'all'}
-                                onValueChange={(value) => {
-                                    setFilters({ ...filters, event_type: value === 'all' ? '' : value });
-                                    setPage(1);
-                                }}
-                            >
-                                <SelectTrigger id="event-filter">
-                                    <SelectValue placeholder="All events" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All events</SelectItem>
-                                    {filterOptions.event_types.map((type: string) => (
-                                        <SelectItem key={type} value={type}>{getEventDisplayName(type)}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {!competitionId && (
+                    <div className="flex flex-col gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                             <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
-                                <SearchableSelect
-                                    value={filters.competition_id || 'all'}
+                                <Label htmlFor="event-filter" className="text-sm font-medium">Event Type</Label>
+                                <Select
+                                    value={filters.event_type || 'all'}
                                     onValueChange={(value) => {
-                                        setFilters({ ...filters, competition_id: value === 'all' ? '' : value });
+                                        setFilters({ ...filters, event_type: value === 'all' ? '' : value });
                                         setPage(1);
                                     }}
-                                    onSearch={loadCompetitions}
-                                    options={competitions}
-                                    placeholder="All competitions"
-                                    searchPlaceholder="Search competitions..."
-                                    emptyText="No competitions found."
-                                    loading={competitionsLoading}
-                                    allOptionLabel="All competitions"
+                                >
+                                    <SelectTrigger id="event-filter">
+                                        <SelectValue placeholder="All events" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All events</SelectItem>
+                                        {filterOptions.event_types.map((type: string) => (
+                                            <SelectItem key={type} value={type}>{getEventDisplayName(type)}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {!competitionId && (
+                                <div className="flex flex-col gap-1.5">
+                                    <Label htmlFor="competition-filter" className="text-sm font-medium">Competition</Label>
+                                    <SearchableSelect
+                                        value={filters.competition_id || 'all'}
+                                        onValueChange={(value) => {
+                                            setFilters({ ...filters, competition_id: value === 'all' ? '' : value });
+                                            setPage(1);
+                                        }}
+                                        onSearch={loadCompetitions}
+                                        options={competitions}
+                                        placeholder="All competitions"
+                                        searchPlaceholder="Search competitions..."
+                                        emptyText="No competitions found."
+                                        loading={competitionsLoading}
+                                        allOptionLabel="All competitions"
+                                    />
+                                </div>
+                            )}
+
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="actor-filter" className="text-sm font-medium">Actor</Label>
+                                <Select
+                                    value={filters.actor_type || 'all'}
+                                    onValueChange={(value) => {
+                                        setFilters({ ...filters, actor_type: value === 'all' ? '' : value });
+                                        setPage(1);
+                                    }}
+                                >
+                                    <SelectTrigger id="actor-filter">
+                                        <SelectValue placeholder="All actors" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All actors</SelectItem>
+                                        <SelectItem value="operator">Operator</SelectItem>
+                                        <SelectItem value="system">System</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="from-date" className="text-sm font-medium">From Date</Label>
+                                <Input
+                                    id="from-date"
+                                    type="date"
+                                    value={filters.from_date}
+                                    onChange={(e) => {
+                                        setFilters({ ...filters, from_date: e.target.value });
+                                        setPage(1);
+                                    }}
                                 />
                             </div>
-                        )}
 
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="actor-filter" className="text-sm font-medium">Actor</Label>
-                            <Select
-                                value={filters.actor_type || 'all'}
-                                onValueChange={(value) => {
-                                    setFilters({ ...filters, actor_type: value === 'all' ? '' : value });
-                                    setPage(1);
-                                }}
-                            >
-                                <SelectTrigger id="actor-filter">
-                                    <SelectValue placeholder="All actors" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All actors</SelectItem>
-                                    <SelectItem value="operator">Operator</SelectItem>
-                                    <SelectItem value="system">System</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="to-date" className="text-sm font-medium">To Date</Label>
+                                <Input
+                                    id="to-date"
+                                    type="date"
+                                    value={filters.to_date}
+                                    onChange={(e) => {
+                                        setFilters({ ...filters, to_date: e.target.value });
+                                        setPage(1);
+                                    }}
+                                />
+                            </div>
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="from-date" className="text-sm font-medium">From Date</Label>
-                            <Input
-                                id="from-date"
-                                type="date"
-                                value={filters.from_date}
-                                onChange={(e) => {
-                                    setFilters({ ...filters, from_date: e.target.value });
-                                    setPage(1);
-                                }}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="to-date" className="text-sm font-medium">To Date</Label>
-                            <Input
-                                id="to-date"
-                                type="date"
-                                value={filters.to_date}
-                                onChange={(e) => {
-                                    setFilters({ ...filters, to_date: e.target.value });
-                                    setPage(1);
-                                }}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1.5 justify-end">
-                            {hasActiveFilters && (
+                        {hasActiveFilters && (
+                            <div className="flex flex-col gap-1.5 justify-end">
                                 <button
                                     onClick={clearAllFilters}
                                     className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
                                 >
                                     Reset filters
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
           </div>

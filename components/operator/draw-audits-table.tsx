@@ -8,6 +8,7 @@ export interface DrawAudit {
   id: number | string;
   draw_id: string;
   sequence?: number; // Chain position (may be missing in public page data)
+  is_chained?: boolean; // Chain verification status
   
   // Operator info (only in public page)
   operator?: {
@@ -136,7 +137,11 @@ export function DrawAuditsTable({
               {getWinningTicket(audit)}
             </TableCell>
             <TableCell>
-              <IndicatorBadge color="green" text="Verified" size="xs" />
+              <IndicatorBadge 
+                color={audit.is_chained ? 'green' : 'yellow'} 
+                text={audit.is_chained ? 'Verified' : 'Pending'} 
+                size="xs" 
+              />
             </TableCell>
             {renderActions && (
               <TableCell className="text-right">

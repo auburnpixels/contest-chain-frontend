@@ -267,103 +267,105 @@ export function EntriesWidget({
       {/* Table Card */}
       <Card>
           <div className="px-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b pb-4">
-                  <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="external_id" className="text-sm font-medium">
-                          External ID
-                      </Label>
-                      <Input
-                          id="external_id"
-                          type="text"
-                          placeholder="Search by external ID..."
-                          value={filters.external_id}
-                          onChange={(e) => handleFilterChange('external_id', e.target.value)}
-                          className="w-full"
-                      />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="user_reference" className="text-sm font-medium">
-                          User Reference
-                      </Label>
-                      <Input
-                          id="user_reference"
-                          type="text"
-                          placeholder="Search by user reference..."
-                          value={filters.user_reference}
-                          onChange={(e) => handleFilterChange('user_reference', e.target.value)}
-                          className="w-full"
-                      />
-                  </div>
-
-                  {!competitionId && (
+              <div className="flex flex-col gap-2 border-b pb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                       <div className="flex flex-col gap-1.5">
-                          <Label htmlFor="competition_id" className="text-sm font-medium">
-                              Competition
+                          <Label htmlFor="external_id" className="text-sm font-medium">
+                              External ID
                           </Label>
-                          <SearchableSelect
-                              value={filters.competition_id || 'all'}
-                              onValueChange={(value) => handleFilterChange('competition_id', value)}
-                              onSearch={loadCompetitions}
-                              options={competitions}
-                              placeholder="All competitions"
-                              searchPlaceholder="Search competitions..."
-                              emptyText="No competitions found."
-                              loading={competitionsLoading}
-                              allOptionLabel="All competitions"
+                          <Input
+                              id="external_id"
+                              type="text"
+                              placeholder="Search by external ID..."
+                              value={filters.external_id}
+                              onChange={(e) => handleFilterChange('external_id', e.target.value)}
+                              className="w-full"
                           />
                       </div>
-                  )}
 
-                  <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="entry_type" className="text-sm font-medium">
-                          Type
-                      </Label>
-                      <Select
-                          value={filters.entry_type || 'all'}
-                          onValueChange={(value) => handleFilterChange('entry_type', value)}
-                      >
-                          <SelectTrigger id="entry_type" className="w-full">
-                              <SelectValue placeholder="All types" />
-                          </SelectTrigger>
-                          <SelectContent>
-                              <SelectItem value="all">All types</SelectItem>
-                              <SelectItem value="paid">Paid</SelectItem>
-                              <SelectItem value="free">Free</SelectItem>
-                          </SelectContent>
-                      </Select>
-                  </div>
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="user_reference" className="text-sm font-medium">
+                              User Reference
+                          </Label>
+                          <Input
+                              id="user_reference"
+                              type="text"
+                              placeholder="Search by user reference..."
+                              value={filters.user_reference}
+                              onChange={(e) => handleFilterChange('user_reference', e.target.value)}
+                              className="w-full"
+                          />
+                      </div>
 
-                  <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="eligibility" className="text-sm font-medium">
-                          Eligibility
-                      </Label>
-                      <Select
-                          value={filters.eligibility || 'all'}
-                          onValueChange={(value) => handleFilterChange('eligibility', value)}
-                      >
-                          <SelectTrigger id="eligibility" className="w-full">
-                              <SelectValue placeholder="All" />
-                          </SelectTrigger>
-                          <SelectContent>
-                              <SelectItem value="all">All</SelectItem>
-                              <SelectItem value="eligible">Eligible</SelectItem>
-                              <SelectItem value="ineligible">Ineligible</SelectItem>
-                              <SelectItem value="deleted">Voided</SelectItem>
-                          </SelectContent>
-                      </Select>
-                  </div>
-
-                  <div className="flex flex-col gap-1.5 justify-end">
-                      {hasActiveFilters && (
-                          <button
-                              onClick={handleClearFilters}
-                              className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
-                          >
-                              Reset filters
-                          </button>
+                      {!competitionId && (
+                          <div className="flex flex-col gap-1.5">
+                              <Label htmlFor="competition_id" className="text-sm font-medium">
+                                  Competition
+                              </Label>
+                              <SearchableSelect
+                                  value={filters.competition_id || 'all'}
+                                  onValueChange={(value) => handleFilterChange('competition_id', value)}
+                                  onSearch={loadCompetitions}
+                                  options={competitions}
+                                  placeholder="All competitions"
+                                  searchPlaceholder="Search competitions..."
+                                  emptyText="No competitions found."
+                                  loading={competitionsLoading}
+                                  allOptionLabel="All competitions"
+                              />
+                          </div>
                       )}
+
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="entry_type" className="text-sm font-medium">
+                              Type
+                          </Label>
+                          <Select
+                              value={filters.entry_type || 'all'}
+                              onValueChange={(value) => handleFilterChange('entry_type', value)}
+                          >
+                              <SelectTrigger id="entry_type" className="w-full">
+                                  <SelectValue placeholder="All types" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="all">All types</SelectItem>
+                                  <SelectItem value="paid">Paid</SelectItem>
+                                  <SelectItem value="free">Free</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
+
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="eligibility" className="text-sm font-medium">
+                              Eligibility
+                          </Label>
+                          <Select
+                              value={filters.eligibility || 'all'}
+                              onValueChange={(value) => handleFilterChange('eligibility', value)}
+                          >
+                              <SelectTrigger id="eligibility" className="w-full">
+                                  <SelectValue placeholder="All" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="all">All</SelectItem>
+                                  <SelectItem value="eligible">Eligible</SelectItem>
+                                  <SelectItem value="ineligible">Ineligible</SelectItem>
+                                  <SelectItem value="deleted">Voided</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
                   </div>
+
+                  {hasActiveFilters && (
+                  <div className="flex flex-col gap-1.5 justify-end">
+                      <button
+                          onClick={handleClearFilters}
+                          className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+                      >
+                          Reset filters
+                      </button>
+                  </div>
+                  )}
               </div>
           </div>
 
@@ -380,7 +382,7 @@ export function EntriesWidget({
           </CardHeader>
         )}
 
-        <CardContent className={showTitle ? '' : 'pt-6'}>
+        <CardContent className={showTitle ? '' : ''}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <p className="text-lg text-muted-foreground animate-pulse">Loading...</p>

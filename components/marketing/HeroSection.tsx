@@ -41,11 +41,16 @@ export function HeroSection() {
                     <div className="text-[var(--veristiq-slate-light)]">Event #103: Competition Closed</div>
                     <div className="ml-auto text-xs text-gray-400">09:42:05</div>
                 </div>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded border border-gray-100 opacity-80">
+                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <div className="text-[var(--veristiq-slate-light)]">Event #104: Draw Triggered</div>
+                    <div className="ml-auto text-xs text-gray-400">09:43:14</div>
+                </div>
                  <div className="flex items-center gap-3 p-4 bg-blue-50/50 rounded border border-blue-100 ring-2 ring-blue-100 shadow-sm relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-[200%] -translate-x-full animate-[shimmer_2s_infinite]"></div>
                     <div className="w-2 h-2 rounded-full bg-[var(--veristiq-primary-blue)] animate-pulse"></div>
                     <div className="relative">
-                        <div className="font-semibold text-[var(--veristiq-slate)]">Event #104: Draw Audit Created</div>
+                        <div className="font-semibold text-[var(--veristiq-slate)]">Event #105: Draw Completed</div>
                         <div className="text-xs text-gray-500 mt-1 break-all">Hash: 8f4b2e1a...9d3c</div>
                     </div>
                     <div className="ml-auto text-xs text-[var(--veristiq-primary-blue)] font-medium relative">LOCKED</div>

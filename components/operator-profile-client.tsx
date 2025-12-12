@@ -96,27 +96,8 @@ export default function OperatorProfileClient({ slug }: Props) {
           <div className="flex-1 w-full">
             <div className="flex flex-col md:flex-row items-center gap-4 mb-4 justify-center md:justify-start">
               <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{operator.name}</h1>
-              <Badge variant="secondary" className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20 h-6 px-3">
-                <ShieldCheck className="h-3 w-3 mr-1.5" />
-                Verified Operator
-              </Badge>
             </div>
             
-            <div className="flex flex-col md:flex-row items-center gap-6 text-sm text-zinc-400 mb-8 justify-center md:justify-start">
-              <span>Member since {dateFormatters.shortDate(operator.created_at)}</span>
-              {operator.url && (
-                <a 
-                  href={operator.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 hover:text-white transition-colors"
-                >
-                  <Globe className="h-3 w-3" />
-                  {new URL(operator.url).hostname}
-                </a>
-              )}
-            </div>
-
             <div className="grid grid-cols-3 gap-4 max-w-md mx-auto md:mx-0">
               <div className="text-center p-4 bg-black/40 rounded-xl border border-white/5">
                 <p className="text-2xl font-bold text-white mb-1">{stats.total_competitions}</p>

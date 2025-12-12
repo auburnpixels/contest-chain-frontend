@@ -8,14 +8,13 @@ import { publicApi, DrawAuditDetail } from '@/lib/api/client';
 import {
     Loader2,
     AlertCircle,
-    ExternalLink,
     Building2,
-    CheckCircle2,
     Download,
     Link as LinkIcon,
     ShieldCheck,
     Copy,
-    Check
+    Check,
+    Clock
 } from 'lucide-react';
 import { dateFormatters } from '@/lib/date-utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -104,20 +103,27 @@ export function AuditClient({ uuid }: AuditClientProps) {
         <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="container mx-auto px-6 relative z-10 text-center">
-            <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
+            <div className={`inline-flex items-center justify-center p-3 ${audit.is_chained ? 'bg-white/10' : 'bg-yellow-500/20'} rounded-full mb-6 backdrop-blur-sm shadow-lg ring-1 ${audit.is_chained ? 'ring-white/20' : 'ring-yellow-500/30'}`}>
+                {audit.is_chained ? (
                     <ShieldCheck className="w-8 h-8 text-[var(--veristiq-teal)]" />
+                ) : (
+                    <Clock className="w-8 h-8 text-yellow-400" />
+                )}
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Verified Audit Record</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+                {audit.is_chained ? 'Verified Audit Record' : 'Pending Audit Record'}
+            </h1>
             <div className="flex flex-col items-center gap-4">
                 <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                    Immutable proof of fairness for competition draw events.
+                    {audit.is_chained 
+                        ? 'Immutable proof of fairness for competition draw events.'
+                        : 'This draw audit is pending chain verification. Chain linking is processed asynchronously.'}
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-                        <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full flex items-center gap-2">
+                    <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full flex items-center gap-2">
                         <span className="text-gray-400 text-sm">Draw ID</span>
                         <span className="font-mono text-white font-bold">{audit.draw_id}</span>
-                        </div>
-                        <IndicatorBadge color="green" text="Verified Intact" size="xs" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,10 +173,18 @@ export function AuditClient({ uuid }: AuditClientProps) {
                         <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 !text-xl">
-                                <ShieldCheck className="w-5 h-5 text-green-500" />
+                                {audit.is_chained ? (
+                                    <ShieldCheck className="w-5 h-5 text-green-500" />
+                                ) : (
+                                    <Clock className="w-5 h-5 text-yellow-500" />
+                                )}
                                 Cryptographic Proofs
                             </CardTitle>
-                            <CardDescription>The following hashes link this draw to the immutable audit chain.</CardDescription>
+                            <CardDescription>
+                                {audit.is_chained 
+                                    ? 'The following hashes link this draw to the immutable audit chain.'
+                                    : 'Chain hashes will be finalized once verification completes.'}
+                            </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                              {/* Signature Hash */}
@@ -311,11 +325,12 @@ export function AuditClient({ uuid }: AuditClientProps) {
                     <Card className="bg-[var(--veristiq-slate)] text-white border-0 shadow-xl">
                         <CardHeader>
                             <CardTitle className="text-white flex items-center gap-2">
-                                <LinkIcon className="w-5 h-5 text-[var(--veristiq-teal)]" />
+                                <LinkIcon className={`w-5 h-5 ${audit.is_chained ? 'text-[var(--veristiq-teal)]' : 'text-yellow-400'}`} />
                                 Chain Visualization
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
+                            {audit.is_chained ? (
                                 <div className="relative pl-4 border-l-2 border-white/20 space-y-6">
                                     {/* Prev Block */}
                                     <div className="opacity-50 text-sm">
@@ -347,6 +362,15 @@ export function AuditClient({ uuid }: AuditClientProps) {
                                         </p>
                                     </div>
                                 </div>
+                            ) : (
+                                <div className="text-center py-6">
+                                    <Clock className="w-12 h-12 text-yellow-400 mx-auto mb-4 animate-pulse" />
+                                    <p className="text-white font-medium mb-2">Pending Chain Verification</p>
+                                    <p className="text-sm text-gray-400 max-w-xs mx-auto">
+                                        This draw audit is being processed and will be linked to the chain shortly.
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 

@@ -97,20 +97,13 @@ export function OperatorProfileClient({ slug }: OperatorProfileClientProps) {
 
                 <div className="container mx-auto px-6 relative z-10 text-center">
                     <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
-                        <Building2 className="w-8 h-8 text-[var(--veristiq-teal)]" />
+                        <Building2 className="w-8 h-8 text-[var(--veristiq-primary-blue)]" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">{op.name}</h1>
                     <div className="flex flex-col items-center gap-4">
                         <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
                              Registered Operator Profile
                         </p>
-                        <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-                            <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full flex items-center gap-2">
-                                <span className="text-gray-400 text-sm">Member since</span>
-                                <span className="font-mono text-white font-bold">{dateFormatters.shortDate(op.created_at)}</span>
-                            </div>
-                            <IndicatorBadge color="green" text="Verified Operator" size="xs" />
-                        </div>
                     </div>
                 </div>
             </div>
@@ -136,7 +129,7 @@ export function OperatorProfileClient({ slug }: OperatorProfileClientProps) {
                         <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                             <CardContent className="pt-6">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
                                         <History className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -150,7 +143,7 @@ export function OperatorProfileClient({ slug }: OperatorProfileClientProps) {
                         <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                             <CardContent className="pt-6">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
                                         <Ticket className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -164,7 +157,7 @@ export function OperatorProfileClient({ slug }: OperatorProfileClientProps) {
                         <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                             <CardContent className="pt-6">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
                                         <Percent className="w-5 h-5" />
                                     </div>
                                     <div>

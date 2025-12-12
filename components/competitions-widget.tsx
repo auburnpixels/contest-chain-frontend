@@ -198,55 +198,57 @@ export function CompetitionsWidget({
         {showFilters && (
           <div className="px-6">
             <div className="border-b pb-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="name-filter" className="text-sm font-medium">Name</Label>
-                  <Input
-                    id="name-filter"
-                    placeholder="Search by name..."
-                    value={filters.name}
-                    onChange={(e) => handleFilterChange('name', e.target.value)}
-                  />
-                </div>
+              <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="name-filter" className="text-sm font-medium">Name</Label>
+                          <Input
+                              id="name-filter"
+                              placeholder="Search by name..."
+                              value={filters.name}
+                              onChange={(e) => handleFilterChange('name', e.target.value)}
+                          />
+                      </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="external-id-filter" className="text-sm font-medium">External ID</Label>
-                  <Input
-                    id="external-id-filter"
-                    placeholder="Search by external ID..."
-                    value={filters.external_id}
-                    onChange={(e) => handleFilterChange('external_id', e.target.value)}
-                  />
-                </div>
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="external-id-filter" className="text-sm font-medium">External ID</Label>
+                          <Input
+                              id="external-id-filter"
+                              placeholder="Search by external ID..."
+                              value={filters.external_id}
+                              onChange={(e) => handleFilterChange('external_id', e.target.value)}
+                          />
+                      </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="status-filter" className="text-sm font-medium">Status</Label>
-                  <Select 
-                    value={filters.status || 'all'} 
-                    onValueChange={(value) => handleFilterChange('status', value === 'all' ? '' : value)}
-                  >
-                    <SelectTrigger id="status-filter">
-                      <SelectValue placeholder="All statuses" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All statuses</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="awaiting_draw">Awaiting draw</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                      <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="status-filter" className="text-sm font-medium">Status</Label>
+                          <Select
+                              value={filters.status || 'all'}
+                              onValueChange={(value) => handleFilterChange('status', value === 'all' ? '' : value)}
+                          >
+                              <SelectTrigger id="status-filter">
+                                  <SelectValue placeholder="All statuses" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="all">All statuses</SelectItem>
+                                  <SelectItem value="active">Active</SelectItem>
+                                  <SelectItem value="awaiting_draw">Awaiting draw</SelectItem>
+                                  <SelectItem value="completed">Completed</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
+                  </div>
 
-                <div className="flex flex-col gap-1.5 justify-end">
                   {hasActiveFilters && (
-                    <button
-                      onClick={handleReset}
-                      className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
-                    >
-                      Reset filters
-                    </button>
+                    <div>
+                        <button
+                          onClick={handleReset}
+                          className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+                        >
+                          Reset filters
+                        </button>
+                    </div>
                   )}
-                </div>
               </div>
             </div>
           </div>

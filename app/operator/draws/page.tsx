@@ -1,13 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Badge } from '@/components/ui/badge';
+import { Dices, Calendar } from 'lucide-react';
 import { operatorApi } from '@/lib/api/client';
-import {
-  Dices,
-  ShieldCheck,
-} from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard-shell';
 import { DashboardHeader } from "@/components/dashboard-header";
 import { useOperatorAuth } from '@/hooks/useOperatorAuth';
@@ -15,12 +10,9 @@ import { operatorNavItems } from '@/lib/navigation/operator-nav';
 import { DashboardLoading } from '@/components/dashboard-loading';
 import { handleApiError } from '@/lib/error-handler';
 import { AsyncMetricCard } from '@/components/async-metric-card';
-import { Calendar } from 'lucide-react';
 import { DrawAuditsWidget } from '@/components/draw-audits-widget';
 
 export default function OperatorDrawsPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const { isReady, handleLogout, operatorName, operatorId } = useOperatorAuth();
   const [loading, setLoading] = useState(true);
   const [totalDraws, setTotalDraws] = useState(0);
@@ -67,15 +59,22 @@ export default function OperatorDrawsPage() {
           />
 
           <AsyncMetricCard
-            title="Chain verified"
-            fetchData={operatorApi.getMetrics.draws}
-            icon={ShieldCheck}
+            title="Chain integrity status"
+            fetchData={operatorApi.getMetrics.drawsChainIntegrity}
+            useIndicatorBadge={true}
+            helpText="Verifies that your draw audit records are securely chained and tamper-proof, ensuring your audit trail stays trustworthy."
             renderValue={(data) => {
-              const total = data.metadata?.total_draws || 0;
-              const verified = data.metadata?.draws_with_valid_signatures || 0;
-              return total > 0 ? `${verified} of ${total}` : '0 of 0';
+              const chainStatus = data.metadata?.chain_status;
+              if (chainStatus === 'valid') return 'Verified';
+              if (chainStatus === 'invalid') return 'Invalid';
+              if (chainStatus === 'building') return 'Building...';
+              return 'Verifying...';
             }}
-            renderFooter={() => "With valid signatures"}
+            renderFooter={(data) => {
+              const verified = data.metadata?.verified_audits || 0;
+              const total = Number(data.metadata?.total_audits || 0).toLocaleString();
+              return `${verified} of ${total} audits verified`;
+            }}
           />
 
           <AsyncMetricCard

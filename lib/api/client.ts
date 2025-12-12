@@ -157,6 +157,7 @@ export interface DrawAuditDetail {
   previous_signature_hash: string | null;
   pool_hash: string | null;
   rng_seed_or_hash: string;
+  is_chained: boolean;
   created_at: string;
   competition: {
     id: string;
@@ -440,6 +441,7 @@ export const operatorApi = {
     attention: () => apiClient.get<MetricResponse>('/internal/operator/metrics/attention'),
     chainIntegrity: () => apiClient.get<MetricResponse>('/internal/operator/metrics/chain-integrity'),
     eventsChainIntegrity: () => apiClient.get<MetricResponse>('/internal/operator/metrics/events-chain-integrity'),
+    drawsChainIntegrity: () => apiClient.get<MetricResponse>('/internal/operator/metrics/draws-chain-integrity'),
     competitions: () => apiClient.get<MetricResponse>('/internal/operator/metrics/competitions'),
     complaints: () => apiClient.get<MetricResponse>('/internal/operator/metrics/complaints'),
     entries: () => apiClient.get<MetricResponse>('/internal/operator/metrics/entries'),

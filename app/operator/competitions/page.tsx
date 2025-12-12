@@ -34,7 +34,7 @@ export default function CompetitionsPage() {
             title="Total competitions"
             fetchData={operatorApi.getMetrics.competitions}
             icon={Trophy}
-            helpText="Total number of competitions you've created through the API — including active, completed, and closed."
+            helpText="Total number of competitions you've created — including active, awaiting draw, and completed."
             renderValue={(data) => data.metadata?.total_competitions || 0}
             renderFooter={() => "All time"}
           />
@@ -52,13 +52,13 @@ export default function CompetitionsPage() {
             title="Draw audits"
             fetchData={operatorApi.getMetrics.competitions}
             icon={ShieldCheckIcon}
-            helpText="Shows how many competitions with at least one entry have verified draw audits. Every draw is recorded with a secure audit trail for complete transparency."
+            helpText="Shows how many completed competitions have verified draw audits. Every draw is recorded with a secure audit trail for complete transparency."
             renderValue={(data) => {
-              const withAudits = data.metadata?.competitions_with_draw_audits || 0;
-              const total = data.metadata?.total_competitions_with_entries || 0;
+              const withAudits = data.metadata?.completed_competitions_with_draw_audits || 0;
+              const total = data.metadata?.completed_competitions_with_entries || 0;
               return `${withAudits} of ${total}`;
             }}
-            renderFooter={() => "Competitions with verified draws"}
+            renderFooter={() => "Completed competitions with verified draws"}
           />
 
           <AsyncMetricCard
