@@ -49,7 +49,7 @@ export default function EntriesPage() {
               const pct = data.metadata?.entry_eligibility_percentage;
               return pct ? `${Math.round(pct)}%` : 'N/A';
             }}
-            renderFooter={(data) => `${Number(data.metadata?.valid_entries || 0).toLocaleString()} valid entries`}
+            renderFooter={(data) => `${Number(data.metadata?.valid_entries || 0).toLocaleString()} eligible entries`}
           />
 
           <AsyncMetricCard
