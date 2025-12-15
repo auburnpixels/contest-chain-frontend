@@ -21,14 +21,14 @@ export default function PricingPage() {
                     <Shield className="w-8 h-8 text-[var(--veristiq-primary-blue)]" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold mb-6">Simple, predictable pricing</h1>
-                <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
                     No per-ticket fees. No per-draw charges. Just straightforward monthly pricing that works for operators of all sizes.
                 </p>
             </div>
         </section>
 
         {/* Main Content */}
-        <section className="py-24 bg-white -mt-16 relative z-20">
+        <section className="py-24 bg-white relative z-20">
             <div className="container mx-auto px-6 max-w-4xl">
                 
                 {/* Contact Card */}
