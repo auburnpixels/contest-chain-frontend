@@ -20,7 +20,11 @@ export default function SecurityPage() {
     {
       question: "How long do you retain audit data?",
       answer: "Our goal is to retain audit data for a long enough period to be useful to operators, players and regulators. Default retention is 5 years."
-    }
+    },
+      {
+          question: "Does Veristiq secure my entire competition platform?",
+          answer: "No. Veristiq secures the integrity and verifiability of draw records and audit data. Operators remain responsible for the security of their own websites, payment systems, customer data, and operational platforms."
+      }
   ];
 
   return (
@@ -38,7 +42,7 @@ export default function SecurityPage() {
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold mb-6">Security & Data Integrity</h1>
                 <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-                    Fairness doesn’t work without security. Here’s how we protect your data and ensure our audit chain remains tamper-evident.
+                    Fairness depends on integrity. This page explains how Veristiq protects audit data and keeps draw records tamper-evident.
                 </p>
              </div>
         </section>
@@ -52,14 +56,16 @@ export default function SecurityPage() {
                              <Database className="h-6 w-6" />
                          </div>
                          <h2 className="text-3xl font-bold text-[var(--veristiq-slate)] mb-6">What we store</h2>
-                         <p className="text-[var(--veristiq-slate-light)] mb-6">Veristiq primarily stores:</p>
+                         <p className="text-[var(--veristiq-slate-light)] mb-6">
+                             Veristiq stores only the data necessary to verify competition draws and generate independent audit evidence.
+                         </p>
                          <ul className="space-y-4 mb-8">
                              {[
-                                 "Competition data (IDs, names, draw times, prize info)",
-                                 "Entry records (internal ticket ID, your external ID, eligibility flags)",
-                                 "Draw events (seed hash, entry pool hash, winner reference)",
-                                 "Audit records (signature hash, chain pointers, timestamps)",
-                                 "Limited operator metadata (operator account, API keys)"
+                                 "Competition metadata (e.g. competition identifiers, draw times, prize references)",
+                                 "Entry references submitted by operators (hashed or pseudonymised where applicable)",
+                                 "Draw execution data (entropy seed references, entry pool hash, winning reference)",
+                                 "Cryptographic audit records (event hashes, chain position, timestamps)",
+                                 "Limited operator account metadata (account identifiers and API keys)"
                              ].map((item, idx) => (
                                  <li key={idx} className="flex items-start gap-3">
                                      <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--veristiq-primary-blue)] shrink-0" />
@@ -74,10 +80,7 @@ export default function SecurityPage() {
                              <span className="font-bold uppercase text-sm tracking-wide">Data Minimisation</span>
                          </div>
                          <p className="text-[var(--veristiq-slate)] mb-4 font-medium">
-                             We deliberately avoid storing unnecessary personally identifiable information (PII).
-                         </p>
-                         <p className="text-gray-500 text-sm leading-relaxed">
-                             Where user references are stored, we encourage operators to use hashed or anonymised references.
+                             Veristiq is designed to minimise exposure to personally identifiable information (PII). Where entry references are required, operators are encouraged to submit anonymised or pseudonymised identifiers.
                          </p>
                      </div>
                 </div>
@@ -102,7 +105,7 @@ export default function SecurityPage() {
                      </div>
                      <div className="bg-[var(--veristiq-snow)] p-6 rounded-xl border border-gray-100">
                          <h3 className="font-bold text-[var(--veristiq-slate)] mb-2">Linking</h3>
-                         <p className="text-sm text-gray-600">Include the previous event’s hash in the new event’s data</p>
+                         <p className="text-sm text-gray-600">Include the previous event's hash in the new event's data</p>
                      </div>
                      <div className="bg-[var(--veristiq-snow)] p-6 rounded-xl border border-gray-100">
                          <h3 className="font-bold text-[var(--veristiq-slate)] mb-2">Immutability</h3>
@@ -117,15 +120,8 @@ export default function SecurityPage() {
                  <div className="bg-red-50 border border-red-100 rounded-2xl p-8 text-center">
                      <h3 className="text-red-800 font-bold mb-6">If someone attempted to alter a past event:</h3>
                      <div className="flex flex-col md:flex-row gap-4 justify-center items-center text-sm font-medium text-red-700">
-                         <span>Its hash would change</span>
-                         <span className="hidden md:inline">→</span>
-                         <span>All subsequent hashes would no longer match</span>
-                         <span className="hidden md:inline">→</span>
-                         <span>An integrity check would surface the discrepancy</span>
+                         <span>Any modification to a historical event would invalidate subsequent hashes and surface immediately during integrity verification. This ensures the audit chain provides reliable, tamper-evident evidence over time.</span>
                      </div>
-                     <p className="mt-6 text-red-900 font-bold">
-                         This makes quiet rewriting of history extremely difficult to hide.
-                     </p>
                  </div>
              </div>
         </section>
@@ -155,23 +151,16 @@ export default function SecurityPage() {
                                      <p className="text-sm text-gray-600">Public audit pages expose only the data necessary to verify fairness — not internal operator data or personal player data.</p>
                                  </div>
                              </li>
-                             <li className="flex gap-4">
-                                 <div className="mt-1 bg-white p-2 rounded-lg border border-gray-100 shadow-sm shrink-0">
-                                     <FileKey className="h-5 w-5 text-[var(--veristiq-primary-blue)]" />
-                                 </div>
-                                 <div>
-                                     <h3 className="font-bold text-[var(--veristiq-slate)]">Admins</h3>
-                                     <p className="text-sm text-gray-600">Internal admin tools are limited to operational and integrity purposes, not result manipulation.</p>
-                                 </div>
-                             </li>
                          </ul>
                      </div>
                      <div className="flex-1 bg-[var(--veristiq-slate)] text-white p-8 rounded-2xl shadow-xl">
                          <div className="flex items-center gap-2 mb-6 text-red-400">
                              <Lock className="h-5 w-5" />
-                             <span className="font-bold uppercase text-sm tracking-wide">Strict Limitations</span>
+                             <span className="font-bold uppercase text-sm tracking-wide">System Integrity Constraints</span>
                          </div>
-                         <p className="font-medium text-white mb-4">Veristiq cannot be used to secretly:</p>
+                         <p className="font-medium text-white mb-4">
+                             Veristiq's architecture prevents the following actions:
+                         </p>
                          <ul className="space-y-3 text-sm text-gray-300">
                              <li className="flex items-center gap-3">
                                  <EyeOff className="h-4 w-4 text-red-400" /> Move a draw forward or backward in time

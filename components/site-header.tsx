@@ -19,10 +19,7 @@ export function SiteHeader() {
       <div className="container flex h-20 max-w-7xl items-center justify-between px-6 mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--veristiq-primary-blue)] text-white">
-              <ShieldCheck className="h-5 w-5" />
-            </div>
-            <span className="font-sans font-bold text-xl text-[var(--veristiq-slate)] tracking-tight">Veristiq</span>
+            <img src="/logo.png" className="max-w-[120px]" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -95,10 +92,7 @@ export function SiteHeader() {
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-white border-l border-gray-100 p-0">
                 <div className="p-6 border-b border-gray-100">
                     <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--veristiq-primary-blue)] text-white">
-                        <ShieldCheck className="h-5 w-5" />
-                        </div>
-                        <span className="font-sans font-bold text-xl text-[var(--veristiq-slate)] tracking-tight">Veristiq</span>
+                        <img src="/logo.png" className="max-w-[120px]" />
                     </Link>
                 </div>
               <nav className="flex flex-col p-6 gap-6">

@@ -7,7 +7,7 @@ const values = [
   {
     icon: Eye,
     title: "Fairness Your Players Can See",
-    description: "Every draw produces a public audit page backed by cryptographic hash chaining. It proves your result wasn’t manipulated, altered, or generated after the fact.",
+    description: "Every draw produces a public audit page backed by cryptographic hash chaining. It proves your result wasn't manipulated, altered, or generated after the fact.",
     color: "text-trust-cyan"
   },
   {

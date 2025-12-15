@@ -128,13 +128,13 @@ export default function AuditExamplePage() {
                              <Eye className="h-6 w-6" />
                          </div>
                          <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">How players see it</h2>
-                         <p className="text-zinc-600 dark:text-zinc-400 mb-6">From a player’s perspective, the audit page answers:</p>
+                         <p className="text-zinc-600 dark:text-zinc-400 mb-6">From a player's perspective, the audit page answers:</p>
                          <ul className="space-y-2 text-zinc-600 dark:text-zinc-400 text-sm font-medium mb-8">
                              <li>• “Was my entry included?”</li>
                              <li>• “How many people entered?”</li>
                              <li>• “When exactly was the draw run?”</li>
                              <li>• “Was this done automatically or manually?”</li>
-                             <li>• “Is there proof this hasn’t been altered?”</li>
+                             <li>• “Is there proof this hasn't been altered?”</li>
                          </ul>
                      </div>
                      <div className="flex-1 bg-zinc-50 dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800">

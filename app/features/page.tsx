@@ -192,7 +192,7 @@ export default function FeaturesPage() {
               <CardContent className="mt-6 p-0">
                 <p className="text-lg text-white/80">
                   Cafaas ties together audit chains, dashboards, and developer tooling so every competition looks like
-                  it was run by the industry’s most trusted operator.
+                  it was run by the industry's most trusted operator.
                 </p>
               </CardContent>
             </Card>

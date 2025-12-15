@@ -16,9 +16,11 @@ export default function AboutPage() {
                 <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-8 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
                     <Target className="w-8 h-8 text-[var(--veristiq-primary-blue)]" />
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6">Making Fairness the Standard</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                    Making Fairness Verifiable
+                </h1>
                 <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-                    Veristiq is the independent infrastructure layer for the prize competition industry. We build the tools that make trust possible.
+                    Veristiq is an independent infrastructure layer for the prize competition industry, providing the technical infrastructure that makes fairness independently verifiable.
                 </p>
              </div>
         </section>
@@ -29,9 +31,9 @@ export default function AboutPage() {
                 <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold text-[var(--veristiq-slate)] mb-6">Our Mission</h2>
                     <p className="text-lg text-[var(--veristiq-slate-light)] leading-relaxed">
-                        Online competitions have exploded in popularity, but trust hasn't kept pace. Players are skeptical of "screen recorded" draws, and regulators are demanding more transparency.
+                        Online competitions have grown rapidly, but trust has not kept pace. Players are increasingly sceptical of “screen-recorded” draws, while regulators are raising expectations around transparency and accountability.
                         <br/><br/>
-                        We believe that <strong>fairness should be provable, not just promised.</strong>
+                        We believe fairness should be provable — not merely asserted or implied.
                     </p>
                 </div>
 
@@ -41,21 +43,27 @@ export default function AboutPage() {
                             <Scale className="w-6 h-6" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">Independence</h3>
-                        <p className="text-sm text-gray-600">We are not an operator. We are not a marketplace. We are a neutral third-party verification service.</p>
+                        <p className="text-sm text-gray-600">
+                            Veristiq does not operate competitions and does not act as a marketplace. We provide neutral, third-party technical verification.
+                        </p>
                     </div>
                     <div className="p-6 bg-[var(--veristiq-snow)] rounded-xl border border-gray-100 text-center">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4 text-[var(--veristiq-primary-blue)]">
                             <Lock className="w-6 h-6" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">Security</h3>
-                        <p className="text-sm text-gray-600">We use cryptographic chaining to create an immutable record of every entry and every draw.</p>
+                        <p className="text-sm text-gray-600">
+                            We use cryptographic chaining to create a tamper-evident record of every entry and every draw.
+                        </p>
                     </div>
                     <div className="p-6 bg-[var(--veristiq-snow)] rounded-xl border border-gray-100 text-center">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4 text-[var(--veristiq-primary-blue)]">
                             <Globe className="w-6 h-6" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">Transparency</h3>
-                        <p className="text-sm text-gray-600">We believe in public auditability. Winners and draw logic should be visible to everyone.</p>
+                        <p className="text-sm text-gray-600">
+                            We support public auditability by enabling draw outcomes and verification data to be made publicly accessible.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -66,26 +74,28 @@ export default function AboutPage() {
              <div className="container mx-auto px-6 max-w-6xl">
                  <div className="flex flex-col md:flex-row gap-12 items-center">
                      <div className="flex-1">
-                         <h2 className="text-3xl font-bold text-[var(--veristiq-slate)] mb-6">Built by Industry Experts</h2>
+                         <h2 className="text-3xl font-bold text-[var(--veristiq-slate)] mb-6">
+                             Built by Engineers Focused on Fairness Infrastructure
+                         </h2>
                          <p className="text-[var(--veristiq-slate-light)] mb-6 leading-relaxed">
-                             Veristiq was founded by a team of engineers and compliance specialists who saw a critical gap in the market: legitimate operators were struggling to prove their integrity amidst a sea of scams.
+                             Veristiq was founded by engineers with experience building secure, auditable systems, who identified a gap in the market: operators lacked independent technical tools to demonstrate fairness once a draw had taken place.
                          </p>
                          <p className="text-[var(--veristiq-slate-light)] mb-6 leading-relaxed">
-                             We set out to build a "Fairness Engine" — a technical standard that could be adopted by any operator, big or small, to instantly upgrade their compliance and trust.
+                             We set out to build a fairness verification engine — a technical layer that operators of any size can integrate to strengthen auditability, transparency, and regulatory confidence.
                          </p>
                      </div>
                      <div className="flex-1 grid grid-cols-2 gap-4">
                          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
-                             <div className="text-4xl font-bold text-[var(--veristiq-primary-blue)] mb-2">1M+</div>
-                             <div className="text-sm text-gray-500">Entries Verified</div>
+                             <div className="text-xl font-bold text-[var(--veristiq-primary-blue)] mb-2">1M+ entries logged</div>
+                             <div className="text-sm text-gray-500">across verified draw records</div>
                          </div>
                          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
-                             <div className="text-4xl font-bold text-[var(--veristiq-primary-blue)] mb-2">100%</div>
-                             <div className="text-sm text-gray-500">Uptime</div>
+                             <div className="text-base font-bold text-[var(--veristiq-primary-blue)] mb-2">Production infrastructure</div>
+                             <div className="text-sm text-gray-500">with active monitoring</div>
                          </div>
                          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center col-span-2">
-                             <div className="text-4xl font-bold text-[var(--veristiq-primary-blue)] mb-2">GB/UK</div>
-                             <div className="text-sm text-gray-500">Based & Regulated</div>
+                             <div className="text-xl font-bold text-[var(--veristiq-primary-blue)] mb-2">UK-based company</div>
+                             <div className="text-sm text-gray-500">operating under UK law</div>
                          </div>
                      </div>
                  </div>

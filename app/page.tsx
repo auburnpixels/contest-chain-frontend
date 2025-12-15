@@ -23,7 +23,6 @@ export default function Home() {
         <SolutionSection />
         <HowItWorksSection />
         <ProductScreenshotSection />
-        <FeaturesChecklistSection />
         <ComplianceSection />
         <PricingPreviewSection />
         <FinalCtaSection />

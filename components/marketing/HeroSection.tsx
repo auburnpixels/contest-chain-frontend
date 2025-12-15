@@ -9,20 +9,20 @@ export function HeroSection() {
       <div className="container max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
           <h1 className="text-5xl md:text-6xl font-semibold text-[var(--veristiq-slate)] mb-6 leading-tight tracking-tight">
-            Independent Fairness Verification for Competitions
+            Independent verification of competition draws
           </h1>
           <p className="text-lg text-[var(--veristiq-slate-light)] mb-8 leading-relaxed max-w-lg">
-            A tamper-evident audit trail for prize draws. Prove every draw is fair. Build trust. Stay compliant.
+            Veristiq creates a tamper-evident, public audit record for competition draws, allowing operators to prove fairness with independent, verifiable evidence.
           </p>
           <div className="flex gap-4">
+              <Link href="/audit-example">
+                  <Button className="bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white px-8 py-6 text-lg h-auto rounded-md shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
+                      View Live Audit
+                  </Button>
+              </Link>
             <Link href="/operator/register">
-              <Button className="bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white px-8 py-6 text-lg h-auto rounded-md shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
+                <Button variant="outline" className="border-[var(--veristiq-slate)] text-[var(--veristiq-slate)] hover:bg-gray-50 px-8 py-6 text-lg h-auto rounded-md transition-all hover:-translate-y-0.5">
                 Get Started
-              </Button>
-            </Link>
-            <Link href="/audit-example">
-              <Button variant="outline" className="border-[var(--veristiq-slate)] text-[var(--veristiq-slate)] hover:bg-gray-50 px-8 py-6 text-lg h-auto rounded-md transition-all hover:-translate-y-0.5">
-                View Live Audit
               </Button>
             </Link>
           </div>

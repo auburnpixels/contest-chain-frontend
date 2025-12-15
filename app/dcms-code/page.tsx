@@ -32,7 +32,7 @@ export default function DcmsCodePage() {
                         </p>
                         <div className="p-6 bg-brand-cobalt/5 border border-brand-cobalt/20 rounded-xl">
                             <p className="font-medium text-brand-cobalt">
-                                Veristiq helps operators adopt many of the Code’s expectations simply, consistently and transparently — without requiring major platform changes.
+                                Veristiq helps operators adopt many of the Code's expectations simply, consistently and transparently — without requiring major platform changes.
                             </p>
                         </div>
                     </div>
@@ -47,7 +47,7 @@ export default function DcmsCodePage() {
                     <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">How Veristiq Supports the Code</h2>
                     <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
                         The Code is built around three pillars: Player Protections, Transparency, and Accountability & Governance. 
-                        Veristiq does not replace operator responsibilities, but it directly supports many of the Code’s core expectations.
+                        Veristiq does not replace operator responsibilities, but it directly supports many of the Code's core expectations.
                     </p>
                 </div>
 

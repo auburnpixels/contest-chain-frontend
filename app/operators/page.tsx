@@ -46,7 +46,7 @@ export default function OperatorsPage() {
       },
       {
           title: "Prepare for future regulation and scrutiny",
-          desc: "If expectations around fairness tighten, you’re already ahead.",
+          desc: "If expectations around fairness tighten, you're already ahead.",
           icon: Scale
       },
       {
@@ -191,7 +191,7 @@ export default function OperatorsPage() {
                  
                  <div className="mt-20 text-center">
                      <p className="text-xl font-bold text-white">
-                        We don’t ask you to move platforms. <br/>
+                        We don't ask you to move platforms. <br/>
                         <span className="text-brand-cobalt">We plug into the platform you already have.</span>
                      </p>
                  </div>

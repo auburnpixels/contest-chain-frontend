@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ShieldCheck, Github, Twitter, Linkedin } from "lucide-react"
+import * as React from "react";
 
 export function SiteFooter() {
   return (
@@ -8,10 +9,7 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
           <div className="col-span-2 lg:col-span-2 space-y-6 pr-8">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--veristiq-primary-blue)] text-white">
-                <ShieldCheck className="h-5 w-5" />
-              </div>
-              <span className="font-sans font-bold text-xl text-[var(--veristiq-slate)] tracking-tight">Veristiq</span>
+                <img src="/logo.png" className="max-w-[120px]" />
             </Link>
             <p className="text-sm text-[var(--veristiq-slate-light)] max-w-xs leading-relaxed">
               The infrastructure for provably fair competitions.
@@ -35,6 +33,7 @@ export function SiteFooter() {
               <li><Link href="/about" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">About</Link></li>
               <li><Link href="/contact" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Contact</Link></li>
               <li><Link href="/security" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Security</Link></li>
+              <li><Link href="/faqs" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">FAQs</Link></li>
             </ul>
           </div>
 
