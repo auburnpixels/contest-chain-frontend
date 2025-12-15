@@ -71,7 +71,7 @@ export function VerifyWidget({ className, variant = "default", ...props }: Verif
       </form>
       <div className="mt-3 flex items-center justify-center gap-4 text-xs text-slate-500">
         <span className="flex items-center gap-1.5">
-           <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+           <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
            Live Mainnet
         </span>
         <span className="flex items-center gap-1.5">

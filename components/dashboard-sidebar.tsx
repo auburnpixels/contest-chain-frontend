@@ -43,7 +43,7 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
                   className={cn(
                     "w-full justify-start gap-3 mb-1 transition-all duration-200 font-normal",
                     pathname === item.href 
-                      ? "font-medium"
+                      ? "font-medium bg-accent"
                       : ""
                   )}
                 >

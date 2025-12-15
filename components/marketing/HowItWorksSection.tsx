@@ -48,7 +48,7 @@ export function HowItWorksSection() {
                     <p className="text-[var(--veristiq-slate-light)] mb-6">
                         The completed draw is published to a public audit page. Anyone can independently inspect the draw record and verify that the winner was selected fairly from the recorded entry set, without relying on screen recordings or internal assurances.
                     </p>
-                     <div className="flex items-center gap-2 bg-green-50 p-3 rounded border border-green-200 text-green-700 text-sm font-medium shadow-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                     <div className="flex items-center gap-2 bg-blue-50 p-3 rounded border border-blue-200 text-blue-700 text-sm font-medium shadow-sm opacity-80 group-hover:opacity-100 transition-opacity">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
                         Verification Successful
                     </div>

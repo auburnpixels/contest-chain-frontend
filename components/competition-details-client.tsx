@@ -141,9 +141,9 @@ export default function CompetitionDetailsClient({ uuid }: Props) {
                     <p className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Total</p>
                     <p className="text-3xl font-bold text-white">{entry_stats.total_entries.toLocaleString()}</p>
                   </div>
-                  <div className="p-4 bg-green-500/5 rounded-xl border border-green-500/10 text-center">
-                    <p className="text-xs text-green-500/70 uppercase tracking-wider mb-2">Eligible</p>
-                    <p className="text-3xl font-bold text-green-500">{entry_stats.eligible_entries.toLocaleString()}</p>
+                  <div className="p-4 bg-blue-500/5 rounded-xl border border-blue-500/10 text-center">
+                    <p className="text-xs text-blue-500/70 uppercase tracking-wider mb-2">Eligible</p>
+                    <p className="text-3xl font-bold text-blue-500">{entry_stats.eligible_entries.toLocaleString()}</p>
                   </div>
                   <div className="p-4 bg-red-500/5 rounded-xl border border-red-500/10 text-center">
                     <p className="text-xs text-red-500/70 uppercase tracking-wider mb-2">Voided</p>
@@ -181,7 +181,7 @@ export default function CompetitionDetailsClient({ uuid }: Props) {
                           <div>
                             <div className="flex items-center gap-3 mb-2">
                               <h3 className="font-bold text-lg text-white">{audit.prize_name}</h3>
-                              <Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-500 border-green-500/20 px-2 py-0.5 h-5">
+                              <Badge variant="outline" className="text-[10px] bg-blue-500/10 text-blue-500 border-blue-500/20 px-2 py-0.5 h-5">
                                 VERIFIED
                               </Badge>
                             </div>

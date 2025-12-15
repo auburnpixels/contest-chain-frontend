@@ -26,7 +26,7 @@ export const UiDashboardPreview = ({ screenshots }: UiDashboardPreviewProps) => 
                 <div className="flex gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
                     <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+                    <div className="w-3 h-3 rounded-full bg-blue-500/20 border border-blue-500/50" />
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-brand-slate border border-white/5 text-xs text-muted-foreground w-96 justify-center font-mono">
                     <span className="text-slate-600">https://</span>app.caas.com/dashboard/overview

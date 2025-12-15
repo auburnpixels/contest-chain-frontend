@@ -33,9 +33,9 @@ export function ExampleAuditSection() {
                  <div className="flex space-x-1.5">
                      <div className="w-3 h-3 rounded-full bg-red-400/80" />
                      <div className="w-3 h-3 rounded-full bg-amber-400/80" />
-                     <div className="w-3 h-3 rounded-full bg-green-400/80" />
+                     <div className="w-3 h-3 rounded-full bg-blue-400/80" />
                  </div>
-                 <div className="flex-1 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded px-3 py-1.5 text-xs text-center text-green-600 dark:text-green-400 font-medium flex items-center justify-center">
+                 <div className="flex-1 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded px-3 py-1.5 text-xs text-center text-blue-600 dark:text-blue-400 font-medium flex items-center justify-center">
                     <span className="mr-2">🔒</span> veristiq.com/audit/8f92a...
                  </div>
               </div>
@@ -44,8 +44,8 @@ export function ExampleAuditSection() {
               <div className="p-8 md:p-12 space-y-6">
                  {/* Success Header */}
                  <div className="flex items-center space-x-4 pb-6 border-b border-zinc-100 dark:border-zinc-900">
-                    <div className="h-12 w-12 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-                        <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
+                    <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+                        <Check className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                         <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Draw Verified Fair</h3>

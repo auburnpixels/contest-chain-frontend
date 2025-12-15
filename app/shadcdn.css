@@ -136,16 +136,16 @@
         --color-lime-500: #80cd00;
         --color-lime-600: #62a400;
         --color-lime-900: #35530e;
-        --color-green-50: #f0fdf4;
-        --color-green-100: #dcfce7;
-        --color-green-300: #7bf1a8;
-        --color-green-400: #05df72;
-        --color-green-500: #00c758;
-        --color-green-600: #00a544;
-        --color-green-700: #008138;
-        --color-green-800: #016630;
-        --color-green-900: #0d542b;
-        --color-green-950: #032e15;
+        --color-blue-50: #f0fdf4;
+        --color-blue-100: #dcfce7;
+        --color-blue-300: #7bf1a8;
+        --color-blue-400: #05df72;
+        --color-blue-500: #00c758;
+        --color-blue-600: #00a544;
+        --color-blue-700: #008138;
+        --color-blue-800: #016630;
+        --color-blue-900: #0d542b;
+        --color-blue-950: #032e15;
         --color-emerald-500: #00bb7f;
         --color-teal-50: #f0fdfa;
         --color-teal-300: #46ecd5;
@@ -384,16 +384,16 @@
             --color-lime-500: lab(75.3197% -46.6547 86.1778);
             --color-lime-600: lab(61.1055% -41.0235 73.1483);
             --color-lime-900: lab(31.9931% -20.7654 33.7379);
-            --color-green-50: lab(98.1563% -5.60117 2.75915);
-            --color-green-100: lab(96.1861% -13.8464 6.52365);
-            --color-green-300: lab(86.9953% -47.2691 25.0054);
-            --color-green-400: lab(78.503% -64.9265 39.7492);
-            --color-green-500: lab(70.5521% -66.5147 45.8073);
-            --color-green-600: lab(59.0978% -58.6621 41.2579);
-            --color-green-700: lab(47.0329% -47.0239 31.4788);
-            --color-green-800: lab(37.4616% -36.7971 22.9692);
-            --color-green-900: lab(30.797% -29.6927 17.382);
-            --color-green-950: lab(15.6845% -20.4225 11.7249);
+            --color-blue-50: lab(98.1563% -5.60117 2.75915);
+            --color-blue-100: lab(96.1861% -13.8464 6.52365);
+            --color-blue-300: lab(86.9953% -47.2691 25.0054);
+            --color-blue-400: lab(78.503% -64.9265 39.7492);
+            --color-blue-500: lab(70.5521% -66.5147 45.8073);
+            --color-blue-600: lab(59.0978% -58.6621 41.2579);
+            --color-blue-700: lab(47.0329% -47.0239 31.4788);
+            --color-blue-800: lab(37.4616% -36.7971 22.9692);
+            --color-blue-900: lab(30.797% -29.6927 17.382);
+            --color-blue-950: lab(15.6845% -20.4225 11.7249);
             --color-emerald-500: lab(66.9756% -58.27 19.5419);
             --color-teal-50: lab(98.3189% -4.74921 -.111711);
             --color-teal-300: lab(84.8977% -48.1516 -1.3321);
@@ -3932,12 +3932,12 @@ is(.dark *) {
         background-color: var(--color-gray-800)
     }
 
-    .bg-green-100 {
-        background-color: var(--color-green-100)
+    .bg-blue-100 {
+        background-color: var(--color-blue-100)
     }
 
-    .bg-green-500 {
-        background-color: var(--color-green-500)
+    .bg-blue-500 {
+        background-color: var(--color-blue-500)
     }
 
     .bg-input, .bg-input\/30 {
@@ -4318,8 +4318,8 @@ is(.dark *) {
         fill: var(--foreground)
     }
 
-    .fill-green-500 {
-        fill: var(--color-green-500)
+    .fill-blue-500 {
+        fill: var(--color-blue-500)
     }
 
     .fill-muted-foreground {
@@ -4358,8 +4358,8 @@ is(.dark *) {
         stroke: var(--color-blue-500)
     }
 
-    .stroke-green-500 {
-        stroke: var(--color-green-500)
+    .stroke-blue-500 {
+        stroke: var(--color-blue-500)
     }
 
     .stroke-input {
@@ -5053,20 +5053,20 @@ is(.dark *) {
         color: var(--color-gray-500)
     }
 
-    .text-green-300 {
-        color: var(--color-green-300)
+    .text-blue-300 {
+        color: var(--color-blue-300)
     }
 
-    .text-green-500 {
-        color: var(--color-green-500)
+    .text-blue-500 {
+        color: var(--color-blue-500)
     }
 
-    .text-green-700 {
-        color: var(--color-green-700)
+    .text-blue-700 {
+        color: var(--color-blue-700)
     }
 
-    .text-green-800 {
-        color: var(--color-green-800)
+    .text-blue-800 {
+        color: var(--color-blue-800)
     }
 
     .text-muted-foreground, .text-muted-foreground\/70 {
@@ -7074,16 +7074,16 @@ is(.dark *) {
         border-color: var(--color-blue-600)
     }
 
-    .has-\[\[data-state\=checked\]\]\: border-green-600:has([data-state=checked]) {
-        border-color: var(--color-green-600)
+    .has-\[\[data-state\=checked\]\]\: border-blue-600:has([data-state=checked]) {
+        border-color: var(--color-blue-600)
     }
 
     .has-\[\[data-state\=checked\]\]\: border-ring:has([data-state=checked]) {
         border-color: var(--ring)
     }
 
-    .has-\[\[data-state\=checked\]\]\: bg-green-50:has([data-state=checked]) {
-        background-color: var(--color-green-50)
+    .has-\[\[data-state\=checked\]\]\: bg-blue-50:has([data-state=checked]) {
+        background-color: var(--color-blue-50)
     }
 
     .has-\[\[data-state\=checked\]\]\: bg-primary\/5:has([data-state=checked]) {
@@ -8179,8 +8179,8 @@ is(.dark *) {
         border-color: var(--color-blue-600)
     }
 
-    .data-\[state\=checked\]\:border-green-600[data-state=checked] {
-        border-color: var(--color-green-600)
+    .data-\[state\=checked\]\:border-blue-600[data-state=checked] {
+        border-color: var(--color-blue-600)
     }
 
     .data-\[state\=checked\]\:border-primary[data-state=checked] {
@@ -8195,8 +8195,8 @@ is(.dark *) {
         background-color: var(--color-blue-600)
     }
 
-    .data-\[state\=checked\]\:bg-green-600[data-state=checked] {
-        background-color: var(--color-green-600)
+    .data-\[state\=checked\]\:bg-blue-600[data-state=checked] {
+        background-color: var(--color-blue-600)
     }
 
     .data-\[state\=checked\]\:bg-primary[data-state=checked] {
@@ -10018,16 +10018,16 @@ is(.dark *) {
         .dark\:bg-destructive\/60:is(.dark *) {
             background-color: color-mix(in oklab, var(--destructive) 60%, transparent)
         }
-    }.dark\:bg-green-800:is(.dark *) {
-         background-color: var(--color-green-800)
+    }.dark\:bg-blue-800:is(.dark *) {
+         background-color: var(--color-blue-800)
      }
 
-    .dark\:bg-green-900:is(.dark *) {
-        background-color: var(--color-green-900)
+    .dark\:bg-blue-900:is(.dark *) {
+        background-color: var(--color-blue-900)
     }
 
-    .dark\:bg-green-950:is(.dark *) {
-        background-color: var(--color-green-950)
+    .dark\:bg-blue-950:is(.dark *) {
+        background-color: var(--color-blue-950)
     }
 
     .dark\:bg-input\/30:is(.dark *) {
@@ -10094,8 +10094,8 @@ is(.dark *) {
         fill: var(--color-blue-400)
     }
 
-    .dark\:fill-green-400:is(.dark *) {
-        fill: var(--color-green-400)
+    .dark\:fill-blue-400:is(.dark *) {
+        fill: var(--color-blue-400)
     }
 
     .dark\:fill-neutral-400:is(.dark *) {
@@ -10118,8 +10118,8 @@ is(.dark *) {
         stroke: var(--color-blue-400)
     }
 
-    .dark\:stroke-green-400:is(.dark *) {
-        stroke: var(--color-green-400)
+    .dark\:stroke-blue-400:is(.dark *) {
+        stroke: var(--color-blue-400)
     }
 
     .dark\:stroke-neutral-400:is(.dark *) {
@@ -10154,12 +10154,12 @@ is(.dark *) {
         color: var(--foreground)
     }
 
-    .dark\:text-green-100:is(.dark *) {
-        color: var(--color-green-100)
+    .dark\:text-blue-100:is(.dark *) {
+        color: var(--color-blue-100)
     }
 
-    .dark\:text-green-400:is(.dark *) {
-        color: var(--color-green-400)
+    .dark\:text-blue-400:is(.dark *) {
+        color: var(--color-blue-400)
     }
 
     .dark\:text-muted-foreground:is(.dark *) {
@@ -10273,12 +10273,12 @@ is(.dark *) {
         .dark\:has-\[\[data-slot\]\[aria-invalid\=true\]\]\:ring-destructive\/40:is(.dark *):has([data-slot][aria-invalid=true]) {
             --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent)
         }
-    }.dark\:has-\[\[data-state\=checked\]\]\:border-green-900:is(.dark *):has([data-state=checked]) {
-         border-color: var(--color-green-900)
+    }.dark\:has-\[\[data-state\=checked\]\]\:border-blue-900:is(.dark *):has([data-state=checked]) {
+         border-color: var(--color-blue-900)
      }
 
-    .dark\:has-\[\[data-state\=checked\]\]\:bg-green-950:is(.dark *):has([data-state=checked]) {
-        background-color: var(--color-green-950)
+    .dark\:has-\[\[data-state\=checked\]\]\:bg-blue-950:is(.dark *):has([data-state=checked]) {
+        background-color: var(--color-blue-950)
     }
 
     .dark\:aria-invalid\:ring-destructive\/40:is(.dark *)[aria-invalid=true] {
@@ -12060,11 +12060,11 @@ is(.dark *) {
     --primary: var(--color-lime-600);
     --primary-foreground: var(--color-lime-50);
     --ring: var(--color-lime-400);
-    --chart-1: var(--color-green-300);
-    --chart-2: var(--color-green-500);
-    --chart-3: var(--color-green-600);
-    --chart-4: var(--color-green-700);
-    --chart-5: var(--color-green-800);
+    --chart-1: var(--color-blue-300);
+    --chart-2: var(--color-blue-500);
+    --chart-3: var(--color-blue-600);
+    --chart-4: var(--color-blue-700);
+    --chart-5: var(--color-blue-800);
     --sidebar-primary: var(--color-lime-600);
     --sidebar-primary-foreground: var(--color-lime-50);
     --sidebar-ring: var(--color-lime-400)

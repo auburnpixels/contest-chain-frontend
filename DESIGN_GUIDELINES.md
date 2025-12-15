@@ -29,7 +29,7 @@ The design should not be "flashy" or overly decorative. It should feel like a se
     - Do NOT use for backgrounds unless it is a small badge or accent element (`bg-brand-cobalt/10`).
 
 ### Status Colors
-- **Success/Trust**: Green/Emerald (`text-green-600` / `dark:text-green-400`) - Use for "Verified", "Audit Passed".
+- **Success/Trust**: Green/Emerald (`text-blue-600` / `dark:text-blue-400`) - Use for "Verified", "Audit Passed".
 - **Risk/Problem**: Red (`text-red-600` / `dark:text-red-400`) - Use for "The Problem" section or errors.
 - **Warning/Caution**: Amber (`text-amber-600` / `dark:text-amber-400`) - Use for "Partially Supported" or caveats.
 

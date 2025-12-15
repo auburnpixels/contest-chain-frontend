@@ -1,11 +1,8 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function ContactPage() {
   return (
@@ -22,93 +19,63 @@ export default function ContactPage() {
                     <Mail className="w-8 h-8 text-[var(--veristiq-primary-blue)]" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold mb-6">Get in touch</h1>
-                <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
+                <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
                     Ready to build trust? Our team is here to help you integrate.
                 </p>
              </div>
         </section>
 
         <section className="py-20 bg-white">
-          <div className="container mx-auto px-6 max-w-6xl grid lg:grid-cols-2 gap-16">
+          <div className="container mx-auto px-6 max-w-4xl">
             
-            {/* Contact Info */}
-            <div className="space-y-12 animate-in fade-in slide-in-from-left-8 duration-700 delay-100 fill-mode-both">
-                <div>
-                    <h2 className="text-2xl font-bold mb-6">Contact Us</h2>
-                    <p className="text-[var(--veristiq-slate-light)] text-lg mb-8">
-                        Whether you're a small operator or an enterprise platform, we can help you verify your draws.
+            <div className="grid md:grid-cols-2 gap-12">
+                {/* Email Card */}
+                <div className="bg-gradient-to-br from-[var(--veristiq-snow)] to-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-left-8 duration-700 delay-100 fill-mode-both">
+                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-[var(--veristiq-primary-blue)] mb-6">
+                        <Mail className="w-7 h-7" />
+                    </div>
+                    <h2 className="text-2xl font-bold mb-3 text-[var(--veristiq-slate)]">Email Us</h2>
+                    <p className="text-[var(--veristiq-slate-light)] mb-6">
+                        Whether you&apos;re a small operator or an enterprise platform, we&apos;re happy to discuss how Veristiq can work for you.
                     </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                        We typically respond within 24 hours.
+                    </p>
+                    <Link href="mailto:liam@raffaly.com">
+                        <Button size="lg" className="w-full bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white font-semibold">
+                            Send Email
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                    </Link>
                 </div>
 
-                <div className="space-y-8">
-                    <div className="flex items-start gap-4 group">
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-[var(--veristiq-primary-blue)] flex-shrink-0 transition-transform group-hover:scale-110">
-                            <Mail className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <h3 className="font-bold mb-1">Email</h3>
-                            <p className="text-[var(--veristiq-slate-light)]">hello@veristiq.io</p>
-                            <p className="text-sm text-gray-400 mt-1">Response time: &lt; 24 hours</p>
-                        </div>
+                {/* Office Card */}
+                <div className="bg-gradient-to-br from-[var(--veristiq-snow)] to-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-right-8 duration-700 delay-200 fill-mode-both">
+                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-[var(--veristiq-primary-blue)] mb-6">
+                        <MapPin className="w-7 h-7" />
                     </div>
-
-                     <div className="flex items-start gap-4 group">
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-[var(--veristiq-primary-blue)] flex-shrink-0 transition-transform group-hover:scale-110">
-                            <MapPin className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <h3 className="font-bold mb-1">Office</h3>
-                            <p className="text-[var(--veristiq-slate-light)]">
-                                14 Bonhill Street<br/>
-                                London EC2A 4BX<br/>
-                                United Kingdom
-                            </p>
-                        </div>
-                    </div>
+                    <h2 className="text-2xl font-bold mb-3 text-[var(--veristiq-slate)]">Office</h2>
+                    <p className="text-[var(--veristiq-slate-light)] mb-6">
+                        We&apos;re a UK-based company operating under UK law.
+                    </p>
+                    <address className="not-italic text-[var(--veristiq-slate)] leading-relaxed">
+                        14 Bonhill Street<br/>
+                        London EC2A 4BX<br/>
+                        United Kingdom
+                    </address>
                 </div>
             </div>
 
-            {/* Form */}
-            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-xl animate-in fade-in slide-in-from-right-8 duration-700 delay-200 fill-mode-both hover:shadow-2xl transition-all">
-              <form className="space-y-6">
-                <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your name" className="h-12 bg-gray-50 border-gray-200" />
-                </div>
-                
-                <div className="space-y-2">
-                    <Label htmlFor="company">Company</Label>
-                    <Input id="company" placeholder="Competition Brand Ltd." className="h-12 bg-gray-50 border-gray-200" />
-                </div>
-
-                 <div className="space-y-2">
-                    <Label htmlFor="email">Work Email</Label>
-                    <Input id="email" type="email" placeholder="you@company.com" className="h-12 bg-gray-50 border-gray-200" />
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="size">Operator Size (Approx. Monthly Draws)</Label>
-                    <Select>
-                        <SelectTrigger className="h-12 bg-gray-50 border-gray-200">
-                            <SelectValue placeholder="Select volume..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="starter">1 - 10 draws / mo</SelectItem>
-                            <SelectItem value="growth">11 - 50 draws / mo</SelectItem>
-                            <SelectItem value="scale">50+ draws / mo</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
-                  <Textarea id="message" placeholder="Tell us about your platform..." className="min-h-[120px] bg-gray-50 border-gray-200" />
-                </div>
-
-                <Button className="w-full bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white h-12 text-lg">
-                  Send Message
-                </Button>
-              </form>
+            {/* Additional CTA */}
+            <div className="mt-16 text-center">
+                <p className="text-[var(--veristiq-slate-light)] mb-6">
+                    Want to explore the platform first?
+                </p>
+                <Link href="/operator/register">
+                    <Button variant="outline" size="lg" className="border-gray-300 text-[var(--veristiq-slate)] hover:bg-gray-50 font-semibold px-8">
+                        Create a Free Account
+                    </Button>
+                </Link>
             </div>
 
           </div>

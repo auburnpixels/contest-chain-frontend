@@ -154,7 +154,7 @@ export default function OperatorProfileClient({ slug }: Props) {
                         
                         <div className="flex items-center gap-2 text-sm pt-4 border-t border-white/5">
                             {comp.status === 'completed' ? (
-                                <span className="text-green-500 flex items-center gap-2 font-medium">
+                                <span className="text-blue-500 flex items-center gap-2 font-medium">
                                 <CheckCircle2 className="h-4 w-4" />
                                 Audit Available
                                 </span>

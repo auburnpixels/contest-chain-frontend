@@ -18,8 +18,11 @@ export function SiteHeader() {
     <header className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-xl">
       <div className="container flex h-20 max-w-7xl items-center justify-between px-6 mx-auto">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" className="max-w-[120px]" />
+          <Link href="/" className="flex items-center gap-1 text-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[var(--veristiq-primary-blue)]">
+                  <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+              </svg>
+              <span className="font-bold text-[var(--veristiq-primary-blue)]">VERISTIQ</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -91,8 +94,11 @@ export function SiteHeader() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-white border-l border-gray-100 p-0">
                 <div className="p-6 border-b border-gray-100">
-                    <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                        <img src="/logo.png" className="max-w-[120px]" />
+                    <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[var(--veristiq-primary-blue)]">
+                            <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                        </svg>
+                        <span className="font-bold text-[var(--veristiq-primary-blue)]">VERISTIQ</span>
                     </Link>
                 </div>
               <nav className="flex flex-col p-6 gap-6">

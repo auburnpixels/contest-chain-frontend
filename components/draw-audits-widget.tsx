@@ -250,11 +250,11 @@ export function DrawAuditsWidget({
                         !publicView
                           ? [
                               {
-                                label: 'View details',
+                                label: 'Details',
                                 onSelect: () => dialog.open(audit),
                               },
                                 {
-                                    label: 'View public audit',
+                                    label: 'Public audit',
                                     href: `/audit/${audit.id}`,
                                 },
                             ]

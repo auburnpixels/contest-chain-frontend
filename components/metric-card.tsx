@@ -32,14 +32,14 @@ export function MetricCard({
 }: MetricCardProps) {
   // Status color mappings
   const statusColors = {
-    good: 'text-green-600 dark:text-green-400',
+    good: 'text-blue-600 dark:text-blue-400',
     warning: 'text-yellow-600 dark:text-yellow-400',
     critical: 'text-red-600 dark:text-red-400',
     neutral: 'text-foreground',
   };
 
   const statusBgColors = {
-    good: 'bg-green-50 dark:bg-green-950/20',
+    good: 'bg-blue-50 dark:bg-blue-950/20',
     warning: 'bg-yellow-50 dark:bg-yellow-950/20',
     critical: 'bg-red-50 dark:bg-red-950/20',
     neutral: 'bg-muted/50',

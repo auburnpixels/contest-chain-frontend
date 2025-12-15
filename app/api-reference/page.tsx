@@ -749,12 +749,12 @@ function CodeBlock({ code }: { code: string }) {
       <div className="bg-[var(--veristiq-slate)] rounded-lg border border-[var(--veristiq-slate-light)] p-5 overflow-x-auto shadow-inner relative group">
          <div className="absolute top-3 right-3 flex items-center gap-2">
             <button onClick={onCopy} className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-white/10 text-gray-400 hover:text-white">
-                {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-blue-400" /> : <Copy className="w-4 h-4" />}
             </button>
             <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
-                <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-blue-400"></div>
             </div>
          </div>
          <pre className="text-sm font-mono text-gray-300 leading-relaxed">

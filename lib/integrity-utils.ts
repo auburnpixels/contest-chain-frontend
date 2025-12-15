@@ -25,8 +25,8 @@ export function getIntegrityStatus(competition: {
   if (competition.status === 'completed' && (competition.draw_audits_count ?? 0) > 0) {
     return {
       icon: CheckCircle,
-      color: 'text-green-500',
-      bgColor: 'bg-green-500/10',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
       label: 'Verified',
     };
   }
@@ -128,8 +128,8 @@ export function getChainIntegrityDisplay(
   // If fully verified
   return {
     icon: CheckCircle,
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/10',
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-500/10',
     label: 'Verified',
     description: 'All events verified successfully',
     actionable: false,
@@ -165,7 +165,7 @@ export function getComplianceGradeVariant(score: number, isFinal: boolean): 'def
 export function getComplianceColor(score: number, isFinal: boolean): string {
   if (!isFinal) return 'text-muted-foreground';
   
-  if (score >= 90) return 'text-green-600';
+  if (score >= 90) return 'text-blue-600';
   if (score >= 70) return 'text-yellow-600';
   return 'text-red-600';
 }

@@ -103,7 +103,7 @@ export const Hero = ({
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
                   <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-blue-500/20 border border-blue-500/50" />
                 </div>
                 <div className="ml-4 h-6 w-64 rounded-full bg-white/5" />
               </div>
@@ -160,13 +160,13 @@ export const Hero = ({
           {/* Floating Badge */}
           <div className="absolute -bottom-6 -left-6 bg-brand-slate border border-white/10 p-4 rounded-xl shadow-xl backdrop-blur-md max-w-[200px] animate-bounce-slow">
              <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
+               <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500">
                  <Lock className="w-4 h-4" />
                </div>
                <p className="text-xs font-medium text-white">Tamper-Proof</p>
              </div>
              <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-               <div className="h-full bg-green-500 w-full" />
+               <div className="h-full bg-blue-500 w-full" />
              </div>
              <p className="text-[10px] text-muted-foreground mt-2">Cryptographically secured chain.</p>
           </div>

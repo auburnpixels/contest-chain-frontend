@@ -95,7 +95,7 @@ export function ComplaintDialog({ competitionId, competitionName, trigger }: Com
 
         {success ? (
           <div className="py-6 text-center space-y-4">
-            <div className="h-12 w-12 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto text-green-600">
+            <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto text-blue-600">
               <svg
                 className="h-6 w-6"
                 fill="none"

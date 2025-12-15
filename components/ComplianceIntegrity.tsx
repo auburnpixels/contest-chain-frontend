@@ -59,8 +59,8 @@ export const ComplianceIntegrity = ({ items }: ComplianceIntegrityProps) => {
                 className="group rounded-xl border border-white/5 bg-brand-slate/30 p-6 transition-all hover:bg-brand-slate hover:border-white/10"
               >
                 <div className="flex items-center gap-3 mb-3">
-                   <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-green-500" />
+                   <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-blue-500" />
                    </div>
                    <h3 className="font-medium text-white group-hover:text-brand-blue transition-colors">{item.title}</h3>
                 </div>

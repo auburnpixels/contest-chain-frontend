@@ -95,7 +95,7 @@ export function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDi
   const competitionName = event.competition?.name || event.competition_title || 'N/A';
   const integrityStatus = event.is_chained ? 'Valid' : 'Pending';
   const integrityVariant = event.is_chained ? 'default' : 'secondary';
-  const integrityColor = event.is_chained ? 'text-green-500' : 'text-yellow-500';
+  const integrityColor = event.is_chained ? 'text-blue-500' : 'text-yellow-500';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -335,7 +335,7 @@ export function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDi
         <div className="flex items-center justify-between pt-6 border-t mt-6">
           <div>
             {copySuccess && (
-              <span className="text-sm text-green-500">
+              <span className="text-sm text-blue-500">
                 ✓ {copySuccess} copied!
               </span>
             )}

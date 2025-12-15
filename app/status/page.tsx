@@ -16,10 +16,10 @@ export default function StatusPage() {
              <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
 
              <div className="container mx-auto px-6 text-center max-w-4xl relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 mb-8 backdrop-blur-sm">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-8 backdrop-blur-sm">
                     <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
                     <span className="font-medium text-sm">All Systems Operational</span>
                 </div>
@@ -43,7 +43,7 @@ export default function StatusPage() {
                         <Card key={service} className="bg-white border-gray-200 hover:shadow-md transition-all">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <span className="font-medium text-[var(--veristiq-slate)]">{service}</span>
-                                <div className="flex items-center gap-2 text-green-600 text-sm font-medium">
+                                <div className="flex items-center gap-2 text-blue-600 text-sm font-medium">
                                     <CheckCircle2 className="h-5 w-5" />
                                     Operational
                                 </div>

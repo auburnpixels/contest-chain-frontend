@@ -121,7 +121,7 @@ export function DrawAuditDetails({ audit, showOperator = false }: DrawAuditDetai
               onClick={() => copyToClipboard(audit.signature_hash, 'signature_hash')}
             >
               {copiedField === 'signature_hash' ? (
-                <Check className="h-4 w-4 text-green-500" />
+                <Check className="h-4 w-4 text-blue-500" />
               ) : (
                 <Copy className="h-4 w-4" />
               )}
@@ -151,7 +151,7 @@ export function DrawAuditDetails({ audit, showOperator = false }: DrawAuditDetai
                 }
               >
                 {copiedField === 'previous_signature_hash' ? (
-                  <Check className="h-4 w-4 text-green-500" />
+                  <Check className="h-4 w-4 text-blue-500" />
                 ) : (
                   <Copy className="h-4 w-4" />
                 )}
@@ -180,7 +180,7 @@ export function DrawAuditDetails({ audit, showOperator = false }: DrawAuditDetai
               disabled={!audit.rng_seed_or_hash}
             >
               {copiedField === 'rng_seed_or_hash' ? (
-                <Check className="h-4 w-4 text-green-500" />
+                <Check className="h-4 w-4 text-blue-500" />
               ) : (
                 <Copy className="h-4 w-4" />
               )}
@@ -208,7 +208,7 @@ export function DrawAuditDetails({ audit, showOperator = false }: DrawAuditDetai
                 onClick={() => copyToClipboard(audit.pool_hash!, 'pool_hash')}
               >
                 {copiedField === 'pool_hash' ? (
-                  <Check className="h-4 w-4 text-green-500" />
+                  <Check className="h-4 w-4 text-blue-500" />
                 ) : (
                   <Copy className="h-4 w-4" />
                 )}

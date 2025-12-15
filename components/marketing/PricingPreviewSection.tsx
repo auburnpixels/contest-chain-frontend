@@ -20,27 +20,27 @@ export function PricingPreviewSection() {
         <div className="bg-gradient-to-br from-[var(--veristiq-snow)] to-white rounded-2xl border border-gray-200 p-8 md:p-10 mb-10">
           <div className="grid sm:grid-cols-2 gap-6">
             <div className="flex items-start gap-3">
-              <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <span className="text-gray-600">Unlimited competitions</span>
             </div>
             <div className="flex items-start gap-3">
-              <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <span className="text-gray-600">Cryptographically verified draws</span>
             </div>
             <div className="flex items-start gap-3">
-              <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <span className="text-gray-600">Public audit pages</span>
             </div>
             <div className="flex items-start gap-3">
-              <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <span className="text-gray-600">Compliance reporting</span>
             </div>
             <div className="flex items-start gap-3">
-              <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <span className="text-gray-600">Full API access</span>
             </div>
             <div className="flex items-start gap-3">
-              <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <span className="text-gray-600">Chain integrity verification</span>
             </div>
           </div>

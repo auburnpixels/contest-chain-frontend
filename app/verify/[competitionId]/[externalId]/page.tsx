@@ -121,14 +121,14 @@ export default function VerifyTicketPage() {
 
         {/* Winner Alert */}
         {ticket.result.is_winner && (
-          <div className="mb-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-1 shadow-lg animate-in slide-in-from-top-4 duration-700">
+          <div className="mb-8 bg-gradient-to-r from-blue-500 to-emerald-600 rounded-xl p-1 shadow-lg animate-in slide-in-from-top-4 duration-700">
             <div className="bg-white rounded-lg p-6 flex items-start gap-4">
-                <div className="p-3 bg-green-100 rounded-full text-green-600 shrink-0">
+                <div className="p-3 bg-blue-100 rounded-full text-blue-600 shrink-0">
                     <Trophy className="h-6 w-6" />
                 </div>
                 <div>
-                    <h3 className="text-xl font-bold text-green-800 mb-1">Congratulations! You&apos;re a winner!</h3>
-                    <p className="text-green-700">
+                    <h3 className="text-xl font-bold text-blue-800 mb-1">Congratulations! You&apos;re a winner!</h3>
+                    <p className="text-blue-700">
                         This ticket has been verified as the winner of: <span className="font-bold">{ticket.result.prize}</span>
                     </p>
                 </div>
@@ -148,7 +148,7 @@ export default function VerifyTicketPage() {
                   </span>
                 </div>
               </div>
-              <Badge variant={ticket.ticket.is_eligible ? 'default' : 'secondary'} className={ticket.ticket.is_eligible ? "bg-green-100 text-green-700 hover:bg-green-200 border-green-200 text-sm py-1 px-3 shadow-none" : "text-sm py-1 px-3 bg-gray-100 text-gray-600 shadow-none"}>
+              <Badge variant={ticket.ticket.is_eligible ? 'default' : 'secondary'} className={ticket.ticket.is_eligible ? "bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200 text-sm py-1 px-3 shadow-none" : "text-sm py-1 px-3 bg-gray-100 text-gray-600 shadow-none"}>
                 {ticket.ticket.is_eligible ? 'Eligible for Draw' : 'Not Eligible'}
               </Badge>
           </div>
@@ -211,7 +211,7 @@ export default function VerifyTicketPage() {
                         <div className="flex items-center gap-2 mb-2 text-gray-500 text-sm">
                             <CheckCircle2 className="w-4 h-4" /> Question
                         </div>
-                        <p className={`font-semibold ${ticket.ticket.is_eligible ? 'text-green-600' : 'text-red-600'}`}>
+                        <p className={`font-semibold ${ticket.ticket.is_eligible ? 'text-blue-600' : 'text-red-600'}`}>
                             {ticket.ticket.is_eligible ? 'Answered Correctly' : 'Incorrect Answer'}
                         </p>
                     </div>

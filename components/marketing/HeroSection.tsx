@@ -32,17 +32,17 @@ export function HeroSection() {
           <div className="bg-white rounded-lg shadow-2xl shadow-blue-900/5 border border-gray-200 p-6 md:p-8 relative overflow-hidden backdrop-blur-sm">
             <div className="space-y-4 font-mono text-sm">
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded border border-gray-100 opacity-60">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
                     <div className="text-[var(--veristiq-slate-light)]">Event #102: Entry Added</div>
                     <div className="ml-auto text-xs text-gray-400">09:41:22</div>
                 </div>
                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded border border-gray-100 opacity-80">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
                     <div className="text-[var(--veristiq-slate-light)]">Event #103: Competition Closed</div>
                     <div className="ml-auto text-xs text-gray-400">09:42:05</div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded border border-gray-100 opacity-80">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
                     <div className="text-[var(--veristiq-slate-light)]">Event #104: Draw Triggered</div>
                     <div className="ml-auto text-xs text-gray-400">09:43:14</div>
                 </div>

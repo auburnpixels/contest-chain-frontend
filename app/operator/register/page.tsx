@@ -11,6 +11,7 @@ import { apiClient, authApi } from '@/lib/api/client';
 import { useAuth } from '@/context/AuthContext';
 import { AlertCircle, ShieldCheck, ArrowRight, Loader2, Info } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import * as React from "react";
 
 export default function OperatorRegisterPage() {
   const router = useRouter();
@@ -64,11 +65,11 @@ export default function OperatorRegisterPage() {
 
           <div className="w-full max-w-lg relative z-10 animate-in fade-in zoom-in-95 duration-500">
         <div className="flex flex-col items-center mb-8">
-            <Link href="/" className="flex items-center gap-3 mb-2 group">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--veristiq-primary-blue)] text-white shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="h-6 w-6" />
-                </div>
-                <span className="font-sans font-bold text-2xl text-white tracking-tight">Veristiq</span>
+            <Link href="/" className="flex items-center gap-1 text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[var(--veristiq-primary-blue)]">
+                    <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                </svg>
+                <span className="font-bold text-[var(--veristiq-primary-blue)]">VERISTIQ</span>
             </Link>
         </div>
 

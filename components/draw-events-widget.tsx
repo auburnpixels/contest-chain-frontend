@@ -10,7 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { operatorApi } from '@/lib/api/client';
-import { CheckCircle, Copy, AlertTriangle } from 'lucide-react';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { DrawEventDetailsDialog } from '@/components/draw-event-details-dialog';
+import { DrawEvent } from '@/components/draw-event-details';
 import { PaginationControls } from '@/components/pagination-controls';
 import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { IndicatorBadge } from '@/components/ui/indicator-badge';
@@ -76,9 +78,8 @@ export function DrawEventsWidget({
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<any[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [copySuccess, setCopySuccess] = useState('');
+  const [selectedEvent, setSelectedEvent] = useState<DrawEvent | null>(null);
+  const [showEventDialog, setShowEventDialog] = useState(false);
   const [initialized, setInitialized] = useState(!syncUrlParams);
   const [verifyingChain, setVerifyingChain] = useState(false);
   const [chainStatus, setChainStatus] = useState<any>(null);
@@ -379,12 +380,6 @@ export function DrawEventsWidget({
     }
   };
 
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    setCopySuccess(label);
-    setTimeout(() => setCopySuccess(''), 2000);
-  };
-
   const filterByCompetition = (competitionIdentifier: string | undefined) => {
     if (competitionIdentifier && !competitionId) {
       setFilters({ ...filters, competition_id: competitionIdentifier });
@@ -630,11 +625,11 @@ export function DrawEventsWidget({
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <span>
+                          <Badge variant="outline">
                             {formatChainPosition(event.sequence)}
-                          </span>
+                          </Badge>
                         </TableCell>
-                        <TableCell>
+                          <TableCell>
                           {dateFormatters.shortDateTime(event.created_at)}
                         </TableCell>
                         <TableCell>
@@ -651,7 +646,7 @@ export function DrawEventsWidget({
                                 label: 'Details',
                                 onSelect: () => {
                                   setSelectedEvent(event);
-                                  setShowModal(true);
+                                  setShowEventDialog(true);
                                 },
                               },
                             ]}
@@ -684,195 +679,12 @@ export function DrawEventsWidget({
         </CardContent>
       </Card>
 
-      {/* Event Details Modal */}
-      {showModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
-          <div className="bg-slate-900 border border-slate-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
-            {/* Header */}
-            <div className="p-6 border-b border-slate-800 bg-slate-900/50">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    {getEventDisplayName(selectedEvent.event_type)}
-                  </h2>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground">
-                      Event {formatChainPosition(selectedEvent.sequence)}
-                    </span>
-                    <div className="flex items-center gap-1.5 text-green-500">
-                      <CheckCircle className="h-4 w-4" />
-                      <span className="text-sm font-medium">Valid</span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-muted-foreground hover:text-white text-2xl leading-none"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Cryptographic Verification */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2">
-                  Cryptographic Verification
-                </h3>
-
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event Hash</label>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 text-green-400 font-mono text-xs break-all bg-green-950/20 p-3 rounded border border-green-900/30">
-                        {selectedEvent.event_hash}
-                      </code>
-                      <button
-                        onClick={() => copyToClipboard(selectedEvent.event_hash, 'Event Hash')}
-                        className="p-2 hover:bg-slate-800 rounded text-muted-foreground hover:text-white transition-colors"
-                        title="Copy hash"
-                      >
-                        <Copy className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Previous Event Hash</label>
-                    {selectedEvent.previous_event_hash ? (
-                      <div className="flex items-center gap-2">
-                        <code className="flex-1 text-blue-400 font-mono text-xs break-all bg-blue-950/20 p-3 rounded border border-blue-900/30">
-                          {selectedEvent.previous_event_hash}
-                        </code>
-                        <button
-                          onClick={() => copyToClipboard(selectedEvent.previous_event_hash, 'Previous Hash')}
-                          className="p-2 hover:bg-slate-800 rounded text-muted-foreground hover:text-white transition-colors"
-                          title="Copy hash"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <p className="text-zinc-500 italic text-sm bg-black/50 p-3 rounded border border-slate-800">
-                        Genesis Event (First in chain)
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Chain Position</label>
-                      <p className="text-white font-mono text-sm bg-black/50 p-2 rounded border border-slate-800">
-                        {formatChainPosition(selectedEvent.sequence)}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event ID</label>
-                      <p className="text-white font-mono text-xs bg-black/50 p-2 rounded border border-slate-800 break-all">
-                        {selectedEvent.id}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Event Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2">
-                  Event Information
-                </h3>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Event Type</label>
-                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
-                      <code className="text-xs">{selectedEvent.event_type}</code>
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Actor</label>
-                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
-                      {selectedEvent.actor_type || 'system'}
-                      {selectedEvent.actor_id && ` (ID: ${selectedEvent.actor_id})`}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Competition</label>
-                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
-                      {selectedEvent.competition_title}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Timestamp</label>
-                    <p className="text-white text-sm bg-black/50 p-2 rounded border border-slate-800">
-                      {dateFormatters.shortDateTime(selectedEvent.created_at)}
-                    </p>
-                  </div>
-                  {selectedEvent.ip_address && (
-                    <div className="col-span-2">
-                      <label className="text-sm font-medium text-muted-foreground mb-1.5 block">IP Address</label>
-                      <p className="text-white text-sm font-mono bg-black/50 p-2 rounded border border-slate-800">
-                        {selectedEvent.ip_address}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Signed Payload */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white border-b border-slate-800 pb-2">
-                  Signed Payload
-                </h3>
-
-                <div className="relative">
-                  <pre className="text-white font-mono text-xs bg-black p-4 rounded border border-slate-800 overflow-x-auto max-h-64">
-{JSON.stringify(selectedEvent.event_payload, null, 2)}
-                  </pre>
-                  <button
-                    onClick={() => copyToClipboard(JSON.stringify(selectedEvent.event_payload, null, 2), 'Payload')}
-                    className="absolute top-2 right-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-muted-foreground hover:text-white transition-colors"
-                    title="Copy payload"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Actions Footer */}
-            <div className="p-6 border-t border-slate-800 bg-slate-900/50 flex justify-between items-center">
-              <div>
-                {copySuccess && (
-                  <span className="text-sm text-green-400">✓ {copySuccess} copied!</span>
-                )}
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => copyToClipboard(selectedEvent.event_hash, 'Event Hash')}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded text-sm font-medium transition-colors"
-                >
-                  Copy Event Hash
-                </button>
-                <button
-                  onClick={() => copyToClipboard(JSON.stringify(selectedEvent, null, 2), 'Full Details')}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded text-sm font-medium transition-colors"
-                >
-                  Copy Full Details
-                </button>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-medium transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Event Details Dialog */}
+      <DrawEventDetailsDialog
+        event={selectedEvent}
+        open={showEventDialog}
+        onOpenChange={setShowEventDialog}
+      />
 
       {/* Chain Verification Modal */}
       {showChainModal && chainStatus && (
@@ -887,7 +699,7 @@ export function DrawEventsWidget({
                   </h2>
                   <div className="flex items-center gap-3">
                     {chainStatus.chain_status === 'valid' ? (
-                      <div className="flex items-center gap-2 text-green-500">
+                      <div className="flex items-center gap-2 text-blue-500">
                         <CheckCircle className="h-5 w-5" />
                         <span className="text-lg font-semibold">Chain Valid</span>
                       </div>
@@ -923,7 +735,7 @@ export function DrawEventsWidget({
                 </div>
                 <div className="bg-black/50 p-4 rounded border border-slate-800">
                   <label className="text-sm font-medium text-muted-foreground block mb-1">Verified</label>
-                  <p className="text-2xl font-bold text-green-500">
+                  <p className="text-2xl font-bold text-blue-500">
                     {chainStatus.summary?.verified_events || chainStatus.verified_events || 0}
                   </p>
                 </div>
@@ -994,9 +806,9 @@ export function DrawEventsWidget({
 
               {/* Success Message */}
               {chainStatus.chain_status === 'valid' && (
-                <div className="bg-green-950/20 border border-green-900/30 rounded p-4">
+                <div className="bg-blue-950/20 border border-blue-900/30 rounded p-4">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5" />
                     <div>
                       <p className="text-white font-medium mb-1">Chain Integrity Verified</p>
                       <p className="text-sm text-muted-foreground">

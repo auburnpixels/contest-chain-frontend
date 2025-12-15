@@ -99,13 +99,12 @@ export function AuditClient({ uuid }: AuditClientProps) {
 
       {/* Hero Section */}
       <div className="relative bg-[var(--veristiq-slate)] pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
-        <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
 
         <div className="container mx-auto px-6 relative z-10 text-center">
             <div className={`inline-flex items-center justify-center p-3 ${audit.is_chained ? 'bg-white/10' : 'bg-yellow-500/20'} rounded-full mb-6 backdrop-blur-sm shadow-lg ring-1 ${audit.is_chained ? 'ring-white/20' : 'ring-yellow-500/30'}`}>
                 {audit.is_chained ? (
-                    <ShieldCheck className="w-8 h-8 text-[var(--veristiq-teal)]" />
+                    <ShieldCheck className="w-8 h-8 text-[var(--veristiq-primary-blue)]" />
                 ) : (
                     <Clock className="w-8 h-8 text-yellow-400" />
                 )}
@@ -137,7 +136,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                     {/* Competition Details */}
                     <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                         <CardHeader>
-                            <CardTitle className="!text-xl">Competition Details</CardTitle>
+                            <CardTitle className="!text-lg">Competition Details</CardTitle>
                         </CardHeader>
                         <CardContent className="grid gap-6">
                             <div>
@@ -161,7 +160,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1">Winner Ticket</h3>
-                                    <p className="font-mono bg-green-50 text-green-700 px-2 py-1 rounded inline-block font-bold">
+                                    <p className="font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded inline-block font-bold">
                                         {audit.winning_ticket || 'Pending'}
                                     </p>
                                 </div>
@@ -172,12 +171,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                     {/* Technical Proofs */}
                         <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 !text-xl">
-                                {audit.is_chained ? (
-                                    <ShieldCheck className="w-5 h-5 text-green-500" />
-                                ) : (
-                                    <Clock className="w-5 h-5 text-yellow-500" />
-                                )}
+                            <CardTitle className="flex items-center gap-2 !text-lg">
                                 Cryptographic Proofs
                             </CardTitle>
                             <CardDescription>
@@ -206,7 +200,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                                         onClick={() => copyToClipboard(audit.signature_hash, 'signature_hash')}
                                     >
                                         {copiedField === 'signature_hash' ? (
-                                            <Check className="h-4 w-4 text-green-500" />
+                                            <Check className="h-4 w-4 text-blue-500" />
                                         ) : (
                                             <Copy className="h-4 w-4" />
                                         )}
@@ -234,7 +228,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                                             onClick={() => copyToClipboard(audit.previous_signature_hash!, 'previous_signature_hash')}
                                         >
                                             {copiedField === 'previous_signature_hash' ? (
-                                                <Check className="h-4 w-4 text-green-500" />
+                                                <Check className="h-4 w-4 text-blue-500" />
                                             ) : (
                                                 <Copy className="h-4 w-4" />
                                             )}
@@ -263,7 +257,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                                             onClick={() => copyToClipboard(audit.rng_seed_or_hash, 'rng_seed_or_hash')}
                                         >
                                             {copiedField === 'rng_seed_or_hash' ? (
-                                                <Check className="h-4 w-4 text-green-500" />
+                                                <Check className="h-4 w-4 text-blue-500" />
                                             ) : (
                                                 <Copy className="h-4 w-4" />
                                             )}
@@ -292,7 +286,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                                             onClick={() => copyToClipboard(audit.pool_hash!, 'pool_hash')}
                                         >
                                             {copiedField === 'pool_hash' ? (
-                                                <Check className="h-4 w-4 text-green-500" />
+                                                <Check className="h-4 w-4 text-blue-500" />
                                             ) : (
                                                 <Copy className="h-4 w-4" />
                                             )}
@@ -309,7 +303,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                     {/* Actions Card */}
                     <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                         <CardHeader>
-                            <CardTitle>Actions</CardTitle>
+                            <CardTitle className="!text-lg">Actions</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             <Button className="w-full bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white gap-2">
@@ -324,8 +318,7 @@ export function AuditClient({ uuid }: AuditClientProps) {
                         {/* Chain Visual */}
                     <Card className="bg-[var(--veristiq-slate)] text-white border-0 shadow-xl">
                         <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
-                                <LinkIcon className={`w-5 h-5 ${audit.is_chained ? 'text-[var(--veristiq-teal)]' : 'text-yellow-400'}`} />
+                            <CardTitle className="text-white flex items-center gap-2 !text-lg">
                                 Chain Visualization
                             </CardTitle>
                         </CardHeader>
@@ -343,9 +336,9 @@ export function AuditClient({ uuid }: AuditClientProps) {
 
                                     {/* Current Block */}
                                     <div className="text-sm">
-                                        <div className="w-3 h-3 bg-[var(--veristiq-teal)] rounded-full absolute -left-[7px] shadow-[0_0_10px_rgba(12,226,188,0.5)]"></div>
-                                        <p className="font-mono text-xs text-[var(--veristiq-teal)] mb-1">Current Event (This Draw)</p>
-                                        <div className="bg-white/10 p-3 rounded border border-[var(--veristiq-teal)]">
+                                        <div className="w-3 h-3 bg-[var(--veristiq-primary-blue)] rounded-full absolute -left-[7px] shadow-[0_0_10px_rgba(12,226,188,0.5)]"></div>
+                                        <p className="font-mono text-xs text-[var(--veristiq-primary-blue)] mb-1">Current Event (This Draw)</p>
+                                        <div className="bg-white/10 p-3 rounded border border-[var(--veristiq-primary-blue)]">
                                             <p className="font-bold mb-1">Event #{audit.sequence}</p>
                                             <p className="font-mono text-xs break-all text-gray-300">
                                                 {audit.signature_hash.substring(0, 20)}...
@@ -378,13 +371,10 @@ export function AuditClient({ uuid }: AuditClientProps) {
                     {audit.operator && (
                         <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-white/20">
                             <CardHeader>
-                                <CardTitle>Operator</CardTitle>
+                                <CardTitle className="!text-lg">Operator</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                        <Building2 className="w-6 h-6 text-gray-500" />
-                                    </div>
                                     <div>
                                         <p className="font-bold">{audit.operator.name}</p>
                                         <p className="text-xs text-gray-500">@{audit.operator.slug}</p>

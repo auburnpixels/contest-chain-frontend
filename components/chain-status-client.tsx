@@ -106,16 +106,16 @@ export default function ChainStatusClient() {
         {/* Hero Status Section */}
         <section className="bg-zinc-900/30 border-b border-white/5 py-24 relative overflow-hidden">
           {/* Subtle glow effect */}
-          <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[100px] opacity-20 pointer-events-none ${isValid ? 'bg-green-500' : 'bg-red-500'}`} />
+          <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[100px] opacity-20 pointer-events-none ${isValid ? 'bg-blue-500' : 'bg-red-500'}`} />
           
           <div className="container mx-auto px-6 text-center relative z-10">
             {isValid ? (
               <>
-                <div className="h-24 w-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-500/20 animate-pulse">
-                    <CheckCircle2 className="h-12 w-12 text-green-500" />
+                <div className="h-24 w-24 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-blue-500/20 animate-pulse">
+                    <CheckCircle2 className="h-12 w-12 text-blue-500" />
                 </div>
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-                  All Draws <span className="text-green-500">VERIFIED</span>
+                  All Draws <span className="text-blue-500">VERIFIED</span>
                 </h1>
                 <p className="text-xl text-zinc-400 mb-2 max-w-2xl mx-auto">
                   All competition draw audits are cryptographically secure and tamper-proof.
@@ -179,9 +179,9 @@ export default function ChainStatusClient() {
               </div>
 
               {/* Verified Draws */}
-              <div className="bg-zinc-900/50 border border-white/10 p-8 rounded-2xl relative overflow-hidden group hover:border-green-500/30 transition-colors">
+              <div className="bg-zinc-900/50 border border-white/10 p-8 rounded-2xl relative overflow-hidden group hover:border-blue-500/30 transition-colors">
                  <div className="absolute top-0 right-0 p-8 opacity-50 group-hover:opacity-100 transition-opacity">
-                    <CheckCircle2 className="h-8 w-8 text-green-500" />
+                    <CheckCircle2 className="h-8 w-8 text-blue-500" />
                  </div>
                  <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Verified Draws</p>
                  <div className="text-5xl font-bold text-white mb-2">{chainData.verified_events.toLocaleString()}</div>
@@ -195,8 +195,8 @@ export default function ChainStatusClient() {
                  </div>
                  <p className="text-zinc-500 font-medium mb-4 text-sm uppercase tracking-wider">Audit Chain Health</p>
                  <div className="text-5xl font-bold text-white mb-2">{integrityPercentage}%</div>
-                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-500/10 text-green-500 text-xs font-medium border border-green-500/20">
-                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-500 text-xs font-medium border border-blue-500/20">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                     Operational
                  </div>
               </div>

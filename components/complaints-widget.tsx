@@ -309,14 +309,14 @@ export function ComplaintsWidget({
                           </Badge>
                         </TableCell>
                         <TableCell>{getComplaintStatusBadge(complaint)}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
+                        <TableCell>
                           {dateFormatters.shortDateTime(complaint.created_at)}
                         </TableCell>
                         <TableCell className="text-right">
                           <OperatorActionsMenu
                             actions={[
                               {
-                                label: 'View',
+                                label: 'Details',
                                 onSelect: () => handleViewComplaint(complaint),
                               },
                             ]}
@@ -355,7 +355,7 @@ export function ComplaintsWidget({
 
       {/* Complaint Details Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl">
+       <DialogContent className="!max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="border-b pb-4">Complaint details</DialogTitle>
           </DialogHeader>

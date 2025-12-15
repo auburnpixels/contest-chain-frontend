@@ -67,14 +67,14 @@ export const getComplianceIndicator = (competition: OperatorCompetition) => {
     const {compliance_percentage = 100, compliance_status = 'good', issues = []} = competition;
 
     let Icon = CheckCircle;
-    let colorClass = 'text-green-500';
-    let bgClass = 'bg-green-500/10';
+    let colorClass = 'text-blue-500';
+    let bgClass = 'bg-blue-500/10';
     let tooltipMessages: string[] = [];
 
     if (['excellent', 'good'].includes(compliance_status)) {
         Icon = CheckCircle;
-        colorClass = 'text-green-500';
-        bgClass = 'bg-green-500/10';
+        colorClass = 'text-blue-500';
+        bgClass = 'bg-blue-500/10';
         tooltipMessages = issues.length > 0 ? issues : ['All compliance checks passed'];
     } else if (compliance_status === 'fair') {
         Icon = AlertCircle;

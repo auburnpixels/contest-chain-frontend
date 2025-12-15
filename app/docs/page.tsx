@@ -137,11 +137,11 @@ export default function DocsPage() {
 
                         {/* Step 4 */}
                         <div className="relative pl-12 group">
-                            <div className="absolute left-0 top-0 w-10 h-10 bg-white border-2 border-green-500 text-green-600 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:bg-green-500 group-hover:text-white transition-all z-10">4</div>
+                            <div className="absolute left-0 top-0 w-10 h-10 bg-white border-2 border-blue-500 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-all z-10">4</div>
                             <h3 className="text-xl font-bold text-[var(--veristiq-slate)] mb-2">Display Proof</h3>
                             <p className="text-gray-600 text-sm mb-3">Get the public audit URL. Embed this link in your "Winner" announcement.</p>
                             <div className="flex gap-2">
-                                <Badge variant="outline" className="font-mono text-xs text-green-700 border-green-200 bg-green-50">GET /audits</Badge>
+                                <Badge variant="outline" className="font-mono text-xs text-blue-700 border-blue-200 bg-blue-50">GET /audits</Badge>
                             </div>
                         </div>
                     </div>
@@ -151,7 +151,7 @@ export default function DocsPage() {
                             <div className="flex gap-1.5">
                                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
                                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                             </div>
                             <div className="ml-4 text-xs text-gray-400 font-mono">workflow.ts</div>
                         </div>
@@ -198,7 +198,7 @@ console.<span className="text-blue-400">log</span>(result.audit_url);
                         </div>
                         <div className="mt-6 flex gap-4">
                             <div className="flex-1 p-4 bg-[var(--veristiq-snow)] rounded-lg border border-gray-100">
-                                <h4 className="font-bold text-sm mb-2 flex items-center gap-2"><Shield className="w-4 h-4 text-green-600" /> Secret Keys (sk_)</h4>
+                                <h4 className="font-bold text-sm mb-2 flex items-center gap-2"><Shield className="w-4 h-4 text-blue-600" /> Secret Keys (sk_)</h4>
                                 <p className="text-xs text-gray-500">Full access. Keep confidential. Use only on server-side.</p>
                             </div>
                             <div className="flex-1 p-4 bg-[var(--veristiq-snow)] rounded-lg border border-gray-100">
@@ -226,14 +226,14 @@ console.<span className="text-blue-400">log</span>(result.audit_url);
                     </p>
                     <ul className="grid sm:grid-cols-2 gap-4">
                         <li className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-100">
-                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
+                            <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
                             <div className="text-sm">
                                 <span className="font-bold block text-gray-800">Privacy First</span>
                                 <span className="text-gray-500">Your user data never leaves your system in raw form.</span>
                             </div>
                         </li>
                         <li className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-100">
-                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
+                            <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
                             <div className="text-sm">
                                 <span className="font-bold block text-gray-800">Immutable Log</span>
                                 <span className="text-gray-500">Once hashed and chained, entries cannot be altered or deleted.</span>

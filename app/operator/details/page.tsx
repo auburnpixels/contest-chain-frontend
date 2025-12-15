@@ -148,8 +148,8 @@ export default function OperatorDetailsPage() {
               <Card>
                   {successMessage && (
                       <div className="px-6">
-                          <Alert className="bg-green-500/10 border-green-500/50">
-                              <AlertDescription className="text-green-500">
+                          <Alert className="bg-blue-500/10 border-blue-500/50">
+                              <AlertDescription className="text-blue-500">
                                   {successMessage}
                               </AlertDescription>
                           </Alert>
