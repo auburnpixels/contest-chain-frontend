@@ -13,14 +13,14 @@ export interface DrawEvent {
   id: string;
   event_type: string;
   event_hash: string;
-  previous_event_hash: string | null;
+  previous_event_hash?: string | null;
   sequence: number;
-  actor_type: string | null;
-  actor_id: string | null;
-  competition_title: string;
-  ip_address: string | null;
+  actor_type?: string | null;
+  actor_id?: string | null;
+  competition_title?: string;
+  ip_address?: string | null;
   created_at: string;
-  event_payload: Record<string, unknown>;
+  event_payload?: Record<string, unknown>;
 }
 
 interface DrawEventDetailsProps {
@@ -90,7 +90,7 @@ export function DrawEventDetails({ event }: DrawEventDetailsProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1 items-start">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">Competition</h3>
-          <p className="text-sm font-medium">{event.competition_title}</p>
+          <p className="text-sm font-medium">{event.competition_title || 'N/A'}</p>
         </div>
 
         <div className="flex flex-col gap-1 items-start">
@@ -231,13 +231,13 @@ export function DrawEventDetails({ event }: DrawEventDetailsProps) {
         </h3>
         <div className="relative">
           <pre className="text-xs font-mono break-all bg-muted p-3 rounded overflow-x-auto max-h-48">
-            {JSON.stringify(event.event_payload, null, 2)}
+            {JSON.stringify(event.event_payload || {}, null, 2)}
           </pre>
           <Button
             variant="ghost"
             size="sm"
             className="absolute top-2 right-2 h-8 w-8 p-0"
-            onClick={() => copyToClipboard(JSON.stringify(event.event_payload, null, 2), 'payload')}
+            onClick={() => copyToClipboard(JSON.stringify(event.event_payload || {}, null, 2), 'payload')}
           >
             {copiedField === 'payload' ? (
               <Check className="h-4 w-4 text-blue-500" />
