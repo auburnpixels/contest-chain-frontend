@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Contact Us — Veristiq",
+  description: "Get in touch to discuss how Veristiq can help verify your prize draws. We're happy to talk about fit, pricing, or technical integration.",
+  openGraph: {
+    title: "Contact Us — Veristiq",
+    description: "Get in touch to discuss prize draw verification for your operation.",
+  },
+};
 
 export default function ContactPage() {
   return (

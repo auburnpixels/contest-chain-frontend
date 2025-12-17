@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -20,6 +21,15 @@ import {
     LayoutDashboard
 } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "FAQs — Veristiq Prize Draw Verification",
+  description: "Common questions about Veristiq's prize draw verification service. Learn about integration, security, compliance, and how our audit system works.",
+  openGraph: {
+    title: "FAQs — Veristiq Prize Draw Verification",
+    description: "Common questions about prize draw verification, integration, security, and compliance.",
+  },
+};
 
 interface FaqCategory {
     title: string;

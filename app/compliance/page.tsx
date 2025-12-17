@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Scale, FileText, ShieldCheck, CheckCircle2, AlertTriangle, Check, Lock, RefreshCw, Server } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+
+export const metadata: Metadata = {
+  title: "DCMS Compliance for Prize Competitions — Veristiq",
+  description: "How Veristiq helps UK operators meet the DCMS voluntary code for prize competitions. Independent verification, audit trails, and regulator-ready evidence.",
+  openGraph: {
+    title: "DCMS Compliance for Prize Competitions — Veristiq",
+    description: "How Veristiq helps operators meet the DCMS voluntary code with independent verification and audit trails.",
+  },
+};
 
 export default function CompliancePage() {
   return (

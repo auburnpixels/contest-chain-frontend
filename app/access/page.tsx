@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Mail, ArrowLeft } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: "Request Access — Veristiq",
+  description: "Request access to Veristiq's prize draw verification platform. We're working with select operators to validate fit.",
+  openGraph: {
+    title: "Request Access — Veristiq",
+    description: "Request access to independent prize draw verification.",
+  },
+};
 
 export default function AccessPage() {
   return (

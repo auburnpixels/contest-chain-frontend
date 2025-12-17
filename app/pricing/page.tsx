@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { Check, Shield, ArrowRight, MessageCircle } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Pricing — Veristiq",
+  description: "Flexible pricing for prize draw verification. We're focused on finding the right partners. Let's talk about what works for your operation.",
+  openGraph: {
+    title: "Pricing — Veristiq",
+    description: "Flexible pricing for independent prize draw verification. Let's talk about what works for you.",
+  },
+};
 
 export default function PricingPage() {
   return (

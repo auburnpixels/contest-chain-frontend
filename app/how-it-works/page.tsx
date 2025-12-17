@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Check, Lock, Database, FileCheck2, Server, ArrowRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "How It Works — Veristiq Prize Draw Verification",
+  description: "See how Veristiq independently verifies prize draws. Submit entries, execute cryptographically secure draws, and publish tamper-proof audit pages.",
+  openGraph: {
+    title: "How It Works — Veristiq Prize Draw Verification",
+    description: "See how Veristiq independently verifies prize draws with cryptographic proof and public audit pages.",
+  },
+};
 
 export default function HowItWorksPage() {
   return (

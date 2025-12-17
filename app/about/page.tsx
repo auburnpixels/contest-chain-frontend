@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ShieldCheck, Users, Target, Lock, Scale, Globe } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "About Veristiq — Independent Prize Draw Verification",
+  description: "Veristiq is an independent verification layer for prize competitions. We exist solely to verify and evidence draws — not to run competitions or sell tickets.",
+  openGraph: {
+    title: "About Veristiq — Independent Prize Draw Verification",
+    description: "Veristiq exists solely to verify and evidence prize draws independently.",
+  },
+};
 
 export default function AboutPage() {
   return (

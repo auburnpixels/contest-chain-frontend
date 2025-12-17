@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Database, Lock, ShieldAlert, Key, Server, Hash, FileKey, EyeOff, UserX, ShieldCheck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+export const metadata: Metadata = {
+  title: "Security — Veristiq",
+  description: "How Veristiq protects your data. Cryptographic security, data minimization, tamper-evident audit trails, and privacy-first architecture.",
+  openGraph: {
+    title: "Security — Veristiq",
+    description: "Cryptographic security, data minimization, and tamper-evident audit trails.",
+  },
+};
 
 export default function SecurityPage() {
   const faqs = [
