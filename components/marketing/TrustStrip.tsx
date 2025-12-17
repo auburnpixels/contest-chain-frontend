@@ -1,4 +1,5 @@
 import { Building2 } from "lucide-react";
+import Link from "next/link";
 
 export function TrustStrip() {
   return (
@@ -10,8 +11,9 @@ export function TrustStrip() {
         <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
             {/* Placeholders using text/icons for now as per instructions */}
             <div className="flex items-center gap-2 text-xl font-bold text-[var(--veristiq-slate)]">
-                <div className="bg-gray-200 h-8 w-8 rounded"></div>
-                <span>Raffaly</span>
+                <Link href="https://raffaly.com" target="_blank" rel="noopener noreferrer">
+                    <span>Raffaly</span>
+                </Link>
             </div>
         </div>
       </div>

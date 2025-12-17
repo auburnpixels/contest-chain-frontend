@@ -75,12 +75,12 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-4">
-             <Link href="/operator/login" className="text-sm font-medium text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)] transition-colors">
-               Sign In
+             <Link href="/contact" className="text-sm font-medium text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)] transition-colors">
+               Contact
             </Link>
-            <Link href="/operator/register">
+            <Link href="/access">
               <Button size="default" className="bg-[var(--veristiq-primary-blue)] text-white hover:bg-[var(--veristiq-primary-blue-dark)] font-medium rounded-md px-6 shadow-sm transition-all hover:-translate-y-0.5">
-                Get Started
+                Get Access
               </Button>
             </Link>
           </div>
@@ -145,11 +145,11 @@ export function SiteHeader() {
                     </Link>
                  </div>
                  <div className="pt-6 border-t border-gray-100 space-y-4">
-                     <Link href="/operator/login" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full justify-center border-gray-200 text-[var(--veristiq-slate)] hover:bg-gray-50 bg-transparent">Sign In</Button>
+                     <Link href="/contact" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full justify-center border-gray-200 text-[var(--veristiq-slate)] hover:bg-gray-50 bg-transparent">Contact</Button>
                     </Link>
-                    <Link href="/operator/register" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full justify-center bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white">Get Started</Button>
+                    <Link href="/access" onClick={() => setIsOpen(false)}>
+                      <Button className="w-full justify-center bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white">Get Access</Button>
                     </Link>
                  </div>
               </nav>

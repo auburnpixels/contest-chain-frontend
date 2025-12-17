@@ -1,24 +1,34 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/context/AuthContext';
-import { AlertCircle, ShieldCheck, Info, ArrowRight, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import * as React from "react";
 
 export default function OperatorLoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, logout } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Check for demo mode - redirect to /access if not in demo mode
+  const isDemoMode = searchParams.get('demo') === 'true';
+
+  useEffect(() => {
+    if (!isDemoMode) {
+      router.replace('/access');
+    }
+  }, [isDemoMode, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,11 +47,17 @@ export default function OperatorLoginPage() {
       
       // Navigate to dashboard
       router.push('/operator/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Invalid email or password';
+      setError(errorMessage);
       setLoading(false);
     }
   };
+
+  // Don't render the login form if not in demo mode (will redirect)
+  if (!isDemoMode) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--veristiq-slate)] relative overflow-hidden p-4">
@@ -115,9 +131,9 @@ export default function OperatorLoginPage() {
           </CardContent>
           <CardFooter className="flex flex-col gap-4 border-t border-gray-100 bg-gray-50/50 pt-6">
             <div className="text-center text-sm text-gray-500">
-              Don't have an account?{' '}
-              <Link href="/operator/register" className="font-semibold text-[var(--veristiq-primary-blue)] hover:underline transition-all">
-                Create an account
+              Don&apos;t have an account?{' '}
+              <Link href="/access" className="font-semibold text-[var(--veristiq-primary-blue)] hover:underline transition-all">
+                Request access
               </Link>
             </div>
           </CardFooter>

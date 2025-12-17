@@ -55,9 +55,9 @@ export function PricingPreviewSection() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
-            <Link href="/operator/register">
+            <Link href="/access">
               <Button size="lg" variant="outline" className="border-gray-300 text-[var(--veristiq-slate)] hover:bg-gray-50 font-semibold px-8">
-                Start Free Trial
+                Get Access
               </Button>
             </Link>
           </div>

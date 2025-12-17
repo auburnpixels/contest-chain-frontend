@@ -28,7 +28,7 @@ export const Hero = ({
   title = "The infrastructure for provably fair competitions.",
   subtitle = "Turn any raffle, giveaway, or prize draw into a cryptographic audit trail. Build trust, eliminate disputes, and automate compliance.",
   actions = [
-    { label: "Start building", href: "/operator/register" },
+    { label: "Get Access", href: "/access" },
     { label: "View Live Audit", href: "/audit/example-uuid", variant: "secondary" },
   ],
   stats = [],

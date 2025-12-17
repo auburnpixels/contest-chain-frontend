@@ -35,19 +35,23 @@ export default function FaqPage() {
             items: [
                 {
                     question: "What is Veristiq?",
-                    answer: "Veristiq is an independent fairness verification platform for online prize competitions. We act as a digital auditor, creating a tamper-evident record of every entry and draw result—giving you cryptographic proof that your draws are fair and unbiased."
+                    answer: "Veristiq is an independent verification infrastructure for online prize competitions. We operate as a neutral third-party, recording entries and draw events immutably and producing public, verifiable evidence of how a draw was conducted. Veristiq does not run competitions or select winners manually — it exists solely to provide proof.\n"
                 },
                 {
                     question: "Why do I need independent verification?",
-                    answer: "Trust is everything in the competition industry. Players and regulators are increasingly skeptical of draws run on operators' own servers—there's no way for outsiders to know if results were manipulated. Veristiq provides mathematical, third-party proof that your draws are fair, protecting your reputation, reducing disputes, and helping you meet compliance standards like the DCMS Voluntary Code."
+                    answer: "As prize competitions grow, expectations around transparency are increasing. Most operators currently rely on internal systems, screen recordings, or private logs to evidence fairness. While common, these methods are difficult for third parties to independently verify. Veristiq provides a neutral, mathematical record of what happened during a draw, helping operators demonstrate transparency, reduce disputes, and respond confidently to scrutiny."
                 },
                 {
                     question: "Is Veristiq a regulator?",
-                    answer: "No. We are a technology provider. We don't issue licenses, enforce rules, or have any regulatory authority. Instead, we provide the technical infrastructure that allows you to demonstrate compliance with fairness regulations. Think of us as your compliance evidence partner—we provide the proof, you maintain operational compliance."
+                    answer: "No. We are a technology provider. We don't issue licenses, enforce rules, or have any regulatory authority. Instead, we provide the technical infrastructure that allows you to demonstrate compliance with fairness regulations. We provide the technical evidence. You retain responsibility for operating your competitions lawfully."
                 },
                 {
                     question: "Who is Veristiq for?",
-                    answer: "Veristiq is designed for any operator running online prize competitions—from independent competition sites to agencies managing multiple brands. If you sell entries and select winners, and you want to prove your draws are fair, Veristiq is for you."
+                    answer: "Veristiq is designed for operators and platforms running online prize competitions who want independent, third-party evidence of draw integrity. It’s intended for established operators, agencies managing multiple brands, and platform providers integrating verification at an infrastructure level."
+                },
+                {
+                    question: "What Veristiq does not do?",
+                    answer: "Veristiq does not: sell tickets, manage competitions, set rules or pricing, fulfill prizes, provide legal or compliance advice. Our role is limited to independent verification and evidence."
                 }
             ]
         },
@@ -56,20 +60,16 @@ export default function FaqPage() {
             icon: <Rocket className="w-5 h-5" />,
             items: [
                 {
-                    question: "How do I sign up?",
-                    answer: "Visit the registration page and create an operator account. You'll provide basic details about your business, and you'll have immediate access to the dashboard to explore the system before integrating."
+                    question: "How do I get access to Veristiq?",
+                    answer: "Veristiq is currently available by invitation while we work with a small number of operators and platform partners. If you’d like to explore suitability or discuss integration, contact us to arrange access.\n"
                 },
                 {
                     question: "Do I need a developer to use Veristiq?",
                     answer: "Yes, for full integration. Veristiq is an API-first platform—your existing competition platform needs to send entry data to our system and trigger draws via API calls. This typically requires developer involvement. However, the dashboard itself is user-friendly for non-technical users to monitor competitions and access reports."
                 },
                 {
-                    question: "Is there a free trial?",
-                    answer: "Yes. You can create an account and explore the full dashboard without payment. This lets you understand the system, generate test API keys, and plan your integration before committing."
-                },
-                {
                     question: "How long does integration take?",
-                    answer: "You can register and access the dashboard immediately. Full integration with your platform typically takes 1-3 days of developer time, depending on your system's complexity. We provide comprehensive API documentation to speed up the process."
+                    answer: "Once access is granted, full integration with your platform typically takes 1–3 days of developer time, depending on your system’s complexity."
                 }
             ]
         },
@@ -96,6 +96,10 @@ export default function FaqPage() {
                 {
                     question: "Where can I find API documentation?",
                     answer: "Full API documentation is available on our docs page, including endpoint references, request/response examples, and integration guides. We also provide code snippets showing common integration patterns."
+                },
+                {
+                    question: "What happens if Veristiq is unavailable at draw time?",
+                    answer: "Veristiq is designed to be highly available, but operators retain full control over when a draw is executed. If our service is temporarily unavailable, the draw simply does not execute until connectivity is restored. No partial or silent draws can occur."
                 }
             ]
         },
@@ -164,6 +168,10 @@ export default function FaqPage() {
                     answer: "No. The system is designed so that even we cannot influence outcomes. Entries are cryptographically committed before the draw, and the random seed is derived from external sources at draw time. Once entries are synced, neither party can modify the entry pool or control the selection."
                 },
                 {
+                    question: "Who controls when a draw is executed?",
+                    answer: "Operators retain full control over when a draw is triggered. Veristiq does not initiate draws automatically or on its own. This ensures operational control remains with the operator while verification remains independent."
+                },
+                {
                     question: "What is the commit-reveal scheme?",
                     answer: "Before the draw, all entries are hashed and 'committed' to the ledger—like sealing an envelope. The random seed is also committed before it's used. When the draw executes, the 'reveal' shows how the committed entries and seed mathematically determined the winner. This proves no one could have known or influenced the outcome."
                 },
@@ -191,7 +199,7 @@ export default function FaqPage() {
                 },
                 {
                     question: "What if a player disputes a draw result?",
-                    answer: "Point them to the public audit page. The cryptographic proof shows exactly how the winner was selected from the entry pool. The mathematics is verifiable—there's no ambiguity about whether the draw was fair. This typically resolves disputes quickly."
+                    answer: "Point them to the public audit page. It shows how the winner was selected from the recorded entry pool and provides a clear, verifiable record of how the draw was conducted. This typically resolves disputes quickly"
                 },
                 {
                     question: "Should I link to audit pages from my website?",
@@ -235,11 +243,11 @@ export default function FaqPage() {
                 },
                 {
                     question: "What if a regulator requests an audit?",
-                    answer: "You can generate comprehensive compliance reports from your dashboard instantly. These include full audit trails, cryptographic proofs, entry statistics, and winner selection details for any competition. The reports are designed to satisfy regulatory inquiries without requiring technical explanation."
+                    answer: "Veristiq provides detailed audit data and verification records for each competition. These records can be shared directly with regulators or exported for reporting purposes. Formal, formatted compliance reports are planned but not currently automated."
                 },
                 {
                     question: "How do I handle player complaints?",
-                    answer: "Veristiq includes a complaints tracking system. Complaints can be logged via API (from your platform) or submitted by consumers through a public form. You track resolution status from your dashboard, creating an auditable record of how disputes were handled."
+                    answer: "Veristiq supports linking draw verification data to complaints or disputes raised on your platform, creating an auditable record of how issues were resolved."
                 }
             ]
         },
@@ -249,7 +257,7 @@ export default function FaqPage() {
             items: [
                 {
                     question: "What can I see in the dashboard?",
-                    answer: "The dashboard provides a complete overview: active competitions, entry counts, pending complaints, chain integrity status, recent draw results, and attention alerts for issues needing action. Each section has detailed views with filtering and export options."
+                    answer: "The dashboard provides a complete overview: active competitions, entry counts, linked disputes, chain integrity status, recent draw results, and attention alerts for issues needing action. Each section has detailed views with filtering and export options."
                 },
                 {
                     question: "How do I manage API keys?",

@@ -207,9 +207,9 @@ export default function HowItWorksPage() {
                 <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to verify your draws?</h2>
                 <p className="text-xl text-gray-300 mb-10">Get started with our API today.</p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                     <Link href="/operator/register">
+                     <Link href="/access">
                         <Button className="bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white px-8 py-6 text-lg h-auto shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
-                        Get Started
+                        Get Access
                         </Button>
                     </Link>
                     <Link href="/contact">

@@ -20,9 +20,9 @@ export function HeroSection() {
                       View Live Audit
                   </Button>
               </Link>
-            <Link href="/operator/register">
+            <Link href="/access">
                 <Button variant="outline" className="border-[var(--veristiq-slate)] text-[var(--veristiq-slate)] hover:bg-gray-50 px-8 py-6 text-lg h-auto rounded-md transition-all hover:-translate-y-0.5">
-                Get Started
+                Get Access
               </Button>
             </Link>
           </div>

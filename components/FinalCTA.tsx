@@ -20,9 +20,9 @@ export const FinalCTA = () => (
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link href="/operator/register">
+            <Link href="/access">
               <Button className="w-full sm:w-auto h-14 rounded-full bg-white text-brand-navy hover:bg-slate-200 text-base font-semibold px-8 shadow-lg shadow-white/10">
-                Become a Trusted Operator
+                Request Access
               </Button>
             </Link>
             <Link href="/contact">

@@ -28,9 +28,9 @@ export default function CompliancePage() {
                     The DCMS Voluntary Code sets expectations around transparency, fairness, and accountability in prize draws. Veristiq provides independent technical verification and audit evidence that operators can use to support those expectations.
                 </p>
 
-                <Link href="/operator/register">
+                <Link href="/access">
                     <Button className="bg-white text-[var(--veristiq-slate)] hover:bg-gray-100 font-bold px-8 py-6 text-lg h-auto shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl">
-                        Start Auditing Draws
+                        Get Access
                     </Button>
                 </Link>
             </div>
@@ -318,9 +318,9 @@ export default function CompliancePage() {
                 <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
                     The Voluntary Code sets a new expectation: operators must be able to demonstrate fairness with evidence. Veristiq makes each draw independently verifiable, with evidence available if required.
                 </p>
-                <Link href="/operator/register">
+                <Link href="/access">
                     <Button className="bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white px-8 py-6 text-lg h-auto shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 hover:scale-105">
-                        View verification examples
+                        Get Access
                     </Button>
                 </Link>
             </div>

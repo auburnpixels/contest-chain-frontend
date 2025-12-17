@@ -28,7 +28,7 @@ export default function ContactPage() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-6 max-w-4xl">
             
-            <div className="grid md:grid-cols-2 gap-12">
+            <div className="grid md:grid-cols-1 gap-12">
                 {/* Email Card */}
                 <div className="bg-gradient-to-br from-[var(--veristiq-snow)] to-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-left-8 duration-700 delay-100 fill-mode-both">
                     <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-[var(--veristiq-primary-blue)] mb-6">
@@ -50,20 +50,20 @@ export default function ContactPage() {
                 </div>
 
                 {/* Office Card */}
-                <div className="bg-gradient-to-br from-[var(--veristiq-snow)] to-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-right-8 duration-700 delay-200 fill-mode-both">
-                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-[var(--veristiq-primary-blue)] mb-6">
-                        <MapPin className="w-7 h-7" />
-                    </div>
-                    <h2 className="text-2xl font-bold mb-3 text-[var(--veristiq-slate)]">Office</h2>
-                    <p className="text-[var(--veristiq-slate-light)] mb-6">
-                        We&apos;re a UK-based company operating under UK law.
-                    </p>
-                    <address className="not-italic text-[var(--veristiq-slate)] leading-relaxed">
-                        14 Bonhill Street<br/>
-                        London EC2A 4BX<br/>
-                        United Kingdom
-                    </address>
-                </div>
+                {/*<div className="bg-gradient-to-br from-[var(--veristiq-snow)] to-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-right-8 duration-700 delay-200 fill-mode-both">*/}
+                {/*    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-[var(--veristiq-primary-blue)] mb-6">*/}
+                {/*        <MapPin className="w-7 h-7" />*/}
+                {/*    </div>*/}
+                {/*    <h2 className="text-2xl font-bold mb-3 text-[var(--veristiq-slate)]">Office</h2>*/}
+                {/*    <p className="text-[var(--veristiq-slate-light)] mb-6">*/}
+                {/*        We&apos;re a UK-based company operating under UK law.*/}
+                {/*    </p>*/}
+                {/*    <address className="not-italic text-[var(--veristiq-slate)] leading-relaxed">*/}
+                {/*        14 Bonhill Street<br/>*/}
+                {/*        London EC2A 4BX<br/>*/}
+                {/*        United Kingdom*/}
+                {/*    </address>*/}
+                {/*</div>*/}
             </div>
 
             {/* Additional CTA */}
@@ -71,9 +71,9 @@ export default function ContactPage() {
                 <p className="text-[var(--veristiq-slate-light)] mb-6">
                     Want to explore the platform first?
                 </p>
-                <Link href="/operator/register">
+                <Link href="/access">
                     <Button variant="outline" size="lg" className="border-gray-300 text-[var(--veristiq-slate)] hover:bg-gray-50 font-semibold px-8">
-                        Create a Free Account
+                        Get Access
                     </Button>
                 </Link>
             </div>

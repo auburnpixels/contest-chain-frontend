@@ -45,14 +45,14 @@ export function useOperatorAuth(
       console.log('[useOperatorAuth] No user found, redirecting to login...');
       
       // Try Next.js router first (preferred method)
-      router.push('/operator/login');
+      router.push('/access');
       
       // Fallback: If router.push doesn't work (SSR/hydration issues), use window.location
       // This ensures redirect always happens even if Next.js routing fails
       setTimeout(() => {
-        if (typeof window !== 'undefined' && window.location.pathname !== '/operator/login') {
+        if (typeof window !== 'undefined' && window.location.pathname !== '/access') {
           console.log('[useOperatorAuth] Router redirect failed, using window.location fallback');
-          window.location.href = '/operator/login';
+          window.location.href = '/access';
         }
       }, 100);
     }
@@ -60,7 +60,7 @@ export function useOperatorAuth(
 
   const handleLogout = async () => {
     await authLogout();
-    router.push('/operator/login');
+    router.push('/access');
   };
 
   // Determine if the auth state is ready for the page to render

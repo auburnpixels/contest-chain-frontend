@@ -53,9 +53,9 @@ export default function PricingPage() {
                                 <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                         </Link>
-                        <Link href="/operator/register">
+                        <Link href="/access">
                             <Button size="lg" variant="outline" className="border-gray-300 text-[var(--veristiq-slate)] hover:bg-gray-50 font-semibold px-8">
-                                Start Free Trial
+                                Get Access
                             </Button>
                         </Link>
                     </div>
@@ -146,9 +146,9 @@ export default function PricingPage() {
                     Create a free account to explore, or get in touch to discuss your needs.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link href="/operator/register">
+                    <Link href="/access">
                         <Button size="lg" className="bg-white text-[var(--veristiq-slate)] hover:bg-gray-100 font-semibold px-8 shadow-lg">
-                            Create Free Account
+                            Get Access
                         </Button>
                     </Link>
                     <Link href="/contact">

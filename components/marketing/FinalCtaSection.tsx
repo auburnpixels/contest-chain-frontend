@@ -12,9 +12,9 @@ export function FinalCtaSection() {
           Build trust with players. Demonstrate fairness. Stay ahead of regulation.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/operator/register">
+          <Link href="/access">
             <Button className="bg-[var(--veristiq-primary-blue)] hover:bg-[var(--veristiq-primary-blue-dark)] text-white px-8 py-6 text-lg h-auto w-full sm:w-auto">
-              Get Started
+              Get Access
             </Button>
           </Link>
           <Link href="/contact">

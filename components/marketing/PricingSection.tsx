@@ -110,8 +110,8 @@ export function PricingSection() {
                 }`}
                 asChild
               >
-                <Link href="/operator/register">
-                  Get Started
+                <Link href="/access">
+                  Get Access
                 </Link>
               </Button>
             </div>

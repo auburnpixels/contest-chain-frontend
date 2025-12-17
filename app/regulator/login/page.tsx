@@ -176,7 +176,7 @@ export default function RegulatorLoginPage() {
              <Button
               variant="outline"
               className="w-full"
-              onClick={() => router.push('/operator/login')}
+              onClick={() => router.push('/access')}
               type="button"
             >
               Sign in as Operator
