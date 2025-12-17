@@ -20,9 +20,9 @@ export default function PricingPage() {
                 <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-8 backdrop-blur-sm shadow-lg ring-1 ring-white/20">
                     <Shield className="w-8 h-8 text-[var(--veristiq-primary-blue)]" />
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6">Simple, predictable pricing</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6">Pricing that fits your operation</h1>
                 <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-                    No per-ticket fees. No per-draw charges. Just straightforward monthly pricing that works for operators of all sizes.
+                    We&apos;re not optimising pricing yet — we&apos;re focused on finding the right partners. Let&apos;s talk about what works for you.
                 </p>
             </div>
         </section>
@@ -120,19 +120,15 @@ export default function PricingPage() {
                 <div className="grid gap-6">
                     <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
                         <h3 className="font-bold text-lg mb-2">Do I need a credit card to sign up?</h3>
-                        <p className="text-gray-600">No. You can create an account and explore the dashboard without adding payment details. We&apos;ll discuss pricing when you&apos;re ready to go live.</p>
-                    </div>
-                    <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
-                        <h3 className="font-bold text-lg mb-2">Are there per-ticket or per-draw fees?</h3>
-                        <p className="text-gray-600">No. We believe in predictable pricing. You pay a monthly subscription—run as many competitions and draws as you need without worrying about variable costs.</p>
+                        <p className="text-gray-600">No. Request access to explore the dashboard without adding payment details. We&apos;ll discuss pricing when you&apos;re ready to go live.</p>
                     </div>
                     <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
                         <h3 className="font-bold text-lg mb-2">How does pricing work?</h3>
-                        <p className="text-gray-600">We offer flexible monthly pricing based on your operation&apos;s scale. Get in touch and we&apos;ll put together something that works for your situation.</p>
+                        <p className="text-gray-600">We&apos;re currently working with early partners to understand what pricing makes sense. Get in touch and we&apos;ll discuss what works for your situation.</p>
                     </div>
                     <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
                         <h3 className="font-bold text-lg mb-2">Can I try before I commit?</h3>
-                        <p className="text-gray-600">Yes. Create a free account to explore the dashboard, generate test API keys, and understand how the system works before making any commitment.</p>
+                        <p className="text-gray-600">Yes. Request access to explore the dashboard, generate test API keys, and understand how the system works before making any commitment.</p>
                     </div>
                 </div>
             </div>
@@ -143,7 +139,7 @@ export default function PricingPage() {
             <div className="container mx-auto px-6 max-w-3xl text-center">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to get started?</h2>
                 <p className="text-xl text-gray-300 mb-10">
-                    Create a free account to explore, or get in touch to discuss your needs.
+                    Request access to explore, or get in touch to discuss your needs.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link href="/access">

@@ -34,8 +34,6 @@ export function SiteFooter() {
             <ul className="space-y-3 text-sm text-[var(--veristiq-slate-light)]">
               <li><Link href="/about" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">About</Link></li>
               <li><Link href="/contact" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Contact</Link></li>
-              <li><Link href="/case-studies" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Case Studies</Link></li>
-              <li><Link href="/testimonials" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Testimonials</Link></li>
               <li><Link href="/security" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">Security</Link></li>
               <li><Link href="/faqs" className="hover:text-[var(--veristiq-primary-blue)] transition-colors">FAQs</Link></li>
             </ul>
