@@ -118,6 +118,38 @@ const jsonLd = {
   ],
 };
 
+// FAQ JSON-LD for rich results
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What is the DCMS Voluntary Code for Prize Draw Operators?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The DCMS Voluntary Code of Good Practice for Prize Draw Operators is a set of guidelines introduced by the Department for Culture, Media and Sport to strengthen player protections, increase transparency, and improve accountability in the UK prize draw sector. It applies to prize draws that offer both paid and free entry routes.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "When does the DCMS Voluntary Code come into effect?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Signatories agreed to fully implement the Code within six months of publication, and no later than 20 May 2026. Operators joining after that date are expected to comply immediately.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is the DCMS Voluntary Code legally binding?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No, the Code is voluntary and does not introduce new law or licensing requirements. However, it signals clear expectations from government and may influence how operators are perceived by regulators, media, and players. Non-compliance does not automatically breach law, but the Code does not replace existing legal obligations under consumer protection, advertising standards, or data protection law.",
+      },
+    },
+  ],
+};
+
 // Breadcrumb JSON-LD for navigation
 const breadcrumbJsonLd = {
   "@context": "https://schema.org",
@@ -164,6 +196,10 @@ export default function DCMSVoluntaryCodeArticle() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       {/* Article Header */}
@@ -698,6 +734,80 @@ export default function DCMSVoluntaryCodeArticle() {
                 </a>
               </div>
             </div>
+          </div>
+
+          {/* Divider */}
+          <hr className="border-gray-200 my-12" />
+
+          {/* FAQ Section */}
+          <h2 className="text-2xl font-bold text-[var(--veristiq-slate)] mb-8">
+            Common Questions About the DCMS Voluntary Code
+          </h2>
+
+          <div className="space-y-6 mb-12">
+            <div className="bg-[var(--veristiq-snow)] rounded-xl border border-gray-200 p-6">
+              <h3 className="font-bold text-lg text-[var(--veristiq-slate)] mb-3">
+                What is the DCMS Voluntary Code for Prize Draw Operators?
+              </h3>
+              <p className="text-[var(--veristiq-slate-light)]">
+                The DCMS Voluntary Code of Good Practice for Prize Draw Operators
+                is a set of guidelines introduced by the Department for Culture,
+                Media and Sport to strengthen player protections, increase
+                transparency, and improve accountability in the UK prize draw
+                sector. It applies to prize draws that offer both paid and free
+                entry routes.
+              </p>
+            </div>
+
+            <div className="bg-[var(--veristiq-snow)] rounded-xl border border-gray-200 p-6">
+              <h3 className="font-bold text-lg text-[var(--veristiq-slate)] mb-3">
+                When does the DCMS Voluntary Code come into effect?
+              </h3>
+              <p className="text-[var(--veristiq-slate-light)]">
+                Signatories agreed to fully implement the Code within six months
+                of publication, and no later than 20 May 2026. Operators joining
+                after that date are expected to comply immediately.
+              </p>
+            </div>
+
+            <div className="bg-[var(--veristiq-snow)] rounded-xl border border-gray-200 p-6">
+              <h3 className="font-bold text-lg text-[var(--veristiq-slate)] mb-3">
+                Is the DCMS Voluntary Code legally binding?
+              </h3>
+              <p className="text-[var(--veristiq-slate-light)]">
+                No, the Code is voluntary and does not introduce new law or
+                licensing requirements. However, it signals clear expectations
+                from government and may influence how operators are perceived by
+                regulators, media, and players.
+              </p>
+            </div>
+          </div>
+
+          {/* Related Articles */}
+          <div className="p-6 bg-[var(--veristiq-snow)] rounded-xl border border-gray-200 mb-8">
+            <h3 className="font-semibold text-[var(--veristiq-slate)] mb-4">
+              Related articles
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/blog/evidence-of-fairness-prize-draws"
+                  className="text-[var(--veristiq-primary-blue)] hover:underline"
+                >
+                  What &quot;Evidence of Fairness&quot; Means in Practice for
+                  Prize Draws →
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog/screen-recordings-prize-draw-evidence"
+                  className="text-[var(--veristiq-primary-blue)] hover:underline"
+                >
+                  Why Screen Recordings Became the Default Evidence for Prize
+                  Draws →
+                </Link>
+              </li>
+            </ul>
           </div>
 
           {/* Disclaimer */}

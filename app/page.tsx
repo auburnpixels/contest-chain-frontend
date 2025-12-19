@@ -20,6 +20,7 @@ import { ProductScreenshotSection } from "@/components/marketing/ProductScreensh
 import { FeaturesChecklistSection } from "@/components/marketing/FeaturesChecklistSection";
 import { ComplianceSection } from "@/components/marketing/ComplianceSection";
 import { PricingPreviewSection } from "@/components/marketing/PricingPreviewSection";
+import { BlogPreviewSection } from "@/components/marketing/BlogPreviewSection";
 import { FinalCtaSection } from "@/components/marketing/FinalCtaSection";
 
 export default function Home() {
@@ -35,6 +36,7 @@ export default function Home() {
         <ProductScreenshotSection />
         <ComplianceSection />
         <PricingPreviewSection />
+        <BlogPreviewSection />
         <FinalCtaSection />
       </main>
       <SiteFooter />

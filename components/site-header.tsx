@@ -70,6 +70,17 @@ export function SiteHeader() {
             >
               Docs
             </Link>
+            <Link 
+              href="/blog" 
+              className={cn(
+                "text-sm font-medium transition-colors",
+                pathname.startsWith("/blog")
+                  ? "text-[var(--veristiq-primary-blue)]" 
+                  : "text-[var(--veristiq-slate-light)] hover:text-[var(--veristiq-primary-blue)]"
+              )}
+            >
+              Blog
+            </Link>
           </nav>
         </div>
 
@@ -142,6 +153,16 @@ export function SiteHeader() {
                         )}
                     >
                         Docs
+                    </Link>
+                    <Link 
+                        href="/blog" 
+                        onClick={() => setIsOpen(false)} 
+                        className={cn(
+                            "block text-lg font-medium transition-colors",
+                            pathname.startsWith("/blog") ? "text-[var(--veristiq-primary-blue)]" : "text-[var(--veristiq-slate)] hover:text-[var(--veristiq-primary-blue)]"
+                        )}
+                    >
+                        Blog
                     </Link>
                  </div>
                  <div className="pt-6 border-t border-gray-100 space-y-4">
