@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     description:
       "The difference between running a fair draw and proving it. What players and regulators expect, and what 'verifiably random and auditable' actually requires.",
     type: "article",
-    url: "https://veristiq.io/blog/evidence-of-fairness-prize-draws",
+    url: "https://veristiq.com/blog/evidence-of-fairness-prize-draws",
     siteName: "Veristiq",
     publishedTime: article.publishedAt,
     modifiedTime: article.updatedAt || article.publishedAt,
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
       "The difference between running a fair draw and proving it.",
   },
   alternates: {
-    canonical: "https://veristiq.io/blog/evidence-of-fairness-prize-draws",
+    canonical: "https://veristiq.com/blog/evidence-of-fairness-prize-draws",
   },
   robots: {
     index: true,
@@ -78,22 +78,22 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "Veristiq",
-    url: "https://veristiq.io",
+    url: "https://veristiq.com",
   },
   publisher: {
     "@type": "Organization",
     name: "Veristiq",
-    url: "https://veristiq.io",
+    url: "https://veristiq.com",
     logo: {
       "@type": "ImageObject",
-      url: "https://veristiq.io/logo.png",
+      url: "https://veristiq.com/logo.png",
     },
   },
   datePublished: article.publishedAt,
   dateModified: article.updatedAt || article.publishedAt,
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://veristiq.io/blog/evidence-of-fairness-prize-draws",
+    "@id": "https://veristiq.com/blog/evidence-of-fairness-prize-draws",
   },
   articleSection: "Compliance",
   wordCount: 1800,
@@ -151,19 +151,19 @@ const breadcrumbJsonLd = {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://veristiq.io",
+      item: "https://veristiq.com",
     },
     {
       "@type": "ListItem",
       position: 2,
       name: "Blog",
-      item: "https://veristiq.io/blog",
+      item: "https://veristiq.com/blog",
     },
     {
       "@type": "ListItem",
       position: 3,
       name: "Evidence of Fairness",
-      item: "https://veristiq.io/blog/evidence-of-fairness-prize-draws",
+      item: "https://veristiq.com/blog/evidence-of-fairness-prize-draws",
     },
   ],
 };

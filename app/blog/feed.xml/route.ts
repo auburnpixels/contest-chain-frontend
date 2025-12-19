@@ -1,7 +1,7 @@
 import { articles } from "@/lib/blog/articles";
 
 export async function GET() {
-  const baseUrl = "https://veristiq.io";
+  const baseUrl = "https://veristiq.com";
 
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
@@ -27,7 +27,7 @@ export async function GET() {
       <description><![CDATA[${article.description}]]></description>
       <pubDate>${new Date(article.publishedAt).toUTCString()}</pubDate>
       <category>${article.category}</category>
-      <author>team@veristiq.io (${article.author})</author>
+      <author>team@veristiq.com (${article.author})</author>
     </item>`
       )
       .join("")}

@@ -305,7 +305,7 @@ export default function DocsPage() {
 {'\n'}
 {'\n'}<span className="text-gray-500">// Step 4: Get audit URL</span>
 {'\n'}<span className="text-gray-300">console.</span><span className="text-blue-400">log</span><span className="text-gray-400">(</span><span className="text-gray-300">result.audit_url</span><span className="text-gray-400">);</span>
-{'\n'}<span className="text-gray-500">// → https://veristiq.io/audit/8f92...</span>
+{'\n'}<span className="text-gray-500">// → https://veristiq.com/audit/8f92...</span>
 </pre>
                         </div>
                     </div>

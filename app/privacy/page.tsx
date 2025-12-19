@@ -98,7 +98,7 @@ export default function PrivacyPage() {
                             Contact Us
                         </h2>
                         <p>
-                           If you have any questions about this privacy policy, please contact us at <a href="mailto:privacy@veristiq.io" className="text-[var(--veristiq-primary-blue)] hover:text-blue-700 transition-colors font-medium">privacy@veristiq.io</a>.
+                           If you have any questions about this privacy policy, please contact us at <a href="mailto:privacy@veristiq.com" className="text-[var(--veristiq-primary-blue)] hover:text-blue-700 transition-colors font-medium">privacy@veristiq.com</a>.
                         </p>
                     </section>
                  </div>

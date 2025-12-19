@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/operator/', '/regulator/', '/api/'],
     },
-    sitemap: 'https://veristiq.io/sitemap.xml',
+    sitemap: 'https://veristiq.com/sitemap.xml',
   };
 }
 

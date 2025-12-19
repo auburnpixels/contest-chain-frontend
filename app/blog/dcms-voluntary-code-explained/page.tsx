@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     description:
       "A plain-language guide to the DCMS Voluntary Code for Prize Draw Operators, covering scope, transparency requirements, and the May 2026 deadline.",
     type: "article",
-    url: "https://veristiq.io/blog/dcms-voluntary-code-explained",
+    url: "https://veristiq.com/blog/dcms-voluntary-code-explained",
     siteName: "Veristiq",
     publishedTime: article.publishedAt,
     modifiedTime: article.updatedAt || article.publishedAt,
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
       "A plain-language guide covering scope, transparency requirements, and the May 2026 compliance deadline.",
   },
   alternates: {
-    canonical: "https://veristiq.io/blog/dcms-voluntary-code-explained",
+    canonical: "https://veristiq.com/blog/dcms-voluntary-code-explained",
   },
   robots: {
     index: true,
@@ -75,22 +75,22 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "Veristiq",
-    url: "https://veristiq.io",
+    url: "https://veristiq.com",
   },
   publisher: {
     "@type": "Organization",
     name: "Veristiq",
-    url: "https://veristiq.io",
+    url: "https://veristiq.com",
     logo: {
       "@type": "ImageObject",
-      url: "https://veristiq.io/logo.png",
+      url: "https://veristiq.com/logo.png",
     },
   },
   datePublished: article.publishedAt,
   dateModified: article.updatedAt || article.publishedAt,
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://veristiq.io/blog/dcms-voluntary-code-explained",
+    "@id": "https://veristiq.com/blog/dcms-voluntary-code-explained",
   },
   articleSection: "Compliance",
   wordCount: 2200,
@@ -159,19 +159,19 @@ const breadcrumbJsonLd = {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://veristiq.io",
+      item: "https://veristiq.com",
     },
     {
       "@type": "ListItem",
       position: 2,
       name: "Blog",
-      item: "https://veristiq.io/blog",
+      item: "https://veristiq.com/blog",
     },
     {
       "@type": "ListItem",
       position: 3,
       name: "Understanding the DCMS Voluntary Code",
-      item: "https://veristiq.io/blog/dcms-voluntary-code-explained",
+      item: "https://veristiq.com/blog/dcms-voluntary-code-explained",
     },
   ],
 };

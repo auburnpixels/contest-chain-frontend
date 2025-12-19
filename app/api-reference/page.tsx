@@ -178,7 +178,7 @@ export default function ApiReferencePage() {
                   </div>
                   <div>
                     <p className="text-[var(--veristiq-slate-light)] uppercase text-[10px] font-semibold tracking-wider mb-1">Base URL</p>
-                    <code className="text-[var(--veristiq-slate)] font-mono text-sm">https://api.veristiq.io</code>
+                    <code className="text-[var(--veristiq-slate)] font-mono text-sm">https://api.veristiq.com</code>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -222,7 +222,7 @@ Content-Type: application/json`} />
                    <div className="pt-4 border-t border-gray-100">
                       <p className="text-sm text-[var(--veristiq-slate)] mb-3 font-semibold">Quick Start</p>
                       <p className="text-sm text-[var(--veristiq-slate-light)] mb-4">Make your first API call to check your compliance status:</p>
-                      <CodeBlock code={`curl -X GET "https://api.veristiq.io/api/v1/operator/compliance" \\
+                      <CodeBlock code={`curl -X GET "https://api.veristiq.com/api/v1/operator/compliance" \\
   -H "Authorization: Bearer caas_live_your_api_key" \\
   -H "Content-Type: application/json"`} />
                    </div>
@@ -686,7 +686,7 @@ Content-Type: application/json`} />
       }
     }
   ],
-  "audit_url": "https://veristiq.io/audit/956774e8..."
+  "audit_url": "https://veristiq.com/audit/956774e8..."
 }`} />
                         </TabsContent>
                     </Tabs>
@@ -850,7 +850,7 @@ function Endpoint({ method, path, title, description, successCode = 200, childre
    const [copied, setCopied] = useState(false);
 
    const copyPath = () => {
-     navigator.clipboard.writeText(`https://api.veristiq.io${path}`);
+     navigator.clipboard.writeText(`https://api.veristiq.com${path}`);
      setCopied(true);
      setTimeout(() => setCopied(false), 2000);
    };

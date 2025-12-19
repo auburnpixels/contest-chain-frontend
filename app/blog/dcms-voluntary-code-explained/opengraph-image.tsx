@@ -170,7 +170,7 @@ export default async function Image() {
                 fontSize: "18px",
               }}
             >
-              veristiq.io/blog
+              veristiq.com/blog
             </span>
           </div>
         </div>

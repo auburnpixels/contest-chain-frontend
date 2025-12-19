@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     description:
       "How screen recordings became the standard for demonstrating prize draw fairness, and when they may not be enough.",
     type: "article",
-    url: "https://veristiq.io/blog/screen-recordings-prize-draw-evidence",
+    url: "https://veristiq.com/blog/screen-recordings-prize-draw-evidence",
     siteName: "Veristiq",
     publishedTime: article.publishedAt,
     modifiedTime: article.updatedAt || article.publishedAt,
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
       "How screen recordings became the standard, and when they may not be enough.",
   },
   alternates: {
-    canonical: "https://veristiq.io/blog/screen-recordings-prize-draw-evidence",
+    canonical: "https://veristiq.com/blog/screen-recordings-prize-draw-evidence",
   },
   robots: {
     index: true,
@@ -75,22 +75,22 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "Veristiq",
-    url: "https://veristiq.io",
+    url: "https://veristiq.com",
   },
   publisher: {
     "@type": "Organization",
     name: "Veristiq",
-    url: "https://veristiq.io",
+    url: "https://veristiq.com",
     logo: {
       "@type": "ImageObject",
-      url: "https://veristiq.io/logo.png",
+      url: "https://veristiq.com/logo.png",
     },
   },
   datePublished: article.publishedAt,
   dateModified: article.updatedAt || article.publishedAt,
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://veristiq.io/blog/screen-recordings-prize-draw-evidence",
+    "@id": "https://veristiq.com/blog/screen-recordings-prize-draw-evidence",
   },
   articleSection: "Industry",
   wordCount: 1500,
@@ -115,19 +115,19 @@ const breadcrumbJsonLd = {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://veristiq.io",
+      item: "https://veristiq.com",
     },
     {
       "@type": "ListItem",
       position: 2,
       name: "Blog",
-      item: "https://veristiq.io/blog",
+      item: "https://veristiq.com/blog",
     },
     {
       "@type": "ListItem",
       position: 3,
       name: "Screen Recordings as Evidence",
-      item: "https://veristiq.io/blog/screen-recordings-prize-draw-evidence",
+      item: "https://veristiq.com/blog/screen-recordings-prize-draw-evidence",
     },
   ],
 };

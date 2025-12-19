@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description:
       "Expert insights on prize draw compliance, DCMS regulations, and industry best practices for UK operators.",
     type: "website",
-    url: "https://veristiq.io/blog",
+    url: "https://veristiq.com/blog",
     siteName: "Veristiq",
   },
   twitter: {
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
       "Expert insights on prize draw compliance, DCMS regulations, and industry best practices.",
   },
   alternates: {
-    canonical: "https://veristiq.io/blog",
+    canonical: "https://veristiq.com/blog",
     types: {
-      "application/rss+xml": "https://veristiq.io/blog/feed.xml",
+      "application/rss+xml": "https://veristiq.com/blog/feed.xml",
     },
   },
   robots: {
@@ -57,13 +57,13 @@ const breadcrumbJsonLd = {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://veristiq.io",
+      item: "https://veristiq.com",
     },
     {
       "@type": "ListItem",
       position: 2,
       name: "Blog",
-      item: "https://veristiq.io/blog",
+      item: "https://veristiq.com/blog",
     },
   ],
 };
@@ -75,21 +75,21 @@ const jsonLd = {
   name: "Veristiq Blog",
   description:
     "Expert insights on prize draw compliance, DCMS regulations, transparency requirements, and industry best practices for UK competition operators.",
-  url: "https://veristiq.io/blog",
+  url: "https://veristiq.com/blog",
   publisher: {
     "@type": "Organization",
     name: "Veristiq",
-    url: "https://veristiq.io",
+    url: "https://veristiq.com",
     logo: {
       "@type": "ImageObject",
-      url: "https://veristiq.io/logo.png",
+      url: "https://veristiq.com/logo.png",
     },
   },
   blogPost: articles.map((article) => ({
     "@type": "BlogPosting",
     headline: article.title,
     description: article.description,
-    url: `https://veristiq.io/blog/${article.slug}`,
+    url: `https://veristiq.com/blog/${article.slug}`,
     datePublished: article.publishedAt,
     dateModified: article.updatedAt || article.publishedAt,
     author: {
