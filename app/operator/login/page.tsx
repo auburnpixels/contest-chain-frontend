@@ -132,8 +132,8 @@ export default function OperatorLoginPage() {
           <CardFooter className="flex flex-col gap-4 border-t border-gray-100 bg-gray-50/50 pt-6">
             <div className="text-center text-sm text-gray-500">
               Don&apos;t have an account?{' '}
-              <Link href="/access" className="font-semibold text-[var(--veristiq-primary-blue)] hover:underline transition-all">
-                Request access
+              <Link href="/operator/register?demo=true" className="font-semibold text-[var(--veristiq-primary-blue)] hover:underline transition-all">
+                Create an account
               </Link>
             </div>
           </CardFooter>
