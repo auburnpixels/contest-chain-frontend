@@ -4,12 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { 
-  LayoutDashboard, 
-  Shield, 
-  User,
-  LogOut
-} from 'lucide-react';
+import { LogOut, MoreVertical } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   items: {
@@ -26,7 +22,7 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
   const pathname = usePathname();
 
   return (
-    <div className={cn("pb-12 min-h-screen flex flex-col bg-card border-r", className)}>
+    <div className={cn("min-h-screen flex flex-col bg-card border-r", className)}>
       <div className="">
         <div className="">
           <div className="flex items-center p-4 h-12 border-b">
@@ -56,20 +52,27 @@ export function DashboardSidebar({ className, items, userRole, userName, onLogou
         </div>
       </div>
       
-      <div className="mt-auto p-4 border-t">
-         <div className="flex items-center gap-3 mb-4 px-2">
-            <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-medium truncate">{userName || 'User'}</span>
-            </div>
-         </div>
-         <Button 
-            variant="ghost" 
-            className="w-full justify-start gap-3 "
-            onClick={onLogout}
-        >
-            <LogOut className="h-4 w-4" />
-            Log out
-         </Button>
+      <div className="mt-auto border-t">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-3 w-full p-4 hover:bg-accent transition-colors text-left">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
+                {userName ? userName.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{userName || 'User'}</p>
+                <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
+              </div>
+              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end" side="top">
+            <DropdownMenuItem onSelect={onLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

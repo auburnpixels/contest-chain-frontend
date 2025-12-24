@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -15,7 +15,8 @@ import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { getComplaintStatusBadge, formatComplaintCategory, type Complaint } from '@/lib/complaint-status';
 import { dateFormatters } from "@/lib/date-utils";
 import { Separator } from "@/components/ui/separator";
-import { SearchableSelect, SearchableSelectOption } from '@/components/ui/searchable-select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
+import { useCompetitions } from '@/hooks/useCompetitions';
 
 export interface ComplaintsWidgetProps {
   title?: string;                 // Section title (default: "Complaints")
@@ -40,9 +41,10 @@ export function ComplaintsWidget({
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
-  const [competitions, setCompetitions] = useState<SearchableSelectOption[]>([]);
-  const [competitionsLoading, setCompetitionsLoading] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
+  
+  // Shared competitions state from hook
+  const { competitions, loading: competitionsLoading, loadCompetitions } = useCompetitions();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialized, setInitialized] = useState(!syncUrlParams);
 
@@ -81,12 +83,7 @@ export function ComplaintsWidget({
     }
   }, [syncUrlParams, searchParams, initialPageSize]);
 
-  // Load competitions for filter
-  useEffect(() => {
-    if (initialized) {
-      loadCompetitions();
-    }
-  }, [initialized]);
+  // Competitions are auto-loaded by useCompetitions hook
 
   // Load complaints when initialized or filters change
   useEffect(() => {
@@ -118,27 +115,6 @@ export function ComplaintsWidget({
 
     router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
-
-  const loadCompetitions = useCallback(async (search: string = '') => {
-    try {
-      setCompetitionsLoading(true);
-      const competitionsData = await operatorApi.getCompetitions({ 
-        per_page: 50,
-        name: search || undefined,
-      });
-      const options: SearchableSelectOption[] = (competitionsData.data || [])
-        .filter((c: any) => c.uuid || c.id)
-        .map((c: any) => ({
-          value: c.uuid || c.id,
-          label: c.name,
-        }));
-      setCompetitions(options);
-    } catch (error) {
-      console.error('Failed to load competitions:', error);
-    } finally {
-      setCompetitionsLoading(false);
-    }
-  }, []);
 
   const loadComplaints = async () => {
     setLoading(true);
@@ -286,7 +262,7 @@ export function ComplaintsWidget({
                     <TableRow>
                       <TableHead>ID</TableHead>
                       <TableHead>Competition</TableHead>
-                      <TableHead>Reporter</TableHead>
+                      <TableHead>User Ref</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
@@ -301,7 +277,7 @@ export function ComplaintsWidget({
                         </TableCell>
                         <TableCell>{complaint.competition}</TableCell>
                         <TableCell>
-                          {complaint.name} ({complaint.email})
+                          {complaint.user_reference || 'N/A'}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">
@@ -378,7 +354,7 @@ export function ComplaintsWidget({
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">User reference</h3>
-                  {selectedComplaint.name} ({selectedComplaint.email})
+                  {selectedComplaint.user_reference || 'N/A'}
                 </div>
 
                 <div className="flex flex-col gap-1 items-start">

@@ -97,9 +97,8 @@ export default function ComplaintsPage() {
           id: 1,
           competition: 'TWGSB PTA Christmas Cash Raffle',
           competition_uuid: '81c57f36-e1a',
-          reporter: 'john.doe@example.com',
-          reporter_name: 'John Doe',
-          category: 'Draw Fairness',
+          user_reference: 'user-12345',
+          category: 'draw_fairness',
           status: 'pending',
           description: 'Concern about the transparency of the draw process.',
           created_at: new Date('2024-01-15').toISOString(),
@@ -108,9 +107,8 @@ export default function ComplaintsPage() {
           id: 2,
           competition: 'Demo A – Fair Tech Bundle',
           competition_uuid: '1979122a-8ff',
-          reporter: 'jane.smith@example.com',
-          reporter_name: 'Jane Smith',
-          category: 'Entry Issue',
+          user_reference: 'user-67890',
+          category: 'entry_issue',
           status: 'resolved',
           description: 'Unable to submit free postal entry.',
           created_at: new Date('2024-01-10').toISOString(),
@@ -286,7 +284,7 @@ export default function ComplaintsPage() {
                     <TableRow className="hover:bg-slate-900/50 border-slate-800">
                       <TableHead>ID</TableHead>
                       <TableHead>Competition</TableHead>
-                      <TableHead>Reporter</TableHead>
+                      <TableHead>User Ref</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
@@ -308,9 +306,8 @@ export default function ComplaintsPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div>
-                            <div className="font-medium text-foreground">{complaint.reporter_name}</div>
-                            <div className="text-xs text-muted-foreground">{complaint.reporter}</div>
+                          <div className="font-medium text-foreground">
+                            {complaint.user_reference || 'N/A'}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -392,9 +389,8 @@ export default function ComplaintsPage() {
               </div>
 
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Reporter:</p>
-                <p className="text-sm font-semibold">{selectedComplaint.reporter_name}</p>
-                <p className="text-xs text-muted-foreground">{selectedComplaint.reporter}</p>
+                <p className="text-sm font-medium text-muted-foreground mb-1">User Reference:</p>
+                <p className="text-sm font-semibold">{selectedComplaint.user_reference || 'N/A'}</p>
               </div>
 
               <div>

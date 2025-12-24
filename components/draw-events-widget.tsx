@@ -18,7 +18,8 @@ import { OperatorActionsMenu } from '@/components/operator-actions-menu';
 import { IndicatorBadge } from '@/components/ui/indicator-badge';
 import { handleApiError } from '@/lib/error-handler';
 import { dateFormatters } from '@/lib/date-utils';
-import { SearchableSelect, SearchableSelectOption } from '@/components/ui/searchable-select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
+import { useCompetitions } from '@/hooks/useCompetitions';
 
 export interface DrawEventsWidgetProps {
   title?: string;
@@ -98,9 +99,10 @@ export function DrawEventsWidget({
     actor_types: ['operator', 'system'],
   });
 
-  // Searchable competitions state
-  const [competitions, setCompetitions] = useState<SearchableSelectOption[]>([]);
-  const [competitionsLoading, setCompetitionsLoading] = useState(false);
+  // Shared competitions state from hook
+  const { competitions, loading: competitionsLoading, loadCompetitions } = useCompetitions({
+    onError: onLogout ? (error) => handleApiError(error, onLogout) : undefined,
+  });
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -168,39 +170,13 @@ export function DrawEventsWidget({
     try {
       const filtersData = await operatorApi.getDrawEventsFilters();
       setFilterOptions(filtersData);
-      // Initialize competitions from filter options
-      const options: SearchableSelectOption[] = (filtersData.competitions || []).map((c: any) => ({
-        value: c.id,
-        label: c.name,
-      }));
-      setCompetitions(options);
+      // Competitions are now loaded via useCompetitions hook
     } catch (error) {
       if (onLogout) {
         handleApiError(error, onLogout);
       }
     }
   };
-
-  const loadCompetitions = useCallback(async (search: string = '') => {
-    try {
-      setCompetitionsLoading(true);
-      const competitionsData = await operatorApi.getCompetitions({
-        per_page: 50,
-        name: search || undefined,
-      });
-      const options: SearchableSelectOption[] = (competitionsData.data || []).map((c: any) => ({
-        value: c.uuid || c.id,
-        label: c.name,
-      }));
-      setCompetitions(options);
-    } catch (error) {
-      if (onLogout) {
-        handleApiError(error, onLogout);
-      }
-    } finally {
-      setCompetitionsLoading(false);
-    }
-  }, [onLogout]);
 
   const loadEvents = async () => {
     try {

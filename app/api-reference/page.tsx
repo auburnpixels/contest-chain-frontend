@@ -791,16 +791,18 @@ Content-Type: application/json`} />
                         <TabsContent value="body">
                             <Table>
                                 <Row name="competition_external_id" type="string" required description="External ID of the related competition." />
-                                <Row name="category" type="string" required description="One of: draw_fairness, prize_delivery, technical, other" />
+                                <Row name="user_reference" type="string" description="Your internal user/customer ID for the complainant." />
+                                <Row name="category" type="string" required description="One of: draw_fairness, entry_issue, prize_issue, payment_issue, other" />
                                 <Row name="description" type="string" required description="Details of the complaint." />
                             </Table>
                         </TabsContent>
                         <TabsContent value="response">
                             <CodeBlock code={`{
   "id": "c1d2e3f4-5678-90ab-cdef-1234567890ab",
-  "status": "pending",
+  "competition_external_id": "comp-12345",
+  "user_reference": "user-67890",
   "category": "draw_fairness",
-  "message": "User reported suspected issue with draw...",
+  "status": "pending",
   "created_at": "2025-11-20T12:00:00.000000Z"
 }`} />
                         </TabsContent>

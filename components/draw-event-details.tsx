@@ -21,6 +21,7 @@ export interface DrawEvent {
   ip_address?: string | null;
   created_at: string;
   event_payload?: Record<string, unknown>;
+    is_chained: boolean;
 }
 
 interface DrawEventDetailsProps {
@@ -90,7 +91,7 @@ export function DrawEventDetails({ event }: DrawEventDetailsProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1 items-start">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">Competition</h3>
-          <p className="text-sm font-medium">{event.competition_title || 'N/A'}</p>
+          <p className="text-sm">{event.competition_title || 'N/A'}</p>
         </div>
 
         <div className="flex flex-col gap-1 items-start">
@@ -105,15 +106,18 @@ export function DrawEventDetails({ event }: DrawEventDetailsProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1 items-start">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">Actor</h3>
-          <p className="text-sm">
-            {event.actor_type || 'system'}
-            {event.actor_id && ` (ID: ${event.actor_id})`}
-          </p>
+        <Badge variant="outline">
+            {String((event.actor_type || 'system')).charAt(0).toUpperCase() + String((event.actor_type || 'system')).slice(1)}
+        </Badge>
         </div>
 
         <div className="flex flex-col gap-1 items-start">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">Integrity Status</h3>
-          <IndicatorBadge color="green" text="Valid" size="xs" />
+            <IndicatorBadge
+                color={event.is_chained ? 'green' : 'yellow'}
+                text={event.is_chained ? 'Valid' : 'Pending'}
+                size="xs"
+            />
         </div>
       </div>
 

@@ -57,9 +57,16 @@ export function SearchableSelect({
   const [open, setOpen] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
   const debouncedSearch = useDebouncedValue(searchValue, 300);
+  
+  // Track initial mount to prevent onSearch call on mount
+  const isInitialMount = React.useRef(true);
 
-  // Call onSearch when debounced value changes
+  // Call onSearch when debounced value changes (but not on initial mount)
   React.useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     onSearch(debouncedSearch);
   }, [debouncedSearch, onSearch]);
 

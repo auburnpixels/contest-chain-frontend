@@ -7,12 +7,12 @@ export interface Complaint {
   id: string;
   competition?: string;
   competition_id?: string;
-  name?: string;
-  email?: string;
+  user_reference?: string;
   category?: string;
-  message?: string;
   status: string;
   created_at: string;
+  updated_at?: string;
+  message?: string;
   admin_notes?: string;
 }
 

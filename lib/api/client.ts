@@ -181,6 +181,10 @@ class ApiClient {
   private token: string | null = null;
   private isRefreshing: boolean = false;
   private refreshPromise: Promise<string> | null = null;
+  
+  // In-flight request cache for deduplication
+  // Prevents duplicate simultaneous requests to the same endpoint
+  private inflightRequests = new Map<string, Promise<unknown>>();
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
@@ -368,10 +372,29 @@ class ApiClient {
   }
 
   /**
-   * GET request
+   * GET request with in-flight request deduplication
+   * If the same GET request is already in progress, returns the existing promise
    */
   async get<T>(endpoint: string): Promise<T> {
-    return this.fetchWithAuth<T>(endpoint, { method: 'GET' });
+    const cacheKey = `GET:${endpoint}`;
+    
+    // Return existing in-flight request if one exists
+    const inflight = this.inflightRequests.get(cacheKey);
+    if (inflight) {
+      return inflight as Promise<T>;
+    }
+    
+    // Create new request and cache it
+    const requestPromise = this.fetchWithAuth<T>(endpoint, { method: 'GET' });
+    this.inflightRequests.set(cacheKey, requestPromise);
+    
+    try {
+      const result = await requestPromise;
+      return result;
+    } finally {
+      // Remove from cache once complete (success or failure)
+      this.inflightRequests.delete(cacheKey);
+    }
   }
 
   /**

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,8 @@ import { EntriesTable, OperatorEntry } from '@/components/operator/entries-table
 import { PaginationControls } from '@/components/pagination-controls';
 import { handleApiError } from '@/lib/error-handler';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { SearchableSelect, SearchableSelectOption } from '@/components/ui/searchable-select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
+import { useCompetitions } from '@/hooks/useCompetitions';
 
 export interface EntriesWidgetProps {
   title?: string;                 // Section title (default: "All entries")
@@ -39,9 +40,13 @@ export function EntriesWidget({
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState<OperatorEntry[]>([]);
-  const [competitions, setCompetitions] = useState<SearchableSelectOption[]>([]);
-  const [competitionsLoading, setCompetitionsLoading] = useState(false);
   const [initialized, setInitialized] = useState(!syncUrlParams);
+  
+  // Shared competitions state from hook
+  const { competitions, loading: competitionsLoading, loadCompetitions } = useCompetitions({
+    autoLoad: !competitionId, // Don't auto-load if we have a fixed competitionId
+    onError: onLogout ? (error) => handleApiError(error, onLogout) : undefined,
+  });
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -88,12 +93,7 @@ export function EntriesWidget({
     }
   }, [syncUrlParams, searchParams, initialPageSize, competitionId]);
 
-  // Load competitions for filter dropdown
-  useEffect(() => {
-    if (initialized && !competitionId) {
-      loadCompetitions();
-    }
-  }, [initialized, competitionId]);
+  // Competitions are auto-loaded by useCompetitions hook (if no competitionId prop)
 
   // Load entries when initialized or filters change (using debounced values for text inputs)
   useEffect(() => {
@@ -122,27 +122,6 @@ export function EntriesWidget({
     const queryString = params.toString();
     router.push(`${window.location.pathname}${queryString ? `?${queryString}` : ''}`, { scroll: false });
   };
-
-  const loadCompetitions = useCallback(async (search: string = '') => {
-    try {
-      setCompetitionsLoading(true);
-      const competitionsData = await operatorApi.getCompetitions({
-        per_page: 50,
-        name: search || undefined,
-      });
-      const options: SearchableSelectOption[] = (competitionsData.data || []).map((c: any) => ({
-        value: c.id,
-        label: c.name,
-      }));
-      setCompetitions(options);
-    } catch (error) {
-      if (onLogout) {
-        handleApiError(error, onLogout);
-      }
-    } finally {
-      setCompetitionsLoading(false);
-    }
-  }, [onLogout]);
 
   const loadEntries = async () => {
     try {

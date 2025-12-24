@@ -151,7 +151,7 @@ export function AsyncMetricCard({
           <CardTitle>
             <IndicatorBadge 
               color={indicatorBadgeColor[status]} 
-              text={String(data.value)} 
+              text={String(displayValue ?? data.value ?? 'Loading...')} 
               size="xl" 
               className="text-4xl" 
             />

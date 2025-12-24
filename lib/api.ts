@@ -100,14 +100,13 @@ export interface Complaint {
   competition_id: string;
   external_id?: string;
   competition?: string;
-  reporter_name: string;
-  reporter_email: string;
+  user_reference?: string;
   category: string;
-  message: string;
-  admin_notes: string | null;
   status: string;
   created_at: string;
   updated_at: string;
+  message?: string;
+  admin_notes?: string;
 }
 
 export interface ApiError {
