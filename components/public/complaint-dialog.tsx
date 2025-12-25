@@ -42,7 +42,7 @@ export function ComplaintDialog({ competitionId, competitionName, trigger }: Com
     name: '',
     email: '',
     category: '',
-    description: '',
+    details: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,7 +60,7 @@ export function ComplaintDialog({ competitionId, competitionName, trigger }: Com
       setTimeout(() => {
         setOpen(false);
         setSuccess(false);
-        setFormData({ name: '', email: '', category: '', description: '' });
+        setFormData({ name: '', email: '', category: '', details: '' });
       }, 2000);
     } catch (err: any) {
       console.error('Failed to submit complaint:', err);
@@ -170,13 +170,13 @@ export function ComplaintDialog({ competitionId, competitionName, trigger }: Com
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="details">Details</Label>
               <Textarea
-                id="description"
+                id="details"
                 placeholder="Please describe your issue in detail..."
                 className="min-h-[100px]"
-                value={formData.description}
-                onChange={(e) => handleChange('description', e.target.value)}
+                value={formData.details}
+                onChange={(e) => handleChange('details', e.target.value)}
                 required
               />
             </div>

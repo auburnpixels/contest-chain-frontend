@@ -713,7 +713,7 @@ export const publicApi = {
     name: string;
     email: string;
     category: string;
-    description: string;
+    details: string;
   }) => {
     return apiClient.post<{ message: string; id: string }>('/api/public/complaints', data);
   },

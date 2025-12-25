@@ -793,7 +793,7 @@ Content-Type: application/json`} />
                                 <Row name="competition_external_id" type="string" required description="External ID of the related competition." />
                                 <Row name="user_reference" type="string" description="Your internal user/customer ID for the complainant." />
                                 <Row name="category" type="string" required description="One of: draw_fairness, entry_issue, prize_issue, payment_issue, other" />
-                                <Row name="description" type="string" required description="Details of the complaint." />
+                                <Row name="details" type="string" required description="Details of the complaint." />
                             </Table>
                         </TabsContent>
                         <TabsContent value="response">

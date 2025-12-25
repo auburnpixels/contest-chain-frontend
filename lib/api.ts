@@ -105,7 +105,7 @@ export interface Complaint {
   status: string;
   created_at: string;
   updated_at: string;
-  message?: string;
+  details?: string;
   admin_notes?: string;
 }
 

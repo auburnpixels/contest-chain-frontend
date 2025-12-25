@@ -372,10 +372,10 @@ export function ComplaintsWidget({
 
               <Separator />
 
-              {selectedComplaint.message && (
+              {selectedComplaint.details && (
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Description</h3>
-                  <p className="text-sm whitespace-pre-wrap">{selectedComplaint.message}</p>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Details</h3>
+                  <p className="text-sm whitespace-pre-wrap">{selectedComplaint.details}</p>
                 </div>
               )}
 
